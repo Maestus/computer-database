@@ -3,6 +3,7 @@ package com.excilys.cdb.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.excilys.cdb.model.Model;
 import com.mysql.jdbc.PreparedStatement;
@@ -10,12 +11,40 @@ import com.mysql.jdbc.Statement;
 
 public interface ModelDAO {
 
-	boolean create(Model model);
+	/*
+	 * Insertion d'un objet dans la base de donnée.
+	 * 
+	 * @param model Un objet représentant un tuple d'une table
+	 */
+	void create(Model model) throws DAOException;
 
-	Model find(long id);
+	/*
+	 * Trouver un objet depuis l'identifiant donné en argument. Leve une exception
+	 * si aucun element de la table implementant cette méthode n'a pour identifiant
+	 * la valeur du champs id donnée en argument.
+	 * 
+	 * @param id un entier
+	 * 
+	 * @throws DAOException
+	 */
+	Model find(long id) throws DAOException;
 
+	/*
+	 * Trouve tout les elements d'une table.
+	 * 
+	 * @throws DAOException
+	 */
+	List<? extends Model> findAll() throws DAOException;
+
+	/*
+	 * Map un resultat retourné par une requete SQL vers un objet représentant un
+	 * tuple d'une table.
+	 */
 	Model map(ResultSet resultSet) throws SQLException;
 
+	/*
+	 * Construit la requete.
+	 */
 	public static PreparedStatement initialisationRequetePreparee(Connection connexion, String sql,
 			boolean returnGeneratedKeys, Object... objets) throws SQLException {
 

@@ -8,7 +8,8 @@ public class Computer implements Model {
 	private String nom;
 	private Timestamp introduced;
 	private Timestamp discontinued;
-
+	private long company_id;
+	
 	public Long getId() {
 		return id;
 	}
@@ -39,6 +40,14 @@ public class Computer implements Model {
 
 	public Timestamp getDiscontinued() {
 		return discontinued;
+	}
+	
+	public Long getCompanyId() {
+		return company_id;
+	}
+
+	public void setCompanyId(long company_id) {
+		this.company_id = company_id;
 	}
 
 }
