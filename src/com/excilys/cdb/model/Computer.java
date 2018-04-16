@@ -1,6 +1,7 @@
 package com.excilys.cdb.model;
 
 import java.sql.Timestamp;
+import java.time.DateTimeException;
 
 public class Computer implements Model {
 
@@ -26,16 +27,26 @@ public class Computer implements Model {
 		return nom;
 	}
 
-	public void setIntroduced(Timestamp introduced) {
-		this.introduced = introduced;
+	public void setIntroduced(Timestamp introduced) throws DateTimeException {
+		if(introduced != null) {
+			if(discontinued != null && discontinued.before(introduced)) {
+				throw new DateTimeException("Date 'introduced' situé après la date 'discontinued'.");
+			}
+			this.introduced = introduced;
+		}
 	}
 
 	public Timestamp getIntroduced() {
 		return introduced;
 	}
 
-	public void setDiscontinued(Timestamp discontinued) {
-		this.discontinued = discontinued;
+	public void setDiscontinued(Timestamp discontinued) throws DateTimeException {
+		if(discontinued != null) {
+			if(introduced != null && introduced.after(discontinued)) {
+				throw new DateTimeException("Date 'discontinued' situé avant la date 'introduced'.");
+			}
+			this.discontinued = discontinued;
+		}
 	}
 
 	public Timestamp getDiscontinued() {
