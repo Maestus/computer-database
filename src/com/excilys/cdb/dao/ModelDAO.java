@@ -24,11 +24,16 @@ public interface ModelDAO {
 	 * la valeur du champs id donnée en argument.
 	 * 
 	 * @param id un entier
-	 * 
 	 * @throws DAOException
 	 */
-	Model find(long id) throws DAOException;
+	Model findById(long id) throws DAOException;
 
+	/*
+	 * Met à jour un objet de la base de données.
+	 * param m est un model
+	 */
+	void update(Model m);
+	
 	/*
 	 * Trouve tout les elements d'une table.
 	 * 
@@ -39,6 +44,8 @@ public interface ModelDAO {
 	/*
 	 * Map un resultat retourné par une requete SQL vers un objet représentant un
 	 * tuple d'une table.
+	 * 
+	 * @param
 	 */
 	Model map(ResultSet resultSet) throws SQLException;
 
@@ -52,9 +59,7 @@ public interface ModelDAO {
 				returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
 
 		for (int i = 0; i < objets.length; i++) {
-
 			preparedStatement.setObject(i + 1, objets[i]);
-
 		}
 
 		return preparedStatement;

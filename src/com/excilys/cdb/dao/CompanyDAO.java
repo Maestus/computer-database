@@ -15,6 +15,7 @@ public class CompanyDAO implements ModelDAO {
 	private static final String SQL_SELECT_PAR_ID = "SELECT id, name FROM company WHERE id = ?;";
 	private static final String SQL_SELECT_ALL = "SELECT id, name FROM company;";
 	private static final String SQL_INSERT = "INSERT INTO company (name) values (?);";
+	private static final String SQL_UPDATE = "UPDATE company SET name = ? WHERE id = ?;";
 
 	private DAOFactory daoFactory;
 
@@ -61,7 +62,7 @@ public class CompanyDAO implements ModelDAO {
 	}
 
 	@Override
-	public Model find(long id) throws DAOException {
+	public Model findById(long id) throws DAOException {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -78,8 +79,8 @@ public class CompanyDAO implements ModelDAO {
 			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
-			throw new DAOException("Impossible de trouver l'element demandé.", e);
-
+			// throw new DAOException("Impossible de trouver l'element demandé.", e);
+			return null;
 		}
 
 		return company;
@@ -107,6 +108,24 @@ public class CompanyDAO implements ModelDAO {
 		}
 
 		return companyList;
+	}
+
+	@Override
+	public void update(Model m) {
+
+		Connection connexion = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			connexion = daoFactory.getConnection();
+			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_UPDATE, false, m.getNom(),
+					m.getId());
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+			connexion.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

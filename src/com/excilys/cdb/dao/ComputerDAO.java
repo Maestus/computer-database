@@ -14,7 +14,9 @@ public class ComputerDAO implements ModelDAO {
 
 	private static final String SQL_SELECT_PAR_ID = "SELECT id, name, introduced, discontinued FROM computer WHERE id = ?;";
 	private static final String SQL_SELECT_ALL = "SELECT id, name, introduced, discontinued FROM computer;";
+	private static final String SQL_SELECT_BY_COMPANY = "SELECT computer.id as id, company.name as company_name, computer.name as name, introduced, discontinued FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company_id = ?;";
 	private static final String SQL_INSERT = "INSERT INTO computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);";
+	private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
 
 	private DAOFactory daoFactory;
 
@@ -27,7 +29,7 @@ public class ComputerDAO implements ModelDAO {
 	
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
-		ResultSet valeursAutoGenerees = null;
+		ResultSet idAuto = null;
 
 		try {
 			
@@ -41,10 +43,10 @@ public class ComputerDAO implements ModelDAO {
 				throw new DAOException("Insertion non possible");
 			}
 
-			valeursAutoGenerees = preparedStatement.getGeneratedKeys();
+			idAuto = preparedStatement.getGeneratedKeys();
 
-			if (valeursAutoGenerees.next()) {
-				model.setId(valeursAutoGenerees.getLong(1));
+			if (idAuto.next()) {
+				model.setId(idAuto.getLong(1));
 			} else {
 				throw new DAOException("Probleme dans la récupération de l'id du tuple nouvellement inseré.");
 			}
@@ -55,7 +57,7 @@ public class ComputerDAO implements ModelDAO {
 	}
 
 	@Override
-	public Model find(long id) throws DAOException {
+	public Model findById(long id) {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -72,13 +74,38 @@ public class ComputerDAO implements ModelDAO {
 			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
-			throw new DAOException("Impossible de trouver l'element demandé.", e);
+			//throw new DAOException("Impossible de trouver l'element demandé.", e);
+			return null;
 		}
 
 		return computer;
 	}
+	
+	public List<Computer> findByCompanyId(long id) {
+		Connection connexion = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<Computer> computerList = new ArrayList<>();
 
-	public List<Computer> findAll() throws DAOException {
+		try {
+			connexion = daoFactory.getConnection();
+			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_BY_COMPANY, false, id);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				computerList.add(map(resultSet));
+			}
+			resultSet.close();
+			preparedStatement.close();
+			connexion.close();
+		} catch (SQLException e) {
+			//throw new DAOException("Impossible de trouver l'element demandé.", e);
+			return null;
+		}
+
+		return computerList;
+	}
+
+	public List<Computer> findAll() {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -95,7 +122,7 @@ public class ComputerDAO implements ModelDAO {
 			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
-			throw new DAOException("Probleme dans l'obtention de tout les tuples de la table computer.", e);
+			e.printStackTrace();
 		}
 
 		return computerList;
@@ -109,6 +136,25 @@ public class ComputerDAO implements ModelDAO {
 		computer.setIntroduced(resultSet.getTimestamp("introduced"));
 		computer.setDiscontinued(resultSet.getTimestamp("discontinued"));
 		return computer;
+	}
+
+	@Override
+	public void update(Model m) {
+		
+		Connection connexion = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			connexion = daoFactory.getConnection();
+			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_UPDATE, false, m.getNom(),
+					((Computer) m).getIntroduced(), ((Computer) m).getDiscontinued(), ((Computer) m).getCompanyId(),
+					m.getId());
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+			connexion.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
