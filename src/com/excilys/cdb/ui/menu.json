@@ -1,0 +1,17 @@
+{
+	"menuPrincipal": [
+		["1", "Entrez 1 pour avoir la liste 'Companies'", "CompanyService"],
+		["2", "Entrez 2 pour avoir la liste 'Computers'", "ComputerService"]
+	],
+	"menuCompany": [
+		["Entrez le numero d'une 'company' pour avoir sa liste de 'computer'", "ComputerService"]
+	],
+	"menuComputer": [
+		["Entrer le numero de 'computer' pour avoir le detaille", "ComputerService"],
+		["Entrer 2 pour creer un 'computer'", "ComputerService"]
+	],
+	"menuComputerDetail" : [
+		["Entrez 1 pour modifier", "ComputerService"],
+		["Entrez 1 pour supprimer", "ComputerService"]
+	]
+}
