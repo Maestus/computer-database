@@ -36,6 +36,11 @@ public class Computer implements Model {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Computer [nom = " + nom + ", introduced = " + introduced + ", discontinued = " + discontinued + "]";
+	}
+
 	public Timestamp getIntroduced() {
 		return introduced;
 	}

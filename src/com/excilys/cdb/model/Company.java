@@ -21,4 +21,9 @@ public class Company implements Model {
 		return nom;
 	}
 
+	@Override
+	public String toString() {
+		return "Company [nom = " + nom + "]";
+	}
+	
 }
