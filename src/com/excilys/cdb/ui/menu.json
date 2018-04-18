@@ -1,7 +1,11 @@
 {
+	"menuSetting" : [
+		["1", "Entrez 'q' pour Go back", "menuComputer"]
+	],
 	"menuPrincipal": [
 		["1", "Entrez 1 pour avoir la liste 'Companies'", "CompanyService"],
-		["2", "Entrez 2 pour avoir la liste 'Computers'", "ComputerService"]
+		["2", "Entrez 2 pour avoir la liste 'Computers'", "ComputerService"],
+		["3", "Entrez 3 pour acceder au setting", "Setting"]
 	],
 	"menuCompany": [
 		["1", "Entrez le numero d'une 'company' pour avoir sa liste de 'computer'", "ComputerService"],

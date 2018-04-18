@@ -3,11 +3,10 @@ package com.excilys.cdb.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Model;
+import com.excilys.cdb.utils.Page;
 import com.mysql.jdbc.PreparedStatement;
 
 public class ComputerDAO implements ModelDAO {
@@ -82,42 +81,55 @@ public class ComputerDAO implements ModelDAO {
 		return computer;
 	}
 
-	public List<Computer> findByCompanyId(long id) {
+	public Page<Computer> findByCompanyId(int offset, int nbElem, long id) {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		List<Computer> computerList = new ArrayList<>();
+		Page<Computer> p = new Page<Computer>(offset, nbElem);
 
 		try {
 			connexion = daoFactory.getConnection();
 			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_BY_COMPANY, false, id);
 			resultSet = preparedStatement.executeQuery();
-			while (resultSet.next()) {
-				computerList.add(map(resultSet));
+			int i = 0;
+			while (resultSet.next() && i < p.nbElem) {
+				if(p.getOffset() == 0) {
+					p.addElem(map(resultSet));
+				} else {
+					p.decrOffset();
+				}
+				i++;
 			}
 			resultSet.close();
 			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
 			// throw new DAOException("Impossible de trouver l'element demandé.", e);
-			return new ArrayList<>();
+			return new Page<Computer>(0,0);
 		}
 
-		return computerList;
+		return p;
 	}
 
-	public List<Computer> findAll() {
+	@Override
+	public Page<Computer> findAll(int offset, int nbElem) {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		List<Computer> computerList = new ArrayList<>();
+		Page<Computer> p = new Page<Computer>(offset, nbElem);
 
 		try {
 			connexion = daoFactory.getConnection();
 			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false);
 			resultSet = preparedStatement.executeQuery();
-			while (resultSet.next()) {
-				computerList.add(map(resultSet));
+			int i = 0;
+			while (resultSet.next() && i < p.nbElem) {
+				if(p.getOffset() == 0) {
+					p.addElem(map(resultSet));
+				} else {
+					p.decrOffset();
+				}
+				i++;
 			}
 			resultSet.close();
 			preparedStatement.close();
@@ -125,8 +137,8 @@ public class ComputerDAO implements ModelDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-		return computerList;
+		
+		return p;
 	}
 
 	@Override

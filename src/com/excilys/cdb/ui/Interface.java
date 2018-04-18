@@ -1,7 +1,6 @@
 package com.excilys.cdb.ui;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +11,15 @@ import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
+import com.excilys.cdb.utils.Page;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Interface {
 
+	final static int UI_SIZE = 100;
+	final static String UI_MESSAGE_HEADER = "LISTS OF COMPANIES & COMPUTERS";
+	
 	Map<String, List<List<String>>> menu;
 	Place p;
 	Scanner sc;
@@ -25,15 +28,14 @@ public class Interface {
 	CompanyService companyserv;
 	ComputerService computerserv;
 	
-	List<Company> lcompany;
-	List<Computer> lcomputer;
+	Page<Company> lcompany;
+	Page<Computer> lcomputer;
 	Computer computer;
+	private int pageSize = 5;
 	
 	public Interface(ComputerService computerserv, CompanyService companyserv) {
 		this.companyserv = companyserv;
 		this.computerserv = computerserv;
-		lcompany = new ArrayList<>();
-		lcomputer = new ArrayList<>();
 		computer = new Computer();
 		this.p = Place.MENU_PRINCIPAL;
 		sc = new Scanner(System.in);
@@ -47,9 +49,6 @@ public class Interface {
 			e.printStackTrace();
 		}
 	}
-
-	final static int UI_SIZE = 100;
-	final static String UI_MESSAGE_HEADER = "LISTS OF COMPANIES & COMPUTERS";
 
 	public void menu() {
 		Interface.displayHeader();
@@ -65,7 +64,9 @@ public class Interface {
 	}
 
 	private void displayRes() {
-		if (p == Place.MENU_PRINCIPAL) {
+		if (p == Place.MENU_SETTING) {
+			setting();
+		} else if (p == Place.MENU_PRINCIPAL) {
 			displayList();
 		} else if (p == Place.MENU_COMPANY) {
 			displayComputerListByCompanyId();
@@ -77,6 +78,20 @@ public class Interface {
 		menu();
 	}
  
+	private void setting() {
+		
+		boolean goodValue = false;
+		while(!goodValue) {
+			try {
+				System.out.print("Page size [" + pageSize  + "] : ");
+				pageSize = sc.nextInt();
+				goodValue = true;
+			} catch (NumberFormatException e) {
+				System.err.println("Mauvais format entrez un entier");
+			}
+		}
+	}
+
 	private void controlComputer() {
 		try {
 			if(!checkIfGoBack()) {
@@ -98,18 +113,21 @@ public class Interface {
 		try {
 			if(!checkIfGoBack()) { 
 				if(menu.get(p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals(CompanyService.class.getSimpleName())){
-					lcompany = companyserv.getListCompany();
-					for (Company c : lcompany) {
+					lcompany = companyserv.getListCompany(0, pageSize);
+					for (Company c : lcompany.elems) {
 						System.out.println(c);
 					}
 					p = Place.MENU_COMPANY;
 				} else if(menu.get(p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals(ComputerService.class.getSimpleName())){
 					int i = 1;
-					lcomputer = computerserv.getListComputer();
-					for (Computer c : lcomputer) {
+					lcomputer = computerserv.getListComputer(0, pageSize);
+					for (Computer c : lcomputer.elems) {
 						System.out.println(i++ + " " + c.getNom());
 					}
 					p = Place.MENU_COMPUTER;
+				} else if (menu.get(p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals("Setting")) {
+					setting();
+					p = Place.MENU_SETTING;
 				}
 			}		
 		} catch(NumberFormatException e) {
@@ -121,8 +139,8 @@ public class Interface {
 		try {
 			if(!checkIfGoBack()) {
 				int i = 1;
-				lcomputer = computerserv.getListComputerByCompany(Integer.parseInt(choix));
-				for (Computer c : lcomputer) {
+				lcomputer = computerserv.getListComputerByCompany(0, pageSize, Integer.parseInt(choix));
+				for (Computer c : lcomputer.elems) {
 					System.out.println(i++ + " " + c);
 				}
 			}	
@@ -138,8 +156,8 @@ public class Interface {
 				computerserv.addComputer(computer);
 			} else {	
 				try {
-					if((Integer.parseInt(choix) - 1)  < lcomputer.size()) {
-						computer = computerserv.getComputerById(lcomputer.get(Integer.parseInt(choix) - 1).getId());
+					if((Integer.parseInt(choix) - 1)  < lcomputer.elems.size()) {
+						computer = computerserv.getComputerById(lcomputer.elems.get(Integer.parseInt(choix) - 1).getId());
 						System.out.println(computer);
 						p = Place.MENU_COMPUTER_DETAIL;
 					}
@@ -193,10 +211,10 @@ public class Interface {
 	private boolean checkIfGoBack() {
 		if(choix.equals("q")) {
 			List<String> l = menu.get(p.getAlias()).get(menu.get(p.getAlias()).size() - 1);
-			if(Place.MENU_PRINCIPAL.getAlias().equals(l.get(l.size() - 1))) {
-				p = Place.MENU_PRINCIPAL;
-			} else if(Place.MENU_COMPUTER.getAlias().equals(l.get(l.size() - 1))) {
+			if(Place.MENU_COMPUTER.getAlias().equals(l.get(l.size() - 1))) {
 				p = Place.MENU_COMPUTER;
+			} else {
+				p = Place.MENU_PRINCIPAL;
 			}
 			return true;
 		}

@@ -1,6 +1,7 @@
 package com.excilys.cdb.ui;
 
 public enum Place {
+	MENU_SETTING("menuSetting"),
 	MENU_PRINCIPAL("menuPrincipal"), 
 	MENU_COMPANY("menuCompany"), 
 	MENU_COMPUTER("menuComputer"),

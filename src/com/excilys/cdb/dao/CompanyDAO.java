@@ -3,11 +3,10 @@ package com.excilys.cdb.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Model;
+import com.excilys.cdb.utils.Page;
 import com.mysql.jdbc.PreparedStatement;
 
 public class CompanyDAO implements ModelDAO {
@@ -85,18 +84,24 @@ public class CompanyDAO implements ModelDAO {
 		return company;
 	}
 
-	public List<Company> findAll() throws DAOException {
+	public Page<Company> findAll(int offset, int nbElem) throws DAOException {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		List<Company> companyList = new ArrayList<Company>();
+		Page<Company> p = new Page<Company>(offset, nbElem);
 
 		try {
 			connexion = daoFactory.getConnection();
 			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false);
 			resultSet = preparedStatement.executeQuery();
-			while (resultSet.next()) {
-				companyList.add(map(resultSet));
+			int i = 0;
+			while (resultSet.next() && i < p.nbElem) {
+				if(p.getOffset() == 0) {
+					p.addElem(map(resultSet));
+				} else {
+					p.decrOffset();
+				}
+				i++;
 			}
 			resultSet.close();
 			preparedStatement.close();
@@ -106,7 +111,7 @@ public class CompanyDAO implements ModelDAO {
 
 		}
 
-		return companyList;
+		return p;
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class Company implements Model {
 
 	@Override
 	public String toString() {
-		return "[nom = " + nom + "]";
+		return nom;
 	}
 
 	@Override

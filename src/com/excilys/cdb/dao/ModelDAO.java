@@ -3,9 +3,9 @@ package com.excilys.cdb.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import com.excilys.cdb.model.Model;
+import com.excilys.cdb.utils.Page;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
@@ -39,7 +39,7 @@ public interface ModelDAO {
 	 * 
 	 * @throws DAOException
 	 */
-	List<? extends Model> findAll() throws DAOException;
+	Page<? extends Model> findAll(int offset, int nbElem) throws DAOException;
 
 	/*
 	 * Map un resultat retourné par une requete SQL vers un objet représentant un
