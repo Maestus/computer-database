@@ -82,7 +82,6 @@ public class CompanyDAO implements ModelDAO {
 			// throw new DAOException("Impossible de trouver l'element demandé.", e);
 			return null;
 		}
-
 		return company;
 	}
 

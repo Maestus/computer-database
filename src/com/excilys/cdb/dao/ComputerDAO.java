@@ -17,6 +17,7 @@ public class ComputerDAO implements ModelDAO {
 	private static final String SQL_SELECT_BY_COMPANY = "SELECT computer.id as id, company.name as company_name, computer.name as name, introduced, discontinued FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company_id = ?;";
 	private static final String SQL_INSERT = "INSERT INTO computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);";
 	private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+	private static final String SQL_DELETE = "DELETE FROM computer WHERE id = ?;";
 
 	private DAOFactory daoFactory;
 
@@ -26,17 +27,17 @@ public class ComputerDAO implements ModelDAO {
 
 	@Override
 	public void create(Model model) throws DAOException {
-	
+
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet idAuto = null;
 
 		try {
-			
+
 			connexion = daoFactory.getConnection();
 			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_INSERT, true,
 					((Computer) model).getNom(), ((Computer) model).getIntroduced(),
-					((Computer) model).getDiscontinued(), ((Computer)model).getCompanyId());
+					((Computer) model).getDiscontinued(), ((Computer) model).getCompanyId());
 			int statut = preparedStatement.executeUpdate();
 
 			if (statut == 0) {
@@ -74,13 +75,13 @@ public class ComputerDAO implements ModelDAO {
 			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
-			//throw new DAOException("Impossible de trouver l'element demandé.", e);
-			return null;
+			// throw new DAOException("Impossible de trouver l'element demandé.", e);
+			return new Computer();
 		}
 
 		return computer;
 	}
-	
+
 	public List<Computer> findByCompanyId(long id) {
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
@@ -98,8 +99,8 @@ public class ComputerDAO implements ModelDAO {
 			preparedStatement.close();
 			connexion.close();
 		} catch (SQLException e) {
-			//throw new DAOException("Impossible de trouver l'element demandé.", e);
-			return null;
+			// throw new DAOException("Impossible de trouver l'element demandé.", e);
+			return new ArrayList<>();
 		}
 
 		return computerList;
@@ -140,6 +141,8 @@ public class ComputerDAO implements ModelDAO {
 
 	@Override
 	public void update(Model m) {
+
+		System.out.println(m);
 		
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;
@@ -156,5 +159,23 @@ public class ComputerDAO implements ModelDAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public Model delete(long id) {
+		Connection connexion = null;
+		PreparedStatement preparedStatement = null;
+		Computer computer = null;
 
+		try {
+			connexion = daoFactory.getConnection();
+			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+			connexion.close();
+		} catch (SQLException e) {
+			throw new DAOException("Impossible de trouver l'element demandé.", e);
+			//return new Computer();
+		}
+
+		return computer;
+	}
 }
