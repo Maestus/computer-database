@@ -3,7 +3,8 @@ package com.excilys.cdb.ui;
 public enum Place {
 	MENU_PRINCIPAL("menuPrincipal"), 
 	MENU_COMPANY("menuCompany"), 
-	MENU_COMPUTER("menuComputer");
+	MENU_COMPUTER("menuComputer"),
+	MENU_COMPUTER_DETAIL("menuComputerDetail");
 	
     private String alias;
     
