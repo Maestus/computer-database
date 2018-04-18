@@ -4,14 +4,17 @@
 		["2", "Entrez 2 pour avoir la liste 'Computers'", "ComputerService"]
 	],
 	"menuCompany": [
-		["Entrez le numero d'une 'company' pour avoir sa liste de 'computer'", "ComputerService"]
+		["1", "Entrez le numero d'une 'company' pour avoir sa liste de 'computer'", "ComputerService"],
+		["2", "Entrez 'q' pour Go back", "menuPrincipal"]
 	],
 	"menuComputer": [
-		["Entrer le numero de 'computer' pour avoir le detaille", "ComputerService"],
-		["Entrer 2 pour creer un 'computer'", "ComputerService"]
+		["1", "Entrer le numero de 'computer' pour avoir le detaille", "ComputerService"],
+		["2", "Entrer 'c' pour creer un 'computer'", "ComputerService"],
+		["3", "Entrez 'q' pour Go back", "menuPrincipal"]
 	],
 	"menuComputerDetail" : [
-		["Entrez 1 pour modifier", "ComputerService"],
-		["Entrez 1 pour supprimer", "ComputerService"]
+		["1", "Entrez 1 pour modifier", "ComputerService"],
+		["2", "Entrez 2 pour supprimer", "ComputerService"],
+		["3", "Entrez 'q' pour Go back", "menuComputer"]
 	]
 }
