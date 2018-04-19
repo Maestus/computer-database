@@ -34,9 +34,12 @@ public class ComputerDAO implements ModelDAO {
 		try {
 
 			connexion = daoFactory.getConnection();
+			
 			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_INSERT, true,
 					((Computer) model).getNom(), ((Computer) model).getIntroduced(),
 					((Computer) model).getDiscontinued(), ((Computer) model).getCompanyId());
+			
+			
 			int statut = preparedStatement.executeUpdate();
 
 			if (statut == 0) {
@@ -147,8 +150,6 @@ public class ComputerDAO implements ModelDAO {
 
 	@Override
 	public void update(Model m) {
-
-		System.out.println(m);
 		
 		Connection connexion = null;
 		PreparedStatement preparedStatement = null;

@@ -1,5 +1,8 @@
 package com.excilys.cdb;
 
+import java.util.Scanner;
+
+import com.excilys.cdb.controller.UIController;
 import com.excilys.cdb.dao.DAOFactory;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
@@ -13,7 +16,9 @@ public class Main {
 		computerserv.init(dao);
 		CompanyService companyserv = new CompanyService();
 		companyserv.init(dao);
-		Interface i = new Interface(computerserv, companyserv);
-		i.menu();
+		Scanner sc = new Scanner(System.in);
+		Interface iu = new Interface(sc);
+		UIController controller = new UIController(iu, computerserv, companyserv, sc);
+		controller.launchUI();
 	} 
 }
