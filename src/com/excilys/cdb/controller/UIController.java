@@ -62,13 +62,13 @@ public class UIController {
 	
 	public void displayRes() {
 		if(!quit) {
-			if (ui.p == Place.MENU_SETTING) {
+			if (ui.emplacementMenu == Place.MENU_SETTING) {
 				setting();
-			} else if (ui.p == Place.MENU_PRINCIPAL) {
+			} else if (ui.emplacementMenu == Place.MENU_PRINCIPAL) {
 				displayList();
-			} else if (ui.p == Place.MENU_COMPANY) {
+			} else if (ui.emplacementMenu == Place.MENU_COMPANY) {
 				displayComputerListByCompanyId();
-			} else if (ui.p == Place.MENU_COMPUTER) {
+			} else if (ui.emplacementMenu == Place.MENU_COMPUTER) {
 				displayComputerDetail();
 			} else {
 				controlComputer();
@@ -97,17 +97,17 @@ public class UIController {
 	private void displayList() {
 		try {
 			if(!checkIfGoBack()) { 
-				if(ui.menu.get(ui.p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals(CompanyService.class.getSimpleName())){
+				if(ui.menu.get(ui.emplacementMenu.toString()).get(Integer.parseInt(choix) - 1).get(2).equals(CompanyService.class.getSimpleName())){
 					offset = 0;
 					setPageCompany();
 					ui.displayCompanyList(lcompany);
-				} else if(ui.menu.get(ui.p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals(ComputerService.class.getSimpleName())){
+				} else if(ui.menu.get(ui.emplacementMenu.toString()).get(Integer.parseInt(choix) - 1).get(2).equals(ComputerService.class.getSimpleName())){
 					offset = 0;
 					setPageComputer();
 					ui.displayComputerList(lcomputer);
-				} else if (ui.menu.get(ui.p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals("Setting")) {
+				} else if (ui.menu.get(ui.emplacementMenu.toString()).get(Integer.parseInt(choix) - 1).get(2).equals("Setting")) {
 					setting();
-					ui.p = Place.MENU_PRINCIPAL;
+					ui.emplacementMenu = Place.MENU_PRINCIPAL;
 				}
 			}		
 		} catch(NumberFormatException e) {
@@ -144,11 +144,11 @@ public class UIController {
 	
 	private boolean checkIfGoBack() {
 		if(choix.equals("q")) {
-			List<String> l = ui.menu.get(ui.p.getAlias()).get(ui.menu.get(ui.p.getAlias()).size() - 1);
-			if(Place.MENU_COMPUTER.getAlias().equals(l.get(l.size() - 1))) {
-				ui.p = Place.MENU_COMPUTER;
+			List<String> l = ui.menu.get(ui.emplacementMenu.toString()).get(ui.menu.get(ui.emplacementMenu.toString()).size() - 1);
+			if(Place.MENU_COMPUTER.toString().equals(l.get(l.size() - 1))) {
+				ui.emplacementMenu = Place.MENU_COMPUTER;
 			} else {
-				ui.p = Place.MENU_PRINCIPAL;
+				ui.emplacementMenu = Place.MENU_PRINCIPAL;
 			}
 			return true;
 		}
@@ -192,7 +192,7 @@ public class UIController {
 					if((Integer.parseInt(choix) - 1)  < lcomputer.elems.size()) {
 						computer = computerserv.getComputerById(lcomputer.elems.get(Integer.parseInt(choix) - 1).getId());
 						System.out.println(computer);
-						ui.p = Place.MENU_COMPUTER_DETAIL;
+						ui.emplacementMenu = Place.MENU_COMPUTER_DETAIL;
 					}
 				} catch(NumberFormatException e) {
 					System.err.println("Choix non valide");
@@ -209,7 +209,7 @@ public class UIController {
 					computerserv.updateComputer(computer);
 				} else if(Integer.parseInt(choix) == 2) {
 					computerserv.removeComputer(computer);
-					ui.p = Place.MENU_COMPUTER;
+					ui.emplacementMenu = Place.MENU_COMPUTER;
 					displayList();
 				}
 			}		

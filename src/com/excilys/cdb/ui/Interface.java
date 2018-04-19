@@ -21,13 +21,13 @@ public class Interface {
 	final static String UI_MESSAGE_HEADER = "LISTS OF COMPANIES & COMPUTERS";
 	
 	public Map<String, List<List<String>>> menu;
-	public Place p;
+	public Place emplacementMenu;
 	Scanner sc;
 	final DateTimeFormatter frenchPattern = DateTimeFormatter.ofPattern("dd/MM/yyyy");			
 	
 	public Interface(Scanner sc) {
 		this.sc = sc;
-		this.p = Place.MENU_PRINCIPAL;
+		this.emplacementMenu = Place.MENU_PRINCIPAL;
 		ObjectMapper mapper = new ObjectMapper();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		TypeReference<HashMap<String, List<List<String>>>> typeRef = 
@@ -42,7 +42,7 @@ public class Interface {
 	public void menu() {
 		Interface.displayHeader();
 		
-		for (List<String> s : menu.get(p.getAlias())) {
+		for (List<String> s : menu.get(emplacementMenu.toString())) {
 			System.out.println(s.get(0) + " - " + s.get(1));
 		}
 
@@ -55,7 +55,7 @@ public class Interface {
 		for (Computer c : lcomputer.elems) {
 			System.out.println(i++ + " " + c.getNom());
 		}
-		p = Place.MENU_COMPUTER;		
+		emplacementMenu = Place.MENU_COMPUTER;		
 	}
 
 	public void displayCompanyList(Page<Company> lcompany) {
@@ -63,7 +63,7 @@ public class Interface {
 		for (Company c : lcompany.elems) {
 			System.out.println(i++ + " " + c);
 		}
-		p = Place.MENU_COMPANY;		
+		emplacementMenu = Place.MENU_COMPANY;		
 	}
 
 	public Computer editOrCreateComputer(Computer computer) {
@@ -170,4 +170,4 @@ public class Interface {
 		}
 		System.out.println();
 	}
-} 
+}

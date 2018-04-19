@@ -1,28 +1,28 @@
 {
-	"menuSetting" : [
-		["1", "Entrez 'q' pour Go back", "menuComputer"]
+	"MENU_SETTING" : [
+		["1", "Entrez 'q' pour Go back", "MENU_COMPUTER"]
 	],
-	"menuPrincipal": [
+	"MENU_PRINCIPAL": [
 		["1", "Entrez 1 pour avoir la liste 'Companies'", "CompanyService"],
 		["2", "Entrez 2 pour avoir la liste 'Computers'", "ComputerService"],
 		["3", "Entrez 3 pour acceder au setting", "Setting"]
 	],
-	"menuCompany": [
+	"MENU_COMPANY": [
 		["1", "Entrer 's' pour avoir la page suivante", "ComputerService"],
 		["2", "Entrer 'p' pour avoir la page precedante", "ComputerService"],
 		["3", "Entrez le numero d'une 'company' pour avoir sa liste de 'computer'", "ComputerService"],
-		["4", "Entrez 'q' pour Go back", "menuPrincipal"]
+		["4", "Entrez 'q' pour Go back", "MENU_PRINCIPAL"]
 	],
-	"menuComputer": [
+	"MENU_COMPUTER": [
 		["1", "Entrer 's' pour avoir la page suivante", "ComputerService"],
 		["2", "Entrer 'p' pour avoir la page precedante", "ComputerService"],
 		["3", "Entrer le numero de 'computer' pour avoir le detaille", "ComputerService"],
 		["4", "Entrer 'c' pour creer un 'computer'", "ComputerService"],
-		["5", "Entrez 'q' pour Go back", "menuPrincipal"]
+		["5", "Entrez 'q' pour Go back", "MENU_PRINCIPAL"]
 	],
-	"menuComputerDetail" : [
+	"MENU_COMPUTER_DETAIL" : [
 		["1", "Entrez 1 pour modifier", "ComputerService"],
 		["2", "Entrez 2 pour supprimer", "ComputerService"],
-		["3", "Entrez 'q' pour Go back", "menuComputer"]
+		["3", "Entrez 'q' pour Go back", "MENU_COMPUTER"]
 	]
 }
