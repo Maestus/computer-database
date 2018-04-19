@@ -76,7 +76,6 @@ public class CompanyDAO implements ModelDAO {
 			}
 			resultSet.close();
 			preparedStatement.close();
-			connexion.close();
 		} catch (SQLException e) {
 			// throw new DAOException("Impossible de trouver l'element demandé.", e);
 			return null;
@@ -99,7 +98,6 @@ public class CompanyDAO implements ModelDAO {
 			}
 			resultSet.close();
 			preparedStatement.close();
-			connexion.close();
 		} catch (SQLException e) {
 			throw new DAOException("Probleme dans l'obtention de tout les tuples de la table company.", e);
 
@@ -120,7 +118,6 @@ public class CompanyDAO implements ModelDAO {
 					m.getId());
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
-			connexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

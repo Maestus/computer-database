@@ -75,7 +75,6 @@ public class ComputerDAO implements ModelDAO {
 			}
 			resultSet.close();
 			preparedStatement.close();
-			connexion.close();
 		} catch (SQLException e) {
 			// throw new DAOException("Impossible de trouver l'element demandé.", e);
 			return new Computer();
@@ -105,7 +104,6 @@ public class ComputerDAO implements ModelDAO {
 			}
 			resultSet.close();
 			preparedStatement.close();
-			connexion.close();
 		} catch (SQLException e) {
 			// throw new DAOException("Impossible de trouver l'element demandé.", e);
 			return new Page<Computer>(0,0);
@@ -130,7 +128,6 @@ public class ComputerDAO implements ModelDAO {
 			}
 			resultSet.close();
 			preparedStatement.close();
-			connexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -143,8 +140,8 @@ public class ComputerDAO implements ModelDAO {
 		Computer computer = new Computer();
 		computer.setId(resultSet.getLong("id"));
 		computer.setNom(resultSet.getString("name"));
-		computer.setIntroduced(resultSet.getTimestamp("introduced"));
-		computer.setDiscontinued(resultSet.getTimestamp("discontinued"));
+		computer.setIntroduced(resultSet.getTimestamp("introduced") == null ? null : resultSet.getTimestamp("introduced").toLocalDateTime().toLocalDate());
+		computer.setDiscontinued(resultSet.getTimestamp("discontinued") == null ? null : resultSet.getTimestamp("discontinued").toLocalDateTime().toLocalDate());
 		return computer;
 	}
 
@@ -161,7 +158,6 @@ public class ComputerDAO implements ModelDAO {
 					m.getId());
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
-			connexion.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -177,7 +173,6 @@ public class ComputerDAO implements ModelDAO {
 			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
-			connexion.close();
 		} catch (SQLException e) {
 			throw new DAOException("Impossible de trouver l'element demandé.", e);
 			//return new Computer();
