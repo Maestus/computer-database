@@ -1,14 +1,14 @@
 package com.excilys.cdb.model;
 
-import java.sql.Timestamp;
 import java.time.DateTimeException;
+import java.time.LocalDate;
 
 public class Computer implements Model {
 
 	private long id;
 	private String nom;
-	private Timestamp introduced;
-	private Timestamp discontinued;
+	private LocalDate introduced;
+	private LocalDate discontinued;
 	private Object company_id;
 	
 	public Long getId() {
@@ -27,30 +27,20 @@ public class Computer implements Model {
 		this.nom = nom;
 	}
 
-	public Timestamp getIntroduced() {
+	public LocalDate getIntroduced() {
 		return introduced;
 	}
 
-	public void setIntroduced(Timestamp introduced) throws DateTimeException {
-		if(introduced != null) {
-			if(discontinued != null && discontinued.before(introduced)) {
-				throw new DateTimeException("Date 'introduced' situé après la date 'discontinued'.");
-			}
-			this.introduced = introduced;
-		}
+	public void setIntroduced(LocalDate introduced) throws DateTimeException {
+		this.introduced = introduced;
 	}
 	
-	public Timestamp getDiscontinued() {
+	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
 	
-	public void setDiscontinued(Timestamp discontinued) throws DateTimeException {
-		if(discontinued != null) {
-			if(introduced != null && introduced.after(discontinued)) {
-				throw new DateTimeException("Date 'discontinued' situé avant la date 'introduced'.");
-			}
-			this.discontinued = discontinued;
-		}
+	public void setDiscontinued(LocalDate discontinued) throws DateTimeException {
+		this.discontinued = discontinued;
 	}
 
 	public Object getCompanyId() {
@@ -70,13 +60,13 @@ public class Computer implements Model {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		//result = prime * result + (int) (company_id ^ (company_id >>> 32));
+		result = prime * result + (int) ((long) company_id ^ ((long) company_id >>> 32));
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
 		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
 		return result;
-	}
+	} 
 
 	@Override
 	public boolean equals(Object obj) {
@@ -107,5 +97,5 @@ public class Computer implements Model {
 		} else if (!nom.equals(other.nom))
 			return false;
 		return true;
-	}  
+	}
 }

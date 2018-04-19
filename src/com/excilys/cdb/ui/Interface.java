@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -20,6 +23,7 @@ public class Interface {
 	public Map<String, List<List<String>>> menu;
 	public Place p;
 	Scanner sc;
+	final DateTimeFormatter frenchPattern = DateTimeFormatter.ofPattern("dd/MM/yyyy");			
 	
 	public Interface(Scanner sc) {
 		this.sc = sc;
@@ -64,25 +68,40 @@ public class Interface {
 
 	public Computer editOrCreateComputer(Computer computer) {
 		
-		System.out.print("Nom : ");
-		String newNom = sc.nextLine();
-		computer.setNom(newNom);
+		boolean getNomDone = false, getIntroDone = false, getDiscDone = false, getCompanyId = false;
+		LocalDate ti = null, td = null;
 		
-		boolean getIntroDone = false, getDiscDone = false, getCompanyId = false;
-		
+		while(!getNomDone) {
+			System.out.print("Nom : ");
+			String newNom = sc.nextLine();
+			if (newNom.equals("")) {
+				if(computer.getNom() == null) {
+					System.err.println("Pour la création un nom est necessaire");
+				} else {
+					computer.setNom(computer.getNom());
+					getNomDone = true;
+				}
+			} else {
+				computer.setNom(newNom);
+				getNomDone = true;
+			}
+		}
+				
 		while(!getIntroDone) {
 			try {
 				System.out.print("Introduced : ");
 				String newIntroduced = sc.nextLine();
 				if(newIntroduced.equals("null")) {
 					computer.setIntroduced(null);
+				} else if (newIntroduced.equals("")) {
+					computer.setIntroduced(computer.getIntroduced());
 				} else {
-					java.sql.Timestamp ti = java.sql.Timestamp.valueOf(newIntroduced);
+					ti = LocalDate.parse(newIntroduced, frenchPattern);
 					computer.setIntroduced(ti);
 				}
 				getIntroDone = true;
-			} catch (IllegalArgumentException e) {
-				System.err.println("Mauvais format, entrez une date de la forme yyyy-mm-dd hh:mm:ss");
+			} catch (DateTimeParseException e) {
+				System.err.println("Mauvais format, entrez une date de la forme dd/mm/yyyy");
 			}
 		}		
 		
@@ -92,16 +111,22 @@ public class Interface {
 				String newDiscontinued = sc.nextLine();
 				if(newDiscontinued.equals("null")) {
 					computer.setDiscontinued(null);
+				} else if (newDiscontinued.equals("")) {
+					computer.setDiscontinued(computer.getDiscontinued());
 				} else {
-					java.sql.Timestamp td = java.sql.Timestamp.valueOf(newDiscontinued);
-					computer.setDiscontinued(td);
-				}
-				getDiscDone = true;
-			} catch (IllegalArgumentException e) {
-				System.err.println("Mauvais format, entrez une date de la forme yyyy-mm-dd hh:mm:ss");
-			}	
+					td = LocalDate.parse(newDiscontinued, frenchPattern);
+					if(!td.isBefore(ti)) {
+						computer.setDiscontinued(td);
+						getDiscDone = true;
+					} else {
+						System.err.println("Date non correcte");
+					}
+				} 
+			} catch (DateTimeParseException e) {
+				System.err.println("Mauvais format, entrez une date de la forme dd/mm/yyyy");
+			}
 		}
-		
+
 		while(!getCompanyId) {
 			try {
 				System.out.print("Company ID : ");
@@ -144,5 +169,5 @@ public class Interface {
 			System.out.print("-");
 		}
 		System.out.println();
-	} 
-}
+	}
+} 

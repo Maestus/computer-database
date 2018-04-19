@@ -30,26 +30,38 @@ public class ComputerService {
 	}
 	
 	public void addComputer(Computer c) {
-		if(c.getCompanyId() != null) {
-			if(companyDao.findById((long) c.getCompanyId()) != null) {
-				computerDao.create(c);
+		if(checkDate(c)) {
+			if(c.getCompanyId() != null) {
+				if(companyDao.findById((long) c.getCompanyId()) != null) {
+					computerDao.create(c);
+				} else {
+					System.err.println("Campany inexistante");
+				}
 			} else {
-				System.err.println("Campany inexistante");
+				computerDao.create(c);
 			}
 		} else {
-			computerDao.create(c);
+			System.err.println("Dates incohérentes");
 		}
 	}
 	
+	private boolean checkDate(Computer c) {
+		return !(c.getDiscontinued() != null && c.getDiscontinued().isBefore(c.getIntroduced()));
+	}
+
 	public void updateComputer(Computer c) {
-		if(c.getCompanyId() != null) {
-			if(companyDao.findById((long) c.getCompanyId()) != null) {
-				computerDao.update(c);
+		if(checkDate(c)) {
+			if(c.getCompanyId() != null) {
+				if(companyDao.findById((long) c.getCompanyId()) != null) {
+					computerDao.update(c);
+				} else {
+					System.err.println("Campany inexistante");
+				}
 			} else {
-				System.err.println("Campany inexistante");
+				computerDao.update(c);
 			}
 		} else {
-			computerDao.update(c);
+			System.err.println("Dates incohérentes");
 		}
 	}
 

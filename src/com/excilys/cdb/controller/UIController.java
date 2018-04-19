@@ -26,6 +26,7 @@ public class UIController {
 	
 	public int pageSize = 10;
 	public int offset = 0;
+	private boolean quit;
 
 	
 	public UIController(Interface ui, ComputerService computerserv, CompanyService companyserv, Scanner sc) {
@@ -49,29 +50,32 @@ public class UIController {
 				System.out.print("Votre choix : ");
 				choix = sc.nextLine();
 				if(choix.equals("quit")) {
-					System.exit(0);
+					quit = true;
+					return;
 				}
 				goodChoice = true;
 			} catch (NoSuchElementException | IllegalStateException e) {
-				System.err.println("Choix non valide -");
+				System.err.println("Choix non valide");
 			}
 		}
 	}
 	
 	public void displayRes() {
-		if (ui.p == Place.MENU_SETTING) {
-			setting();
-		} else if (ui.p == Place.MENU_PRINCIPAL) {
-			displayList();
-		} else if (ui.p == Place.MENU_COMPANY) {
-			displayComputerListByCompanyId();
-		} else if (ui.p == Place.MENU_COMPUTER) {
-			displayComputerDetail();
-		} else {
-			controlComputer();
+		if(!quit) {
+			if (ui.p == Place.MENU_SETTING) {
+				setting();
+			} else if (ui.p == Place.MENU_PRINCIPAL) {
+				displayList();
+			} else if (ui.p == Place.MENU_COMPANY) {
+				displayComputerListByCompanyId();
+			} else if (ui.p == Place.MENU_COMPUTER) {
+				displayComputerDetail();
+			} else {
+				controlComputer();
+			}
+			
+			launchUI();
 		}
-		
-		launchUI();
 	}
 	
 	public void setPageComputer() {
@@ -107,7 +111,7 @@ public class UIController {
 				}
 			}		
 		} catch(NumberFormatException e) {
-			System.err.println("Choix non valide -2");
+			System.err.println("Choix non valide");
 		}
 	}
 	
@@ -191,7 +195,7 @@ public class UIController {
 						ui.p = Place.MENU_COMPUTER_DETAIL;
 					}
 				} catch(NumberFormatException e) {
-					System.err.println("Choix non valide - 3");
+					System.err.println("Choix non valide");
 				}
 			}
 		}		
