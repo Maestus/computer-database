@@ -12,7 +12,7 @@ import com.mysql.jdbc.PreparedStatement;
 public class ComputerDAO implements ModelDAO {
 
 	private static final String SQL_SELECT_PAR_ID = "SELECT id, name, introduced, discontinued FROM computer WHERE id = ?;";
-	private static final String SQL_SELECT_ALL = "SELECT id, name, introduced, discontinued FROM computer;";
+	private static final String SQL_SELECT_ALL = "SELECT id, name, introduced, discontinued FROM computer LIMIT ? OFFSET ?;";
 	private static final String SQL_SELECT_BY_COMPANY = "SELECT computer.id as id, company.name as company_name, computer.name as name, introduced, discontinued FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company_id = ?;";
 	private static final String SQL_INSERT = "INSERT INTO computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);";
 	private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
@@ -120,16 +120,10 @@ public class ComputerDAO implements ModelDAO {
 
 		try {
 			connexion = daoFactory.getConnection();
-			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false);
+			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false, nbElem, offset);
 			resultSet = preparedStatement.executeQuery();
-			int i = 0;
-			while (resultSet.next() && i < p.nbElem) {
-				if(p.getOffset() == 0) {
-					p.addElem(map(resultSet));
-				} else {
-					p.decrOffset();
-				}
-				i++;
+			while (resultSet.next()) {
+				p.addElem(map(resultSet));
 			}
 			resultSet.close();
 			preparedStatement.close();
@@ -189,5 +183,5 @@ public class ComputerDAO implements ModelDAO {
 		}
 
 		return computer;
-	}
+	} 
 }

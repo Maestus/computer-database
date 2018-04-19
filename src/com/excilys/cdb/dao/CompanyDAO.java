@@ -12,7 +12,7 @@ import com.mysql.jdbc.PreparedStatement;
 public class CompanyDAO implements ModelDAO {
 
 	private static final String SQL_SELECT_PAR_ID = "SELECT id, name FROM company WHERE id = ?;";
-	private static final String SQL_SELECT_ALL = "SELECT id, name FROM company;";
+	private static final String SQL_SELECT_ALL = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
 	private static final String SQL_INSERT = "INSERT INTO company (name) values (?);";
 	private static final String SQL_UPDATE = "UPDATE company SET name = ? WHERE id = ?;";
 
@@ -92,16 +92,10 @@ public class CompanyDAO implements ModelDAO {
 
 		try {
 			connexion = daoFactory.getConnection();
-			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false);
+			preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false, nbElem, offset);
 			resultSet = preparedStatement.executeQuery();
-			int i = 0;
-			while (resultSet.next() && i < p.nbElem) {
-				if(p.getOffset() == 0) {
-					p.addElem(map(resultSet));
-				} else {
-					p.decrOffset();
-				}
-				i++;
+			while (resultSet.next()) {
+				p.addElem(map(resultSet));
 			}
 			resultSet.close();
 			preparedStatement.close();

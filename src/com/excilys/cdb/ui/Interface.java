@@ -31,7 +31,8 @@ public class Interface {
 	Page<Company> lcompany;
 	Page<Computer> lcomputer;
 	Computer computer;
-	private int pageSize = 5;
+	private int pageSize = 10;
+	private int offset = 0;
 	
 	public Interface(ComputerService computerserv, CompanyService companyserv) {
 		this.companyserv = companyserv;
@@ -47,12 +48,12 @@ public class Interface {
 			menu = mapper.readValue(classLoader.getResourceAsStream("com/excilys/cdb/ui/menu.json"), typeRef);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	public void menu() {
 		Interface.displayHeader();
-
+		
 		for (List<String> s : menu.get(p.getAlias())) {
 			System.out.println(s.get(0) + " - " + s.get(1));
 		}
@@ -75,6 +76,7 @@ public class Interface {
 		} else {
 			controlComputer();
 		}
+		
 		menu();
 	}
  
@@ -84,8 +86,9 @@ public class Interface {
 		while(!goodValue) {
 			try {
 				System.out.print("Page size [" + pageSize  + "] : ");
-				pageSize = sc.nextInt();
+				pageSize = Integer.parseInt(sc.nextLine());
 				goodValue = true;
+				
 			} catch (NumberFormatException e) {
 				System.err.println("Mauvais format entrez un entier");
 			}
@@ -113,35 +116,65 @@ public class Interface {
 		try {
 			if(!checkIfGoBack()) { 
 				if(menu.get(p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals(CompanyService.class.getSimpleName())){
-					lcompany = companyserv.getListCompany(0, pageSize);
-					for (Company c : lcompany.elems) {
-						System.out.println(c);
-					}
-					p = Place.MENU_COMPANY;
+					offset = 0;
+					displayCompanyList();
 				} else if(menu.get(p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals(ComputerService.class.getSimpleName())){
-					int i = 1;
-					lcomputer = computerserv.getListComputer(0, pageSize);
-					for (Computer c : lcomputer.elems) {
-						System.out.println(i++ + " " + c.getNom());
-					}
-					p = Place.MENU_COMPUTER;
+					offset = 0;
+					displayComputerList();
 				} else if (menu.get(p.getAlias()).get(Integer.parseInt(choix) - 1).get(2).equals("Setting")) {
 					setting();
-					p = Place.MENU_SETTING;
+					p = Place.MENU_PRINCIPAL;
 				}
 			}		
 		} catch(NumberFormatException e) {
-			System.err.println("Choix non valide");
+			System.err.println("Choix non valide -2");
 		}
+	}
+
+	private void displayComputerList() {
+		int i = 1;
+		lcomputer = computerserv.getListComputer(offset, pageSize);
+		if(lcomputer.elems.size() == 0) {
+			offset -= pageSize;
+		}
+		lcomputer = computerserv.getListComputer(offset, pageSize);
+		for (Computer c : lcomputer.elems) {
+			System.out.println(i++ + " " + c.getNom());
+		}
+		p = Place.MENU_COMPUTER;		
+	}
+
+	private void displayCompanyList() {
+		int i = 1;
+		lcompany = companyserv.getListCompany(offset, pageSize);
+		if(lcompany.elems.size() == 0) {
+			offset -= pageSize;
+		}
+		lcompany = companyserv.getListCompany(offset, pageSize);
+		for (Company c : lcompany.elems) {
+			System.out.println(i++ + " " + c);
+		}
+		p = Place.MENU_COMPANY;		
 	}
 
 	private void displayComputerListByCompanyId() {
 		try {
 			if(!checkIfGoBack()) {
-				int i = 1;
-				lcomputer = computerserv.getListComputerByCompany(0, pageSize, Integer.parseInt(choix));
-				for (Computer c : lcomputer.elems) {
-					System.out.println(i++ + " " + c);
+				if(choix.equals("s")) {
+					offset += pageSize;
+					displayCompanyList();
+				} else if(choix.equals("p")) {
+					offset -= pageSize;
+					if(offset < 0) {
+						offset = 0;
+					}
+					displayCompanyList();
+				} else {
+					int i = 1;
+					lcomputer = computerserv.getListComputerByCompany(offset, pageSize, Integer.parseInt(choix));
+					for (Computer c : lcomputer.elems) {
+						System.out.println(i++ + " " + c);
+					}
 				}
 			}	
 		} catch(NumberFormatException e) {
@@ -154,6 +187,15 @@ public class Interface {
 			if(choix.equals("c")) {
 				editOrCreateComputer();
 				computerserv.addComputer(computer);
+			} else if(choix.equals("s")) {
+				offset += pageSize;
+				displayComputerList();
+			} else if(choix.equals("p")) {
+				offset -= pageSize;
+				if(offset < 0) {
+					offset = 0;
+				}
+				displayComputerList();
 			} else {	
 				try {
 					if((Integer.parseInt(choix) - 1)  < lcomputer.elems.size()) {
@@ -162,7 +204,7 @@ public class Interface {
 						p = Place.MENU_COMPUTER_DETAIL;
 					}
 				} catch(NumberFormatException e) {
-					System.err.println("Choix non valide");
+					System.err.println("Choix non valide - 3");
 				}
 			}
 		}		
@@ -232,7 +274,7 @@ public class Interface {
 				}
 				goodChoice = true;
 			} catch (NoSuchElementException | IllegalStateException e) {
-				System.err.println("Choix non valide");
+				System.err.println("Choix non valide -");
 			}
 		}
 	}
@@ -263,5 +305,5 @@ public class Interface {
 			System.out.print("-");
 		}
 		System.out.println();
-	}
+	} 
 }

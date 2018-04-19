@@ -107,5 +107,5 @@ public class Computer implements Model {
 		} else if (!nom.equals(other.nom))
 			return false;
 		return true;
-	}
+	} 
 }
