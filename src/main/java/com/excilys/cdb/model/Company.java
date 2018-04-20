@@ -1,4 +1,4 @@
-package com.excilys.cdb.model;
+package main.java.com.excilys.cdb.model;
 
 public class Company implements Model {
 

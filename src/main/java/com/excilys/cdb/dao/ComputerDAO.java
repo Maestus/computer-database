@@ -1,13 +1,14 @@
-package com.excilys.cdb.dao;
+package main.java.com.excilys.cdb.dao;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.Model;
-import com.excilys.cdb.utils.Page;
 import com.mysql.jdbc.PreparedStatement;
+
+import main.java.com.excilys.cdb.model.Computer;
+import main.java.com.excilys.cdb.model.Model;
+import main.java.com.excilys.cdb.utils.Page;
 
 public class ComputerDAO implements ModelDAO {
 

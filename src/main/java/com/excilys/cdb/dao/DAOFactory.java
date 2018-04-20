@@ -1,4 +1,4 @@
-package com.excilys.cdb.dao;
+package main.java.com.excilys.cdb.dao;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +9,7 @@ import java.util.Properties;
 
 public class DAOFactory implements AutoCloseable {
 
-	private static final String fileProperties = "com/excilys/cdb/dao/dao.properties";
+	private static final String fileProperties = "lang/properties/dao.properties";
 	private Properties props;
 	private String url;
 	static DAOFactory instance;
@@ -67,4 +67,4 @@ public class DAOFactory implements AutoCloseable {
 	public void close() throws Exception {
 		connection.close();
 	}
-}
+} 

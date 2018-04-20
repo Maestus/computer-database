@@ -1,12 +1,12 @@
-package com.excilys.cdb;
+package main.java.com.excilys.cdb;
 
 import java.util.Scanner;
 
-import com.excilys.cdb.controller.UIController;
-import com.excilys.cdb.dao.DAOFactory;
-import com.excilys.cdb.service.CompanyService;
-import com.excilys.cdb.service.ComputerService;
-import com.excilys.cdb.ui.Interface;
+import main.java.com.excilys.cdb.controller.UIController;
+import main.java.com.excilys.cdb.dao.DAOFactory;
+import main.java.com.excilys.cdb.service.CompanyService;
+import main.java.com.excilys.cdb.service.ComputerService;
+import main.java.com.excilys.cdb.ui.Interface;
 
 public class Main {
 

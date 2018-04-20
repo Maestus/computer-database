@@ -1,4 +1,4 @@
-package com.excilys.cdb.ui;
+package main.java.com.excilys.cdb.ui;
 
 public enum Place {
 	MENU_SETTING,

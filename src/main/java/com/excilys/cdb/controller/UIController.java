@@ -1,16 +1,16 @@
-package com.excilys.cdb.controller;
+package main.java.com.excilys.cdb.controller;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.service.CompanyService;
-import com.excilys.cdb.service.ComputerService;
-import com.excilys.cdb.ui.Interface;
-import com.excilys.cdb.ui.Place;
-import com.excilys.cdb.utils.Page;
+import main.java.com.excilys.cdb.model.Company;
+import main.java.com.excilys.cdb.model.Computer;
+import main.java.com.excilys.cdb.service.CompanyService;
+import main.java.com.excilys.cdb.service.ComputerService;
+import main.java.com.excilys.cdb.ui.Interface;
+import main.java.com.excilys.cdb.ui.Place;
+import main.java.com.excilys.cdb.utils.Page;
 
 public class UIController {
 	Scanner sc;

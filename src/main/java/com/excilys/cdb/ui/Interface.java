@@ -1,4 +1,4 @@
-package com.excilys.cdb.ui;
+package main.java.com.excilys.cdb.ui;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -9,11 +9,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.utils.Page;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import main.java.com.excilys.cdb.model.Company;
+import main.java.com.excilys.cdb.model.Computer;
+import main.java.com.excilys.cdb.utils.Page;
 
 public class Interface {
 
@@ -33,7 +34,7 @@ public class Interface {
 		TypeReference<HashMap<String, List<List<String>>>> typeRef = 
 				new TypeReference<HashMap<String, List<List<String>>>>() {};
 		try {
-			menu = mapper.readValue(classLoader.getResourceAsStream("com/excilys/cdb/ui/menu.json"), typeRef);
+			menu = mapper.readValue(classLoader.getResourceAsStream("main/java/com/excilys/cdb/ui/menu.json"), typeRef);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
