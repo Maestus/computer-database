@@ -2,12 +2,28 @@ package main.java.com.excilys.cdb.model;
 
 public interface Model {
 
-	public Long getId();
+    /**
+     * Obtenir l'identifiant du model.
+     * @return identifiant (un Long).
+     */
+    Long getId();
 
-	public void setId(long id);
-	
-	public String getNom();
+    /**
+     * Definir l'identifiant d'un model.
+     * @param id un Long
+     */
+    void setId(long id);
 
-	public void setNom(String nom);
+    /**
+     * Obtenir la valeur du champs nom d'un model.
+     * @return une chaine de caractere.
+     */
+    String getNom();
+
+    /**
+     * Definir le nom d'un model.
+     * @param nom une chaine de caractere.
+     */
+    void setNom(String nom);
 
 }

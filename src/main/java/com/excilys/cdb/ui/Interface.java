@@ -18,157 +18,182 @@ import main.java.com.excilys.cdb.utils.Page;
 
 public class Interface {
 
-	final static int UI_SIZE = 100;
-	final static String UI_MESSAGE_HEADER = "LISTS OF COMPANIES & COMPUTERS";
-	
-	public Map<String, List<List<String>>> menu;
-	public Place emplacementMenu;
-	Scanner sc;
-	final DateTimeFormatter frenchPattern = DateTimeFormatter.ofPattern("dd/MM/yyyy");			
-	
-	public Interface(Scanner sc) {
-		this.sc = sc;
-		this.emplacementMenu = Place.MENU_PRINCIPAL;
-		ObjectMapper mapper = new ObjectMapper();
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		TypeReference<HashMap<String, List<List<String>>>> typeRef = 
-				new TypeReference<HashMap<String, List<List<String>>>>() {};
-		try {
-			menu = mapper.readValue(classLoader.getResourceAsStream("main/java/com/excilys/cdb/ui/menu.json"), typeRef);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-	}
+    static final int UI_SIZE = 100;
+    static final String UI_MESSAGE_HEADER = "LISTS OF COMPANIES & COMPUTERS";
 
-	public void menu() {
-		Interface.displayHeader();
-		
-		for (List<String> s : menu.get(emplacementMenu.toString())) {
-			System.out.println(s.get(0) + " - " + s.get(1));
-		}
+    public Map<String, List<List<String>>> menu;
+    public Place emplacementMenu;
+    Scanner sc;
+    final DateTimeFormatter frenchPattern = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-		Interface.displayFooter();
+    /**
+     * Initialisation d'une interface.
+     * @param sc Un Scanner.
+     */
+    public Interface(Scanner sc) {
+        this.sc = sc;
+        this.emplacementMenu = Place.MENU_PRINCIPAL;
+        ObjectMapper mapper = new ObjectMapper();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        TypeReference<HashMap<String, List<List<String>>>> typeRef = new TypeReference<HashMap<String, List<List<String>>>>() {
+        };
+        try {
+            menu = mapper.readValue(classLoader.getResourceAsStream("main/java/com/excilys/cdb/ui/menu.json"), typeRef);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	}
+    /**
+     * Affichage du menu.
+     */
+    public void menu() {
+        Interface.displayHeader();
 
-	public void displayComputerList(Page<Computer> lcomputer) {
-		int i = 1;
-		for (Computer c : lcomputer.elems) {
-			System.out.println(i++ + " " + c.getNom());
-		}
-		emplacementMenu = Place.MENU_COMPUTER;		
-	}
+        for (List<String> s : menu.get(emplacementMenu.toString())) {
+            System.out.println(s.get(0) + " - " + s.get(1));
+        }
 
-	public void displayCompanyList(Page<Company> lcompany) {
-		int i = 1;
-		for (Company c : lcompany.elems) {
-			System.out.println(i++ + " " + c);
-		}
-		emplacementMenu = Place.MENU_COMPANY;		
-	}
+        Interface.displayFooter();
 
-	public Computer editOrCreateComputer(Computer computer) {
-		
-		boolean getNomDone = false, getIntroDone = false, getDiscDone = false, getCompanyId = false;
-		LocalDate ti = null, td = null;
-		
-		while(!getNomDone) {
-			System.out.print("Nom : ");
-			String newNom = sc.nextLine();
-			if (newNom.equals("")) {
-				if(computer.getNom() == null) {
-					System.err.println("Pour la création un nom est necessaire");
-				} else {
-					computer.setNom(computer.getNom());
-					getNomDone = true;
-				}
-			} else {
-				computer.setNom(newNom);
-				getNomDone = true;
-			}
-		}
-				
-		while(!getIntroDone) {
-			try {
-				System.out.print("Introduced : ");
-				String newIntroduced = sc.nextLine();
-				if(newIntroduced.equals("null")) {
-					computer.setIntroduced(null);
-				} else if (newIntroduced.equals("")) {
-					computer.setIntroduced(computer.getIntroduced());
-				} else {
-					ti = LocalDate.parse(newIntroduced, frenchPattern);
-					computer.setIntroduced(ti);
-				}
-				getIntroDone = true;
-			} catch (DateTimeParseException e) {
-				System.err.println("Mauvais format, entrez une date de la forme dd/mm/yyyy");
-			}
-		}		
-		
-		while(!getDiscDone) {
-			try {
-				System.out.print("Discountinued : ");
-				String newDiscontinued = sc.nextLine();
-				if(newDiscontinued.equals("null")) {
-					computer.setDiscontinued(null);
-				} else if (newDiscontinued.equals("")) {
-					computer.setDiscontinued(computer.getDiscontinued());
-				} else {
-					td = LocalDate.parse(newDiscontinued, frenchPattern);
-					if(!td.isBefore(ti)) {
-						computer.setDiscontinued(td);
-						getDiscDone = true;
-					} else {
-						System.err.println("Date non correcte");
-					}
-				} 
-			} catch (DateTimeParseException e) {
-				System.err.println("Mauvais format, entrez une date de la forme dd/mm/yyyy");
-			}
-		}
+    }
 
-		while(!getCompanyId) {
-			try {
-				System.out.print("Company ID : ");
-				String campanyID = sc.nextLine();
-				if(!campanyID.equals("null")) {
-					computer.setCompanyId(Integer.parseInt(campanyID));
-				}
-				getCompanyId = true;
-			} catch (IllegalArgumentException e) {
-				System.err.println("Mauvais format, entrez une date de la forme yyyy-mm-dd hh:mm:ss");
-			}	
-		}
-		return computer;
-	}
+    /**
+     * Affichage de la liste de computers.
+     * @param lcomputer Une liste de computers.
+     */
+    public void displayComputerList(Page<Computer> lcomputer) {
+        int i = 1;
+        for (Computer c : lcomputer.elems) {
+            System.out.println(i++ + " " + c.getNom());
+        }
+        emplacementMenu = Place.MENU_COMPUTER;
+    }
 
+    /**
+     * Affichage d'une liste de companies.
+     * @param lcompany Une liste de companies.
+     */
+    public void displayCompanyList(Page<Company> lcompany) {
+        int i = 1;
+        for (Company c : lcompany.elems) {
+            System.out.println(i++ + " " + c);
+        }
+        emplacementMenu = Place.MENU_COMPANY;
+    }
 
-	private static void displayHeader() {
+    /**
+     * Création/édition d'un computer.
+     * @param computer Un computer.
+     * @return Un objet Computer.
+     */
+    public Computer editOrCreateComputer(Computer computer) {
 
-		for (int i = 0; i < UI_SIZE; i++) {
-			System.out.print("-");
-		}
+        boolean getNomDone = false, getIntroDone = false, getDiscDone = false, getCompanyId = false;
+        LocalDate ti = null, td = null;
 
-		System.out.println();
+        while (!getNomDone) {
+            System.out.print("Nom : ");
+            String newNom = sc.nextLine();
+            if (newNom.equals("")) {
+                if (computer.getNom() == null) {
+                    System.err.println("Pour la création un nom est necessaire");
+                } else {
+                    computer.setNom(computer.getNom());
+                    getNomDone = true;
+                }
+            } else {
+                computer.setNom(newNom);
+                getNomDone = true;
+            }
+        }
 
-		for (int i = 0; i < ((UI_SIZE / 2) - UI_MESSAGE_HEADER.length() / 2); i++) {
-			System.out.print(" ");
-		}
+        while (!getIntroDone) {
+            try {
+                System.out.print("Introduced : ");
+                String newIntroduced = sc.nextLine();
+                if (newIntroduced.equals("null")) {
+                    computer.setIntroduced(null);
+                } else if (newIntroduced.equals("")) {
+                    computer.setIntroduced(computer.getIntroduced());
+                } else {
+                    ti = LocalDate.parse(newIntroduced, frenchPattern);
+                    computer.setIntroduced(ti);
+                }
+                getIntroDone = true;
+            } catch (DateTimeParseException e) {
+                System.err.println("Mauvais format, entrez une date de la forme dd/mm/yyyy");
+            }
+        }
 
-		System.out.println(UI_MESSAGE_HEADER);
+        while (!getDiscDone) {
+            try {
+                System.out.print("Discountinued : ");
+                String newDiscontinued = sc.nextLine();
+                if (newDiscontinued.equals("null")) {
+                    computer.setDiscontinued(null);
+                } else if (newDiscontinued.equals("")) {
+                    computer.setDiscontinued(computer.getDiscontinued());
+                } else {
+                    td = LocalDate.parse(newDiscontinued, frenchPattern);
+                    if (!td.isBefore(ti)) {
+                        computer.setDiscontinued(td);
+                        getDiscDone = true;
+                    } else {
+                        System.err.println("Date non correcte");
+                    }
+                }
+            } catch (DateTimeParseException e) {
+                System.err.println("Mauvais format, entrez une date de la forme dd/mm/yyyy");
+            }
+        }
 
-		for (int i = 0; i < UI_SIZE; i++) {
-			System.out.print("-");
-		}
-		System.out.println();
+        while (!getCompanyId) {
+            try {
+                System.out.print("Company ID : ");
+                String campanyID = sc.nextLine();
+                if (!campanyID.equals("null")) {
+                    computer.setCompanyId(Integer.parseInt(campanyID));
+                }
+                getCompanyId = true;
+            } catch (IllegalArgumentException e) {
+                System.err.println("Mauvais format, entrez une date de la forme yyyy-mm-dd hh:mm:ss");
+            }
+        }
+        return computer;
+    }
 
-	}
+    /**
+     * Affiche l'entete de menu.
+     */
+    private static void displayHeader() {
 
-	private static void displayFooter() {
-		for (int i = 0; i < UI_SIZE; i++) {
-			System.out.print("-");
-		}
-		System.out.println();
-	}
+        for (int i = 0; i < UI_SIZE; i++) {
+            System.out.print("-");
+        }
+
+        System.out.println();
+
+        for (int i = 0; i < ((UI_SIZE / 2) - UI_MESSAGE_HEADER.length() / 2); i++) {
+            System.out.print(" ");
+        }
+
+        System.out.println(UI_MESSAGE_HEADER);
+
+        for (int i = 0; i < UI_SIZE; i++) {
+            System.out.print("-");
+        }
+        System.out.println();
+
+    }
+
+    /**
+     * Affiche le footer du menu.
+     */
+    private static void displayFooter() {
+        for (int i = 0; i < UI_SIZE; i++) {
+            System.out.print("-");
+        }
+        System.out.println();
+    }
 }

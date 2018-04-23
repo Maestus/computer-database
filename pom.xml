@@ -4,6 +4,9 @@
   <artifactId>computer-database</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
+   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -14,7 +17,32 @@
         </excludes>
       </resource>
     </resources>
+
     <plugins>
+    
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>2.17</version>
+            <executions>
+                <execution>
+                	<?m2e execute onConfiguration?>
+                    <id>validate</id>
+                    <phase>validate</phase>
+                    <configuration>
+                        <configLocation>conf/lang/checkstyle/checkstyle.xml</configLocation>
+                        <encoding>UTF-8</encoding>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <linkXRef>false</linkXRef>
+                    </configuration>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+            
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.7.0</version>
@@ -23,6 +51,7 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.0.0</version>
@@ -30,8 +59,96 @@
           <warSourceDirectory>WebContent</warSourceDirectory>
         </configuration>
       </plugin>
+      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>sql-maven-plugin</artifactId>
+        <version>1.5</version>
+ 
+        <dependencies>
+                <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.9</version>
+                </dependency>
+        </dependencies>
+ 
+        <configuration>
+          <driver>com.mysql.jdbc.Driver</driver>
+          <url>jdbc:mysql://localhost:3306/computer-database-db-test</url>
+          <username>admincdb</username>
+          <password>qwerty1234</password>
+        </configuration>
+ 
+        <executions>
+          
+          <execution>         
+          	<?m2e execute onConfiguration?>
+            <id>create-table-2</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <autocommit>true</autocommit>
+              <sqlCommand>DROP TABLE IF EXISTS `computer-test`</sqlCommand>
+            </configuration>
+          </execution>
+          
+          <execution>
+          	<?m2e execute onConfiguration?>
+            <id>create-table-1</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <autocommit>true</autocommit>
+              <sqlCommand>DROP TABLE IF EXISTS `company-test`</sqlCommand>
+            </configuration>
+          </execution>
+ 
+          <execution>
+          	<?m2e execute onConfiguration?>
+            <id>create-table</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <autocommit>true</autocommit>
+              <srcFiles>
+                <srcFile>src/test/sql/schema.sql</srcFile>
+              </srcFiles>
+            </configuration>
+          </execution>
+ 
+        <execution>
+            <?m2e execute onConfiguration?>
+            <id>insert-data</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <autocommit>true</autocommit>
+              <orderFile>ascending</orderFile>
+              <fileset>
+                <basedir>${basedir}</basedir>
+                <includes>
+                  <include>src/test/sql/test-data.sql</include>
+                </includes>
+              </fileset>
+            </configuration>
+          </execution>
+ 
+        </executions>
+      </plugin>
+    
     </plugins>
+  
   </build>
+  
   <dependencies>
   	
   	<dependency>
@@ -43,14 +160,16 @@
 	<dependency>
 	    <groupId>junit</groupId>
   		<artifactId>junit</artifactId>
-  		<version>4.8.2</version>
+  		<version>4.12</version>
+  		<scope>test</scope>
   	</dependency>
 
 	<dependency>
     	<groupId>org.mockito</groupId>
-    	<artifactId>mockito-all</artifactId>
-    	<version>1.10.19</version>
-	</dependency>
+        <artifactId>mockito-core</artifactId>
+        <version>2.7.13</version>
+        <scope>test</scope>
+    </dependency>
 
   	<dependency>
    		<groupId>mysql</groupId>
@@ -59,4 +178,5 @@
 	</dependency>
 	
   </dependencies>
+  
 </project>
