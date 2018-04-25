@@ -66,6 +66,8 @@ public interface ModelDAO {
     static PreparedStatement initialisationRequetePreparee(Connection connexion, String sql,
             boolean returnGeneratedKeys, Object... objets) throws SQLException {
 
+        System.out.println(connexion);
+
         PreparedStatement preparedStatement = (PreparedStatement) connexion.prepareStatement(sql,
                 returnGeneratedKeys ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
 

@@ -1,8 +1,12 @@
 package main.java.com.excilys.cdb.controller;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
@@ -69,8 +73,9 @@ public class UIController {
                     return;
                 }
                 goodChoice = true;
-            } catch (NoSuchElementException | IllegalStateException e) {
-                System.err.println("Choix non valide");
+            } catch (Exception e) {
+                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                StatusPrinter.print(lc);
             }
         }
     }
@@ -80,18 +85,27 @@ public class UIController {
      */
     public void displayRes() {
         if (!quit) {
-            if (ui.emplacementMenu == Place.MENU_SETTING) {
-                setting();
-            } else if (ui.emplacementMenu == Place.MENU_PRINCIPAL) {
-                displayList();
-            } else if (ui.emplacementMenu == Place.MENU_COMPANY) {
-                displayComputerListByCompanyId();
-            } else if (ui.emplacementMenu == Place.MENU_COMPUTER) {
-                displayComputerDetail();
-            } else {
-                controlComputer();
-            }
+            try {
+                if (ui.emplacementMenu == Place.MENU_SETTING) {
+                    setting();
+                } else if (ui.emplacementMenu == Place.MENU_PRINCIPAL) {
+                    if (ui.menu.get(ui.emplacementMenu.toString()).size() >= Integer.parseInt(choix) && Integer.parseInt(choix) > 0) {
+                        displayList();
+                    }
+                } else if (ui.emplacementMenu == Place.MENU_COMPANY) {
+                    displayComputerListByCompanyId();
+                } else if (ui.emplacementMenu == Place.MENU_COMPUTER) {
+                    displayComputerDetail();
+                } else {
+                    controlComputer();
+                }
+            } catch (Exception e) {
+                Logger logger = LoggerFactory.getLogger("uiController.displayRes.Type");
+                logger.debug("Mauvaise entrée.");
 
+                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                StatusPrinter.print(lc);
+            }
             launchUI();
         }
     }
@@ -141,7 +155,11 @@ public class UIController {
                 }
             }
         } catch (NumberFormatException e) {
-            System.err.println("Choix non valide");
+            Logger logger = LoggerFactory.getLogger("uiController.displayList.Type");
+            logger.debug("Mauvais type d'entrée, entrer un entier.");
+
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
         }
     }
 
@@ -171,7 +189,11 @@ public class UIController {
                 }
             }
         } catch (NumberFormatException e) {
-            System.err.println("Choix non valide");
+            Logger logger = LoggerFactory.getLogger("uiController.displayComputerListByCompanyId.Type");
+            logger.debug("Mauvais type d'entrée, entrer un entier.");
+
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
         }
     }
 
@@ -205,7 +227,11 @@ public class UIController {
                 goodValue = true;
 
             } catch (NumberFormatException e) {
-                System.err.println("Mauvais format entrez un entier");
+                Logger logger = LoggerFactory.getLogger("uiController.setting.Type");
+                logger.debug("Mauvais type d'entrée, entrer un entier.");
+
+                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                StatusPrinter.print(lc);
             }
         }
     }
@@ -239,7 +265,11 @@ public class UIController {
                         ui.emplacementMenu = Place.MENU_COMPUTER_DETAIL;
                     }
                 } catch (NumberFormatException e) {
-                    System.err.println("Choix non valide");
+                    Logger logger = LoggerFactory.getLogger("uiController.displayComputerDetail.Type");
+                    logger.debug("Mauvais type d'entrée, entrer un entier.");
+
+                    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                    StatusPrinter.print(lc);
                 }
             }
         }
@@ -261,7 +291,11 @@ public class UIController {
                 }
             }
         } catch (NumberFormatException e) {
-            System.err.println("Choix non valide");
+            Logger logger = LoggerFactory.getLogger("uiController.controlComputer.Type");
+            logger.debug("Mauvais type d'entrée, entrer un entier.");
+
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
         }
     }
 

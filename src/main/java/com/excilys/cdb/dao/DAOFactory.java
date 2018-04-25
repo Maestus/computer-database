@@ -9,11 +9,12 @@ import java.util.Properties;
 
 public class DAOFactory implements AutoCloseable {
 
-    private static final String FILE_PROPERTIES = "lang/properties/dao.properties";
+    private static final String FILE_PROPERTIES = "dao.properties";
     private Properties props;
     private String url;
     static DAOFactory instance;
     private Connection connection;
+    private static DAOFactory d;
 
     /**
      * Création d'une DAO factory. (method privé)
@@ -32,6 +33,12 @@ public class DAOFactory implements AutoCloseable {
     }
 
     /**
+     * Constructeur par defaut.
+     */
+    private DAOFactory() {
+    }
+
+    /**
      * Construit la DAO en appelant le constructeur.
      * @return une DAO Factory.
      */
@@ -43,7 +50,9 @@ public class DAOFactory implements AutoCloseable {
             String nomUtilisateur = null;
             String motDePasse = null;
 
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            d = new DAOFactory();
+            ClassLoader classLoader = d.getClass().getClassLoader();
+
             InputStream fichierProperties = classLoader.getResourceAsStream(FILE_PROPERTIES);
 
             if (fichierProperties == null) {

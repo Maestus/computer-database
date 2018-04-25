@@ -1,5 +1,10 @@
 package main.java.com.excilys.cdb.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import main.java.com.excilys.cdb.dao.CompanyDAO;
 import main.java.com.excilys.cdb.dao.ComputerDAO;
 import main.java.com.excilys.cdb.dao.DAOFactory;
@@ -58,24 +63,36 @@ public class ComputerService {
     public long addComputer(Computer c) {
         if (checkDate(c)) {
             if (c.getCompanyId() != null) {
-                if (companyDao.findById((long) c.getCompanyId()) != null) {
+                if (companyDao.findById((long) c.getCompanyId()) == null) {
                     try {
                         return computerDao.create(c);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    System.err.println("Campany inexistante");
+                    Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
+                    logger.debug("Computer deja existant.");
+
+                    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                    StatusPrinter.print(lc);
                 }
             } else {
                 try {
                     return computerDao.create(c);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
+                    logger.debug("Création interrompu, probleme de connection.");
+
+                    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                    StatusPrinter.print(lc);
                 }
             }
         } else {
-            System.err.println("Dates incohérentes");
+            Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
+            logger.debug("Dates incohérentes.");
+
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
         }
         return 0;
     }
@@ -85,7 +102,7 @@ public class ComputerService {
      * @param c Un computer.
      * @return true si discontinued > introduced
      */
-    private boolean checkDate(Computer c) {
+    public boolean checkDate(Computer c) {
         return !(c.getDiscontinued() != null && c.getDiscontinued().isBefore(c.getIntroduced()));
     }
 
@@ -99,13 +116,21 @@ public class ComputerService {
                 if (companyDao.findById((long) c.getCompanyId()) != null) {
                     computerDao.update(c);
                 } else {
-                    System.err.println("Campany inexistante");
+                    Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
+                    logger.debug("Computer inexistant.");
+
+                    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                    StatusPrinter.print(lc);
                 }
             } else {
                 computerDao.update(c);
             }
         } else {
-            System.err.println("Dates incohérentes");
+            Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
+            logger.debug("Dates incohérentes.");
+
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
         }
     }
 
@@ -114,7 +139,6 @@ public class ComputerService {
      * @param computer Un Computer.
      */
     public void removeComputer(Computer computer) {
-        System.out.println(computer.getId());
         computerDao.delete(computer.getId());
     }
 }
