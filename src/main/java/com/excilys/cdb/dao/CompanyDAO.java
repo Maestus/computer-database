@@ -10,7 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
-
+import main.java.com.excilys.cdb.mapper.CompanyMapper;
+import main.java.com.excilys.cdb.mapper.Mapper;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Model;
 import main.java.com.excilys.cdb.utils.Page;
@@ -25,6 +26,7 @@ public class CompanyDAO implements ModelDAO {
     private static final String SQL_DELETE = "DELETE FROM company WHERE id = ?;";
 
     private DAOFactory daoFactory;
+    private Mapper mapper;
 
     /**
      * Création d'une CompanyDAO à l'aide d'une DAO.
@@ -32,6 +34,7 @@ public class CompanyDAO implements ModelDAO {
      */
     public CompanyDAO(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
+        this.mapper = new CompanyMapper();
     }
 
     @Override
@@ -71,14 +74,6 @@ public class CompanyDAO implements ModelDAO {
     }
 
     @Override
-    public Company map(ResultSet resultSet) throws SQLException {
-        Company company = new Company();
-        company.setId(resultSet.getLong("id"));
-        company.setNom(resultSet.getString("name"));
-        return company;
-    }
-
-    @Override
     public Model findById(long id) throws DAOException {
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
@@ -90,7 +85,7 @@ public class CompanyDAO implements ModelDAO {
             preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_PAR_ID, false, id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                company = map(resultSet);
+                company = (Company) mapper.map(resultSet);
             }
             resultSet.close();
             preparedStatement.close();
@@ -121,11 +116,11 @@ public class CompanyDAO implements ModelDAO {
             resultSet = preparedStatement.executeQuery();
             if (nbElem != Page.NO_LIMIT) {
                 while (resultSet.next()) {
-                   p.addElem(map(resultSet));
+                   p.addElem((Company) mapper.map(resultSet));
                 }
             } else {
                 while (resultSet.next()) {
-                    p.addElem(map(resultSet));
+                    p.addElem((Company) mapper.map(resultSet));
                 }
             }
             resultSet.close();

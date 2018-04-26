@@ -1,7 +1,6 @@
 package main.java.com.excilys.cdb.dao;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.mysql.jdbc.PreparedStatement;
@@ -44,15 +43,6 @@ public interface ModelDAO {
      * @return Un ensemble d'element de la base données.
      */
     Page<? extends Model> findAll(int offset, int nbElem) throws DAOException;
-
-    /**
-     * Map un resultat retourné par une requete SQL vers un objet représentant un
-     * tuple d'une table.
-     * @param resultSet Element à mapper.
-     * @throws SQLException Exception du à une mauvaise connection à la base de données.
-     * @return un nouvel objet qui est crée à partir du resultSet.
-     */
-    Model map(ResultSet resultSet) throws SQLException;
 
     /**
      * Construit la requete.

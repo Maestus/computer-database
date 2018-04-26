@@ -13,6 +13,10 @@ import com.mysql.jdbc.PreparedStatement;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
+import main.java.com.excilys.cdb.mapper.CompanyMapper;
+import main.java.com.excilys.cdb.mapper.ComputerMapper;
+import main.java.com.excilys.cdb.mapper.Mapper;
+import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.model.Model;
 import main.java.com.excilys.cdb.utils.Page;
@@ -21,13 +25,17 @@ public class ComputerDAO implements ModelDAO {
 
     private static final String SQL_SELECT_PAR_ID = "SELECT id, name, introduced, discontinued FROM computer WHERE id = ?;";
     private static final String SQL_SELECT_ALL = "SELECT id, name, introduced, discontinued FROM computer LIMIT ? OFFSET ?;";
+    private static final String SQL_COUNT = "SELECT COUNT(*) as number FROM computer;";
     private static final String SQL_SELECT_ALL_NOLIMIT = "SELECT id, name, introduced, discontinued FROM computer;";
     private static final String SQL_SELECT_BY_COMPANY = "SELECT computer.id as id, company.name as company_name, computer.name as name, introduced, discontinued FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company_id = ?;";
+    private static final String SQL_SELECT_COMPANY_OF_COMPUTER = "SELECT company.id as id, company.name as name FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE computer.id = ?;";
     private static final String SQL_INSERT = "INSERT INTO computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);";
     private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static final String SQL_DELETE = "DELETE FROM computer WHERE id = ?;";
 
     private DAOFactory daoFactory;
+    private Mapper mapper;
+    private Mapper mapperCompany;
 
     /**
      * Création d'une ComputerDAO à l'aide d'une DAO.
@@ -36,6 +44,8 @@ public class ComputerDAO implements ModelDAO {
      */
     public ComputerDAO(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
+        this.mapper = new ComputerMapper();
+        this.mapperCompany = new CompanyMapper();
     }
 
     @Override
@@ -90,7 +100,7 @@ public class ComputerDAO implements ModelDAO {
             preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_PAR_ID, false, id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                computer = map(resultSet);
+                computer = (Computer) mapper.map(resultSet);
             }
             resultSet.close();
             preparedStatement.close();
@@ -125,12 +135,12 @@ public class ComputerDAO implements ModelDAO {
             int i = 0;
             if (nbElem == Page.NO_LIMIT) {
                 while (resultSet.next()) {
-                    p.addElem(map(resultSet));
+                    p.addElem((Computer) mapper.map(resultSet));
                 }
             } else {
                 while (resultSet.next() && i < p.nbElem) {
                     if (p.getOffset() == 0) {
-                        p.addElem(map(resultSet));
+                        p.addElem((Computer) mapper.map(resultSet));
                         i++;
                     } else {
                         p.decrOffset();
@@ -167,7 +177,7 @@ public class ComputerDAO implements ModelDAO {
             }
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                p.addElem(map(resultSet));
+                p.addElem((Computer) mapper.map(resultSet));
             }
             resultSet.close();
             preparedStatement.close();
@@ -180,18 +190,6 @@ public class ComputerDAO implements ModelDAO {
         }
 
         return p;
-    }
-
-    @Override
-    public Computer map(ResultSet resultSet) throws SQLException {
-        Computer computer = new Computer();
-        computer.setId(resultSet.getLong("id"));
-        computer.setNom(resultSet.getString("name"));
-        computer.setIntroduced(resultSet.getTimestamp("introduced") == null ? null
-                : resultSet.getTimestamp("introduced").toLocalDateTime().toLocalDate());
-        computer.setDiscontinued(resultSet.getTimestamp("discontinued") == null ? null
-                : resultSet.getTimestamp("discontinued").toLocalDateTime().toLocalDate());
-        return computer;
     }
 
     @Override
@@ -245,11 +243,73 @@ public class ComputerDAO implements ModelDAO {
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException e) {
-            Logger logger = LoggerFactory.getLogger("ComputerDAO.update.SQL");
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.delete.SQL");
             logger.debug("Probleme de connection lors de la suppression d'un element dans la table company.");
 
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             StatusPrinter.print(lc);
         }
+    }
+
+    /**
+     * Obtenir la company qui à crée le computer.
+     * @param id Identifiant du computer
+     * @return Une company
+     */
+    public Company findCompanyLink(long id) {
+        Connection connexion = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Company company = new Company();
+
+        try {
+            connexion = daoFactory.getConnection();
+            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_COMPANY_OF_COMPUTER, false, id);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                company = (Company) mapperCompany.map(resultSet);
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.findCompanyLink.SQL");
+            logger.debug("Probleme de connection lors de la recherche de l'element dans la table company.");
+
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
+        }
+
+        return company;
+    }
+
+    /**
+     * Obtenir le nombre de computer dans la base de données.
+     * @return Un nombre de computer
+     */
+    public Long getCount() {
+        Connection connexion = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Long number = null;
+
+        try {
+            connexion = daoFactory.getConnection();
+            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_COUNT, false);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                number = resultSet.getLong("number");
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.getCount.SQL");
+            logger.debug("Probleme de connection lors de la recherche de l'element dans la table company.");
+
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
+        }
+
+        return number;
     }
 }

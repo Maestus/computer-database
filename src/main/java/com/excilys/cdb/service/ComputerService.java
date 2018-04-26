@@ -8,6 +8,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 import main.java.com.excilys.cdb.dao.CompanyDAO;
 import main.java.com.excilys.cdb.dao.ComputerDAO;
 import main.java.com.excilys.cdb.dao.DAOFactory;
+import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.utils.Page;
 
@@ -140,5 +141,22 @@ public class ComputerService {
      */
     public void removeComputer(Computer computer) {
         computerDao.delete(computer.getId());
+    }
+
+    /**
+     * Pour obtenir la company qui à crée le computer.
+     * @param id Identifiant du computer.
+     * @return Une company
+     */
+    public Company getCompany(Long id) {
+        return computerDao.findCompanyLink(id);
+    }
+
+    /**
+     * Pour obtenir le nombre de computer dans la base données.
+     * @return Un nombre de computer
+     */
+    public Long getNumberComputer() {
+        return computerDao.getCount();
     }
 }
