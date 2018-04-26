@@ -16,7 +16,7 @@
   
     <servlet>
         <servlet-name>ServletComputer</servlet-name>
-        <servlet-class>main.java.com.excilys.cdb.ServletComputer</servlet-class>
+        <servlet-class>main.java.com.excilys.cdb.servlet.ServletComputer</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     
