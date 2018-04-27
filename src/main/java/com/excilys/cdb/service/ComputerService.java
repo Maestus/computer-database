@@ -159,4 +159,13 @@ public class ComputerService {
     public Long getNumberComputer() {
         return computerDao.getCount();
     }
+
+    /**
+     * Récuperation des computers qui comporte dans leur nom la chaine parameter.
+     * @param parameter Une chaine de caractere.
+     * @return Un Page.
+     */
+    public Page<Computer> getComputerByName(String parameter) {
+        return computerDao.findComputerByName(0, Page.NO_LIMIT, parameter);
+    }
 }

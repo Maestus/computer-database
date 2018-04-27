@@ -32,6 +32,7 @@ public class ComputerDAO implements ModelDAO {
     private static final String SQL_INSERT = "INSERT INTO computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);";
     private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static final String SQL_DELETE = "DELETE FROM computer WHERE id = ?;";
+    private static final String SQL_SEARCH_BY_NAME = "SELECT id, name, introduced, discontinued FROM computer WHERE name LIKE ?;";
 
     private DAOFactory daoFactory;
     private Mapper mapper;
@@ -311,5 +312,38 @@ public class ComputerDAO implements ModelDAO {
         }
 
         return number;
+    }
+
+    /**
+     * Récuperation des computers qui comporte dans leur nom la chaine parameter.
+     * @param offset Determine à partir de quel element en commence à stocker ce qui sera retourné
+     * @param nbElem Nombre d'element à retourner
+     * @param parameter Une chaine de caractere
+     * @return Une page
+     */
+    public Page<Computer> findComputerByName(int offset, int nbElem, String parameter) {
+        Connection connexion = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Page<Computer> p = new Page<Computer>(offset, nbElem);
+
+        try {
+            connexion = daoFactory.getConnection();
+            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SEARCH_BY_NAME, false, "%" + parameter + "%");
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                p.addElem((Computer) mapper.map(resultSet));
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.findAll.SQL");
+            logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table company.");
+
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
+        }
+
+        return p;
     }
 }

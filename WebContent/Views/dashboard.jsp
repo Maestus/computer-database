@@ -25,15 +25,17 @@
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="#" method="GET" class="form-inline">
-
-                        <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" />
+                    <form id="searchForm" action="ServletComputer" method="GET" class="form-inline">
+                        <input type="search" id="searchbox" name="search" minlength="2" class="form-control" placeholder="Search name" required/>
                         <input type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
                     </form>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" id="addComputer" href="Views/addComputer.jsp">Add Computer</a> 
+                    <c:if test = "${search == true}">
+                        <a class="btn btn-secondary" id="addComputer" href="ServletComputer">Complete List</a> 
+                    </c:if>
+                    <a class="btn btn-success" id="addComputer" href="ServletComputerAdd">Add Computer</a> 
                     <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
                 </div>
             </div>
@@ -81,17 +83,16 @@
                     <c:forEach items="${ companyWithComputers }" var="titre" varStatus="status">
                         
                         <tr>
-                        <td class="editMode">
-                            <input type="checkbox" name="cb" class="cb" value="0">
-                        </td>
-                        <td>
-                            <a href="Views/editComputer.jsp" onclick=""><c:out value="${ titre.getComputer().getNom() }" /></a>
-                        </td>
-                        <td><c:out value="${ titre.getComputer().getIntroduced() }" /></td>
-                        <td><c:out value="${ titre.getComputer().getDiscontinued() }" /></td>
-                        <td><c:out value="${ titre.getCompany().getNom() }" /></td>
-
-                    </tr>
+	                        <td class="editMode">
+	                            <input type="checkbox" name="cb" class="cb" value="0">
+	                        </td>
+	                        <td>
+	                            <a href="ServletComputerEdit?id=<c:out value="${ titre.getComputer().getId() }" />" onclick=""><c:out value="${ titre.getComputer().getNom() }" /></a>
+	                        </td>
+	                        <td><c:out value="${ titre.getComputer().getIntroduced() }" /></td>
+	                        <td><c:out value="${ titre.getComputer().getDiscontinued() }" /></td>
+	                        <td><c:out value="${ titre.getCompany().getNom() }" /></td>
+                        </tr>
 
                     </c:forEach>
               
@@ -99,37 +100,55 @@
             </table>
         </div>
     </section>
-    <footer class="navbar">    
-        <div class="container text-center">
-            <ul class="pagination">
-              <li style="display:inline-block;">
-                    <a href="#" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                  </a>
-              </li>
-              <c:forEach var="i" begin="1" end="${nbPage}" step="1">
-                <li style="display:inline-block;">
-                    <form action = "ServletComputer" method = "GET">
-	                    <input style = "display:none;" type = "text" name = "page" value = "<c:out value="${i}" />" />
-	                    <input type = "submit" class="btn btn-light" value = "<c:out value="${i}" />" />
-                    </form>
-                </li>
-              </c:forEach>
-              <li style="display:inline-block;">
-                <a href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            </ul>
-        </div>
-        
-        <!-- <div class="btn-group btn-group-sm pull-right" role="group" > -->
-        <form class="btn-group btn-group-sm pull-right" action="ServletComputer" method="POST">
-            <input name = "b1" type="submit" class="btn btn-default" value="10"/>
-            <input name = "b2" type="submit" class="btn btn-default" value="50"/>
-            <input name = "b3" type="submit" class="btn btn-default" value="100"/>
-        </form>
-    </footer>
+    <c:if test = "${search == false}">
+	    <footer class="navbar">    
+	        <div class="container text-center">
+	            <ul class="pagination">
+	              <li style="display:inline-block;">
+	                  <c:if test = "${page > 1}">
+		                  <a href="ServletComputer?page=<c:out value="${page-1}" />" aria-label="Previous">
+		                      <span aria-hidden="true">&laquo;</span>
+		                  </a>
+	                  </c:if>
+	                  <c:if test = "${page <= 1}">
+                          <a style="cursor: not-allowed;" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                          </a>
+                      </c:if>
+	              </li>
+	              <c:forEach var="i" begin="1" end="${nbPage}" step="1">
+	                <li style="display:inline-block;">
+	                   <c:if test = "${page == i}">
+	                       <a style="background-color:slategrey;" href="ServletComputer?page=<c:out value="${i}" />"><c:out value="${i}" /></a>
+	                   </c:if>
+	                   <c:if test = "${page != i}">
+                           <a href="ServletComputer?page=<c:out value="${i}" />"><c:out value="${i}" /></a>
+                       </c:if>
+	                </li>
+	              </c:forEach>
+	              <li style="display:inline-block;">
+	                  <c:if test = "${page < nbPage}">
+                          <a href="ServletComputer?page=<c:out value="${page+1}" />" aria-label="Previous">
+                              <span aria-hidden="true">&raquo;</span>
+                          </a>
+                      </c:if>
+                      <c:if test = "${page == nbPage}">
+                          <a style="cursor: not-allowed;" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                          </a>
+                      </c:if>
+	              </li>
+	            </ul>
+	        </div>
+	        
+	        <!-- <div class="btn-group btn-group-sm pull-right" role="group" > -->
+	        <form class="btn-group btn-group-sm pull-right" action="ServletComputer" method="POST">
+	            <input name = "b1" type="submit" class="btn btn-default" value="10"/>
+	            <input name = "b2" type="submit" class="btn btn-default" value="50"/>
+	            <input name = "b3" type="submit" class="btn btn-default" value="100"/>
+	        </form>
+	    </footer>
+	</c:if>
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/dashboard.js"></script>

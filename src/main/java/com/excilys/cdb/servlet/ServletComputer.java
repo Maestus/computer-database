@@ -47,11 +47,22 @@ public class ServletComputer extends HttpServlet {
 
             if (request.getParameter("page") != null) {
                offset = (Integer.parseInt(request.getParameter("page")) - 1) * paging;
+               request.setAttribute("page", request.getParameter("page"));
             }
 
             ArrayList<ComputerDTO> computerDTOs = new ArrayList<>();
 
-            Page<Computer> pComputer = computerServ.getListComputer(offset, paging);
+            Page<Computer> pComputer = new Page<>(offset, paging);
+
+            if (request.getParameter("search") != null) {
+                offset = 0;
+                pComputer = computerServ.getComputerByName(request.getParameter("search"));
+                request.setAttribute("search", true);
+
+            } else {
+                pComputer = computerServ.getListComputer(offset, paging);
+                request.setAttribute("search", false);
+            }
 
             for (Computer comp : pComputer.elems) {
 
@@ -74,6 +85,7 @@ public class ServletComputer extends HttpServlet {
 
             request.setAttribute("companyWithComputers", computerDTOs);
             request.setAttribute("numberOfElement", nbElem);
+
             double nbPage = (double) nbElem / (double) paging;
 
             request.setAttribute("nbPage", Math.ceil(nbPage));
@@ -117,6 +129,7 @@ public class ServletComputer extends HttpServlet {
         } else {
             paging = Integer.parseInt(request.getParameter("b3"));
         }
+        offset = 0;
         doGet(request, response);
     }
 
