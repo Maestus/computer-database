@@ -64,7 +64,7 @@ public class ComputerService {
     public long addComputer(Computer c) {
         if (checkDate(c)) {
             if (c.getCompanyId() != null) {
-                if (companyDao.findById((long) c.getCompanyId()) == null) {
+                if (companyDao.findById((long) c.getCompanyId()) != null) {
                     try {
                         return computerDao.create(c);
                     } catch (Exception e) {

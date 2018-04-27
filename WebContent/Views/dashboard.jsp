@@ -14,8 +14,9 @@
 
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#"> Application - Computer Database </a>
-        </div>
+            <a class="pull-right navbar-brand" href="ServletComputer?direct=index"> Menu </a>
+            <a class="navbar-brand" href="ServletComputer?page=1"> Application - Computer Database </a>
+        </div>     
     </header>
     
     <section id="main">

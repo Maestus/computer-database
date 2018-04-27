@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/")
 public class ServletComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    static long nbComputers = 0;
     private int paging;
     private int offset;
     private DAOFactory dao;
@@ -45,53 +46,71 @@ public class ServletComputer extends HttpServlet {
 
         try {
 
-            if (request.getParameter("page") != null) {
-               offset = (Integer.parseInt(request.getParameter("page")) - 1) * paging;
-               request.setAttribute("page", request.getParameter("page"));
-            }
-
-            ArrayList<ComputerDTO> computerDTOs = new ArrayList<>();
-
-            Page<Computer> pComputer = new Page<>(offset, paging);
-
-            if (request.getParameter("search") != null) {
-                offset = 0;
-                pComputer = computerServ.getComputerByName(request.getParameter("search"));
-                request.setAttribute("search", true);
-
+            if (request.getParameter("direct") != null) {
+                if (request.getParameter("direct").equals("index")) {
+                    RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/index.jsp");
+                    dispatcher.forward(request, response);
+                }
             } else {
-                pComputer = computerServ.getListComputer(offset, paging);
-                request.setAttribute("search", false);
-            }
 
-            for (Computer comp : pComputer.elems) {
-
-                ComputerDTO newObj = new ComputerDTO();
-                newObj.setComputer(comp);
-
-                Company company = computerServ.getCompany(comp.getId());
-                newObj.setCompany(company);
-
-                if (newObj.getCompany() == null) {
-                    newObj.setHasCompany(false);
-                } else {
-                   newObj.setHasCompany(true);
+                if (request.getParameter("page") != null) {
+                   offset = (Integer.parseInt(request.getParameter("page")) - 1) * paging;
+                   request.setAttribute("page", request.getParameter("page"));
                 }
 
-                computerDTOs.add(newObj);
+                ArrayList<ComputerDTO> computerDTOs = new ArrayList<>();
+
+                Page<Computer> pComputer = new Page<>(offset, paging);
+
+                if (request.getParameter("search") != null) {
+                    offset = 0;
+                    pComputer = computerServ.getComputerByName(request.getParameter("search"));
+                    request.setAttribute("search", true);
+
+                } else {
+                    pComputer = computerServ.getListComputer(offset, paging);
+                    request.setAttribute("search", false);
+                }
+
+                for (Computer comp : pComputer.elems) {
+
+                    ComputerDTO newObj = new ComputerDTO();
+                    newObj.setComputer(comp);
+
+                    Company company = computerServ.getCompany(comp.getId());
+                    newObj.setCompany(company);
+
+                    if (newObj.getCompany() == null) {
+                        newObj.setHasCompany(false);
+                    } else {
+                       newObj.setHasCompany(true);
+                    }
+
+                    computerDTOs.add(newObj);
+                }
+
+                long nbElem = 0;
+
+                if (request.getParameter("search") != null) {
+                    nbElem = computerDTOs.size();
+                } else {
+                    nbElem = nbComputers;
+                }
+
+                request.setAttribute("companyWithComputers", computerDTOs);
+                request.setAttribute("numberOfElement", nbElem);
+
+                double nbPage = (double) nbElem / (double) paging;
+
+                request.setAttribute("nbPage", Math.ceil(nbPage));
+
+                if (request.getParameter("page") == null) {
+                    request.setAttribute("page", 1);
+                }
+
+                RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/dashboard.jsp");
+                dispatcher.forward(request, response);
             }
-
-            long nbElem = computerServ.getNumberComputer();
-
-            request.setAttribute("companyWithComputers", computerDTOs);
-            request.setAttribute("numberOfElement", nbElem);
-
-            double nbPage = (double) nbElem / (double) paging;
-
-            request.setAttribute("nbPage", Math.ceil(nbPage));
-
-            RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/dashboard.jsp");
-            dispatcher.forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,7 +134,7 @@ public class ServletComputer extends HttpServlet {
         computerServ.init(dao);
         companyServ.init(dao);
         sc = getServletContext();
-
+        nbComputers = computerServ.getNumberComputer();
         paging = Integer.parseInt(getServletContext().getInitParameter("paging"));
         offset = Integer.parseInt(getServletContext().getInitParameter("offset"));
     }

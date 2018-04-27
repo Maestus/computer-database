@@ -12,18 +12,17 @@
 <body>
 
 	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="#"> Application - Computer Database </a>
-		</div>
-	</header>
+        <div class="container">
+            <a class="pull-right navbar-brand" href="ServletComputer?direct=index"> Menu </a>
+            <a class="navbar-brand" href="ServletComputer?page=1"> Application - Computer Database </a>
+        </div>     
+    </header>
 
 	<section id="main">
 		<div class="container">
 			<h2 id="homeTitle">Menu</h2>
 			<div id="actions" class="form-horizontal">
-				<form action="ServletComputer" method="GET">
-					<input type="submit" value="Liste des computers" />
-				</form>
+			     <a class="btn btn-primary" href="ServletComputer?page=1">Liste des computers</a>
 			</div>
 		</div>
 	</section>
