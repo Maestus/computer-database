@@ -9,6 +9,7 @@
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+ <%@ taglib prefix = "mylib" uri = "Paginator" %>
 </head>
 <body>
 
@@ -104,42 +105,8 @@
     <c:if test = "${search == false}">
 	    <footer class="navbar">    
 	        <div class="container text-center">
-	            <ul class="pagination">
-	              <li style="display:inline-block;">
-	                  <c:if test = "${page > 1}">
-		                  <a href="ServletComputer?page=<c:out value="${page-1}" />" aria-label="Previous">
-		                      <span aria-hidden="true">&laquo;</span>
-		                  </a>
-	                  </c:if>
-	                  <c:if test = "${page <= 1}">
-                          <a style="cursor: not-allowed;" aria-label="Previous">
-                              <span aria-hidden="true">&laquo;</span>
-                          </a>
-                      </c:if>
-	              </li>
-	              <c:forEach var="i" begin="1" end="${nbPage}" step="1">
-	                <li style="display:inline-block;">
-	                   <c:if test = "${page == i}">
-	                       <a style="background-color:slategrey;" href="ServletComputer?page=<c:out value="${i}" />"><c:out value="${i}" /></a>
-	                   </c:if>
-	                   <c:if test = "${page != i}">
-                           <a href="ServletComputer?page=<c:out value="${i}" />"><c:out value="${i}" /></a>
-                       </c:if>
-	                </li>
-	              </c:forEach>
-	              <li style="display:inline-block;">
-	                  <c:if test = "${page < nbPage}">
-                          <a href="ServletComputer?page=<c:out value="${page+1}" />" aria-label="Previous">
-                              <span aria-hidden="true">&raquo;</span>
-                          </a>
-                      </c:if>
-                      <c:if test = "${page == nbPage}">
-                          <a style="cursor: not-allowed;" aria-label="Next">
-                              <span aria-hidden="true">&raquo;</span>
-                          </a>
-                      </c:if>
-	              </li>
-	            </ul>
+	            <c:url var="searchUri" value="ServletComputer?page=##" />
+                <mylib:pagination maxLinks="10" currPage="${page}" totalPages="${nbPage}" uri="${searchUri}" />
 	        </div>
 	        
 	        <!-- <div class="btn-group btn-group-sm pull-right" role="group" > -->
@@ -150,6 +117,7 @@
 	        </form>
 	    </footer>
 	</c:if>
+	
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/dashboard.js"></script>

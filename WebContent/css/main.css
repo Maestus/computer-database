@@ -26,3 +26,11 @@ input[type='checkbox'] {
     border-radius: 5px;
     white-space: nowrap;
 }
+
+.liStyle {
+	display: inline-block;
+}
+
+.aCurrent {
+	background-color: slategrey !important;
+}
