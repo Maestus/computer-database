@@ -25,7 +25,7 @@ import main.java.com.excilys.cdb.utils.Page;
 /**
  * Servlet implementation class ServletComputerSearch.
  */
-@WebServlet("/ServletComputerAdd")
+@WebServlet("/ComputerAdd")
 public class ServletComputerAdd extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private DAOFactory dao;
@@ -91,7 +91,9 @@ public class ServletComputerAdd extends HttpServlet {
 
         ServletComputer.nbComputers = computerServ.getNumberComputer();
 
-        RequestDispatcher dispatcher = sc.getRequestDispatcher("/");
+        request.setAttribute("created", true);
+
+        RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/addComputer.jsp");
         dispatcher.forward(request, response);
     }
 

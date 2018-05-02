@@ -15,8 +15,8 @@
 
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="pull-right navbar-brand" href="ServletComputer?direct=index"> Menu </a>
-            <a class="navbar-brand" href="ServletComputer?page=1"> Application - Computer Database </a>
+            <a class="pull-right navbar-brand" href="ComputerList?direct=index"> Menu </a>
+            <a class="navbar-brand" href="ComputerList?page=1"> Application - Computer Database </a>
         </div>     
     </header>
     
@@ -27,7 +27,7 @@
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="ServletComputer" method="GET" class="form-inline">
+                    <form id="searchForm" action="ComputerList" method="GET" class="form-inline">
                         <input type="search" id="searchbox" name="search" minlength="2" class="form-control" placeholder="Search name" required/>
                         <input type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
@@ -35,9 +35,9 @@
                 </div>
                 <div class="pull-right">
                     <c:if test = "${search == true}">
-                        <a class="btn btn-secondary" id="addComputer" href="ServletComputer">Complete List</a> 
+                        <a class="btn btn-secondary" id="addComputer" href="ComputerList">Complete List</a> 
                     </c:if>
-                    <a class="btn btn-success" id="addComputer" href="ServletComputerAdd">Add Computer</a> 
+                    <a class="btn btn-success" id="addComputer" href="ComputerAdd">Add Computer</a> 
                     <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
                 </div>
             </div>
@@ -105,13 +105,13 @@
     <c:if test = "${search == false}">
 	    <footer class="navbar">    
 	        <div class="container text-center">
-	            <c:url var="searchUri" value="ServletComputer?page=##" />
+	            <c:url var="searchUri" value="ComputerList?page=##" />
                 <mylib:pagination maxLinks="10" currPage="${page}" totalPages="${nbPage}" uri="${searchUri}" />
 	        </div>
 	        
 	        <!-- <div class="btn-group btn-group-sm pull-right" role="group" > -->
-	        <form class="btn-group btn-group-sm pull-right" action="ServletComputer" method="POST">
-	            <input name = "b1" type="submit" class="btn btn-default" value="10"/>
+	        <form class="btn-group btn-group-sm pull-right" action="ComputerList" method="POST">
+	            <input name = "b1" type="submit" class="btn btn-default" value="10" disabled/>
 	            <input name = "b2" type="submit" class="btn btn-default" value="50"/>
 	            <input name = "b3" type="submit" class="btn btn-default" value="100"/>
 	        </form>

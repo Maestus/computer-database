@@ -7,13 +7,16 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="css/main.css" rel="stylesheet" media="screen">
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/validator.js"></script>
  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="pull-right navbar-brand" href="ServletComputer?direct=index"> Menu </a>
-            <a class="navbar-brand" href="ServletComputer?page=1"> Application - Computer Database </a>
+            <a class="pull-right navbar-brand" href="ComputerList?direct=index"> Menu </a>
+            <a class="navbar-brand" href="ComputerList?page=1"> Application - Computer Database </a>
         </div>     
     </header>
 
@@ -22,11 +25,18 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <form action="ServletComputerAdd" method="POST">
+
+                        <c:if test = "${created}">
+                            <div class="alert alert-success">
+                                <strong>Le computer a été crée !</strong>
+                            </div>
+					    </c:if>                    
+                    
+                    <form action="ComputerAdd" method="POST" name="add">
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" name="computerName" id="computerName" placeholder="Computer name" required>
+                                <input type="text" class="form-control" name="computerName" id="computerName" placeholder="Computer name">
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
@@ -48,7 +58,7 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Add" class="btn btn-primary">
                             or
-                            <a href="ServletComputer?page=1" class="btn btn-default">Cancel</a>
+                            <a href="ComputerList?page=1" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class Servlet.
  */
-@WebServlet("/")
+@WebServlet("/ComputerList")
 public class ServletComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
     static long nbComputers = 0;
