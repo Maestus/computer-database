@@ -33,6 +33,7 @@ public class ServletComputerAdd extends HttpServlet {
     private CompanyService companyServ;
     private ServletContext sc;
     final DateTimeFormatter englishPattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    ArrayList<CompanyDTO> companyDTOs;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -48,7 +49,7 @@ public class ServletComputerAdd extends HttpServlet {
         try {
 
             Page<Company> pCompany = companyServ.getListCompany(0, Page.NO_LIMIT);
-            ArrayList<CompanyDTO> companyDTOs = new ArrayList<>();
+            companyDTOs = new ArrayList<>();
 
             for (Company comp : pCompany.elems) {
                 CompanyDTO newObj = new CompanyDTO();
@@ -73,15 +74,26 @@ public class ServletComputerAdd extends HttpServlet {
 
         computer.setNom(request.getParameter("computerName"));
 
+        LocalDate ti = null, td = null;
+
         if (!request.getParameter("introduced").equals("")) {
             System.out.println(request.getParameter("introduced"));
-            LocalDate ti = LocalDate.parse(request.getParameter("introduced"), englishPattern);
+            ti = LocalDate.parse(request.getParameter("introduced"), englishPattern);
             computer.setIntroduced(ti);
         }
 
         if (!request.getParameter("discontinued").equals("")) {
-            LocalDate td = LocalDate.parse(request.getParameter("discontinued"), englishPattern);
+            td = LocalDate.parse(request.getParameter("discontinued"), englishPattern);
             computer.setDiscontinued(td);
+        }
+
+        if (ti != null && td != null) {
+            if (ti.isAfter(td)) {
+                request.setAttribute("companies", companyDTOs);
+                request.setAttribute("dateError", true);
+                RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/addComputer.jsp");
+                dispatcher.forward(request, response);
+            }
         }
 
         computer.setCompanyId(Long.parseLong(request.getParameter("companyId")));
@@ -91,6 +103,7 @@ public class ServletComputerAdd extends HttpServlet {
         ServletComputer.nbComputers = computerServ.getNumberComputer();
 
         request.setAttribute("created", true);
+        request.setAttribute("companies", companyDTOs);
 
         RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/addComputer.jsp");
         dispatcher.forward(request, response);

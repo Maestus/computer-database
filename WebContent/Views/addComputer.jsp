@@ -30,7 +30,13 @@
                             <div class="alert alert-success">
                                 <strong>Le computer a été crée !</strong>
                             </div>
-					    </c:if>                    
+					    </c:if>
+					    
+					    <c:if test = "${dateError}">
+                            <div class="alert alert-danger">
+                                <strong>La date discontinued doit etre sup. à la date introduced !</strong>
+                            </div>
+                        </c:if>                       
                     
                     <form action="ComputerAdd" method="POST" name="add">
                         <fieldset>

@@ -104,7 +104,7 @@ public class ComputerService {
      * @return true si discontinued > introduced
      */
     public boolean checkDate(Computer c) {
-        return !(c.getDiscontinued() != null && c.getDiscontinued().isBefore(c.getIntroduced()));
+        return !(c.getDiscontinued() != null && c.getIntroduced() != null && c.getDiscontinued().isBefore(c.getIntroduced()));
     }
 
     /**
