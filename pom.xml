@@ -144,6 +144,13 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jsp-api</artifactId>
+		    <version>2.0</version>
+		    <scope>provided</scope>
+        </dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -152,23 +159,29 @@
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
+		  <groupId>junit</groupId>
+		  <artifactId>junit</artifactId>
+		  <version>4.11</version>
+		  <scope>test</scope>
 		</dependency>
-
+		
 		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>2.7.13</version>
-			<scope>test</scope>
+		  <groupId>junit</groupId>
+		  <artifactId>junit-dep</artifactId>
+		  <version>4.8.2</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-core</artifactId>
+		    <version>2.17.0</version>
+        </dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.17</version>
-		</dependency>
+		</dependency> 
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -187,7 +200,33 @@
 		    <artifactId>jstl</artifactId>
 		    <version>1.2</version>
 		</dependency>
+		
+		<!-- <dependency>
+		    <groupId>org.seleniumhq.selenium</groupId>
+		    <artifactId>selenium-java</artifactId>
+		    <version>3.8.0</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		  <groupId>org.testng</groupId>
+		  <artifactId>testng</artifactId>
+		  <version>6.8</version>
+		  <scope>test</scope>
+		</dependency> -->
 
+		<dependency>
+		    <groupId>com.zaxxer</groupId>
+		    <artifactId>HikariCP</artifactId>
+		    <version>2.7.8</version>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.22</version>
+        </dependency>    
 	</dependencies>
 
 </project>

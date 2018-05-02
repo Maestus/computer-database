@@ -51,7 +51,6 @@ public class ServletComputerAdd extends HttpServlet {
             ArrayList<CompanyDTO> companyDTOs = new ArrayList<>();
 
             for (Company comp : pCompany.elems) {
-
                 CompanyDTO newObj = new CompanyDTO();
                 newObj.setCompany(comp);
 
