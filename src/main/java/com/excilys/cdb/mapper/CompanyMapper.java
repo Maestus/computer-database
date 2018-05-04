@@ -10,8 +10,7 @@ public class CompanyMapper extends Mapper {
     @Override
     public Company map(ResultSet resultSet) throws SQLException {
         Company company = new Company();
-        company.setId(resultSet.getLong("id"));
-        company.setNom(resultSet.getString("name"));
+        company.setId(resultSet.getLong("id")).setNom(resultSet.getString("name"));
         return company;
     }
 }

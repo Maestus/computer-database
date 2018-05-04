@@ -2,6 +2,7 @@ package main.java.com.excilys.cdb.dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
@@ -17,7 +18,7 @@ public interface ModelDAO {
      * @throws Exception Exception du à une mauvaise connection à la base de données.
      * @return Retourne l'identifiant de l'objet crée.
      */
-    long create(Model model) throws Exception;
+    Optional<Long> create(Model model) throws Exception;
 
     /**
      * Trouver un objet depuis l'identifiant donné en argument. Leve une exception
@@ -27,7 +28,7 @@ public interface ModelDAO {
      * @throws DAOException Exception du à une mauvaise connection à la base de données.
      * @return L'objet trouvé
      */
-    Model findById(long id) throws DAOException;
+    Optional<? extends Model> findById(long id) throws DAOException;
 
     /**
      * Met à jour un objet de la base de données. param m est un model.

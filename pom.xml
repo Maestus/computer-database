@@ -8,6 +8,23 @@
 	<packaging>war</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<my.version>1.1.2-SNAPSHOT</my.version>
+		<my.version>1.1.2-SNAPSHOT</my.version>
+		<maven.plugin>2.17</maven.plugin>
+		<maven.compiler>3.7.0</maven.compiler>
+		<maven.war>3.0.0</maven.war>
+		<javax.servlet>3.1.0</javax.servlet>
+		<javax.jsp>2.0</javax.jsp>
+		<mysql.connector.java>5.1.9</mysql.connector.java>
+		<xml.jackson>2.9.4</xml.jackson>
+		<junit>4.11</junit>
+		<junit.dep>4.8.2</junit.dep>
+		<mockito>2.17.0</mockito>
+		<logback.classic>1.2.3</logback.classic>
+		<logback.core>1.2.3</logback.core>
+		<jstl>1.2</jstl>
+		<hikari>2.7.8</hikari>
+		<slf4j>1.7.22</slf4j>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -25,12 +42,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.17</version>
+				<version>${maven.plugin}</version>
 			</plugin>
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<version>${maven.compiler}</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -39,7 +56,7 @@
 
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>${maven.war}</version>
 				<configuration>
 					<warSourceDirectory>WebContent</warSourceDirectory>
 				</configuration>
@@ -54,7 +71,7 @@
 					<dependency>
 						<groupId>mysql</groupId>
 						<artifactId>mysql-connector-java</artifactId>
-						<version>5.1.9</version>
+						<version>${mysql.connector.java}</version>
 					</dependency>
 				</dependencies>
 
@@ -141,40 +158,40 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+            <version>${javax.servlet}</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>jsp-api</artifactId>
-		    <version>2.0</version>
+		    <version>${javax.jsp}</version>
 		    <scope>provided</scope>
         </dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.9.4</version>
+			<version>${xml.jackson}</version>
 		</dependency>
 
 		<dependency>
 		  <groupId>junit</groupId>
 		  <artifactId>junit</artifactId>
-		  <version>4.11</version>
+		  <version>${junit}</version>
 		  <scope>test</scope>
 		</dependency>
 		
 		<dependency>
 		  <groupId>junit</groupId>
 		  <artifactId>junit-dep</artifactId>
-		  <version>4.8.2</version>
+		  <version>${junit.dep}</version>
 		</dependency>
 		
 		<dependency>
 		    <groupId>org.mockito</groupId>
 		    <artifactId>mockito-core</artifactId>
-		    <version>2.17.0</version>
+		    <version>${mockito}</version>
         </dependency>
 
 		<dependency>
@@ -186,46 +203,32 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.2.3</version>
+			<version>${logback.classic}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
-			<version>1.2.3</version>
+			<version>${logback.core}</version>
 		</dependency>
 
 		<dependency>
 		    <groupId>jstl</groupId>
 		    <artifactId>jstl</artifactId>
-		    <version>1.2</version>
+		    <version>${jstl}</version>
 		</dependency>
-		
-		<!-- <dependency>
-		    <groupId>org.seleniumhq.selenium</groupId>
-		    <artifactId>selenium-java</artifactId>
-		    <version>3.8.0</version>
-		    <scope>test</scope>
-		</dependency>
-		
-		<dependency>
-		  <groupId>org.testng</groupId>
-		  <artifactId>testng</artifactId>
-		  <version>6.8</version>
-		  <scope>test</scope>
-		</dependency> -->
 
 		<dependency>
 		    <groupId>com.zaxxer</groupId>
 		    <artifactId>HikariCP</artifactId>
-		    <version>2.7.8</version>
+		    <version>${hikari}</version>
 		    <scope>compile</scope>
 		</dependency>
 		
 		<dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.22</version>
+            <version>${slf4j}</version>
         </dependency>    
 	</dependencies>
 

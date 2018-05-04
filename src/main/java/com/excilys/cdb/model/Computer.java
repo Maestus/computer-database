@@ -15,16 +15,20 @@ public class Computer implements Model {
         return id;
     }
 
-    public void setId(long id) {
+    @Override
+    public Computer setId(long id) {
         this.id = id;
+        return this;
     }
 
     public String getNom() {
         return nom;
     }
 
-    public void setNom(String nom) {
+    @Override
+    public Computer setNom(String nom) {
         this.nom = nom;
+        return this;
     }
 
     public LocalDate getIntroduced() {
@@ -35,9 +39,11 @@ public class Computer implements Model {
      * Modification du champs introduced.
      * @param introduced un objet LocalDate
      * @throws DateTimeException Peut retourner un erreur si la date n'est pas correct.
+     * @return L'objet modifié
      */
-    public void setIntroduced(LocalDate introduced) throws DateTimeException {
+    public Computer setIntroduced(LocalDate introduced) throws DateTimeException {
         this.introduced = introduced;
+        return this;
     }
 
     public LocalDate getDiscontinued() {
@@ -48,9 +54,11 @@ public class Computer implements Model {
      * Modification du champs discontinued.
      * @param discontinued un objet LocalDate
      * @throws DateTimeException Peut retourner un erreur si la date n'est pas correct.
+     * @return L'objet modifié
      */
-    public void setDiscontinued(LocalDate discontinued) throws DateTimeException {
+    public Computer setDiscontinued(LocalDate discontinued) throws DateTimeException {
         this.discontinued = discontinued;
+        return this;
     }
 
     public Object getCompanyId() {
@@ -60,9 +68,11 @@ public class Computer implements Model {
     /**
      * Modification du cahmps company_id.
      * @param companyid identifiant de la company auquel est rattaché le computer.
+     * @return L'objet modifié
      */
-    public void setCompanyId(long companyid) {
+    public Computer setCompanyId(long companyid) {
         this.company_id = companyid;
+        return this;
     }
 
     @Override

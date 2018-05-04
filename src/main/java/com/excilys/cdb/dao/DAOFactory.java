@@ -92,7 +92,7 @@ public class DAOFactory implements AutoCloseable {
      * @throws SQLException
      *             Erreur suceptible d'etre renvoyée.
      */
-    public Connection getConnection() throws SQLException {
+    public Connection getConnection() {
         return connection;
     }
 

@@ -1,21 +1,26 @@
 package main.java.com.excilys.cdb.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
 import main.java.com.excilys.cdb.dao.CompanyDAO;
 import main.java.com.excilys.cdb.dao.ComputerDAO;
+import main.java.com.excilys.cdb.dao.DAOException;
 import main.java.com.excilys.cdb.dao.DAOFactory;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.utils.Page;
+import main.java.com.excilys.cdb.validator.ComputerValidator;
+import main.java.com.excilys.cdb.validator.Validator;
+import main.java.com.excilys.cdb.validator.ValidatorException;
 
-public class ComputerService {
+public class ComputerService extends ModelService {
 
     public ComputerDAO computerDao;
     public CompanyDAO companyDao;
+    private Validator validate;
 
     /**
      * Initialiastion du ComputerService.
@@ -24,6 +29,7 @@ public class ComputerService {
     public void init(DAOFactory dao) {
         this.computerDao = new ComputerDAO(dao);
         this.companyDao = new CompanyDAO(dao);
+        this.validate = new ComputerValidator(computerDao);
     }
 
     /**
@@ -52,59 +58,25 @@ public class ComputerService {
      * @param id Identifiant du computer.
      * @return Un computer.
      */
-    public Computer getComputerById(Long id) {
-        return (Computer) computerDao.findById(id);
+    public Optional<Computer> getComputerById(Long id) {
+        return computerDao.findById(id);
     }
 
     /**
      * Ajoute un computer dans la base de données.
      * @param c Computer à ajouter.
-     * @return l'identifiant du computer.
+     * @return True si ajout ok
      */
-    public long addComputer(Computer c) {
-        if (checkDate(c)) {
-            if (c.getCompanyId() != null) {
-                if (companyDao.findById((long) c.getCompanyId()) != null) {
-                    try {
-                        return computerDao.create(c);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
-                    logger.debug("Computer deja existant.");
-
-                    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                    StatusPrinter.print(lc);
-                }
-            } else {
-                try {
-                    return computerDao.create(c);
-                } catch (Exception e) {
-                    Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
-                    logger.debug("Création interrompu, probleme de connection.");
-
-                    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                    StatusPrinter.print(lc);
-                }
-            }
-        } else {
+    public boolean addComputer(Computer c) {
+        try {
+            validate.checkBeforeCreation(c);
+            computerDao.create(c).get();
+            return true;
+        } catch (ValidatorException | DAOException e) {
             Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
-            logger.debug("Dates incohérentes.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
+            logger.info(e.getMessage());
+            return false;
         }
-        return 0;
-    }
-
-    /**
-     * Verification de la date du Computer.
-     * @param c Un computer.
-     * @return true si discontinued > introduced
-     */
-    public boolean checkDate(Computer c) {
-        return !(c.getDiscontinued() != null && c.getIntroduced() != null && c.getDiscontinued().isBefore(c.getIntroduced()));
     }
 
     /**
@@ -112,26 +84,12 @@ public class ComputerService {
      * @param c Un computer.
      */
     public void updateComputer(Computer c) {
-        if (checkDate(c)) {
-            if (c.getCompanyId() != null) {
-                if (companyDao.findById((long) c.getCompanyId()) != null) {
-                    computerDao.update(c);
-                } else {
-                    Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
-                    logger.debug("Computer inexistant.");
-
-                    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                    StatusPrinter.print(lc);
-                }
-            } else {
-                computerDao.update(c);
-            }
-        } else {
+        try {
+            validate.checkBeforeUpdate(c);
+            computerDao.update(c);
+        } catch (ValidatorException | DAOException e) {
             Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
-            logger.debug("Dates incohérentes.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
+            logger.info(e.getMessage());
         }
     }
 
@@ -148,7 +106,7 @@ public class ComputerService {
      * @param id Identifiant du computer.
      * @return Une company
      */
-    public Company getCompany(Long id) {
+    public Optional<Company> getCompany(Long id) {
         return computerDao.findCompanyLink(id);
     }
 
@@ -168,4 +126,5 @@ public class ComputerService {
     public Page<Computer> getComputerByName(String parameter) {
         return computerDao.findComputerByName(0, Page.NO_LIMIT, parameter);
     }
+
 }

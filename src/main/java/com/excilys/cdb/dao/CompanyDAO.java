@@ -3,6 +3,7 @@ package main.java.com.excilys.cdb.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import com.mysql.jdbc.PreparedStatement;
 
@@ -38,10 +39,11 @@ public class CompanyDAO implements ModelDAO {
     }
 
     @Override
-    public long create(Model model) throws Exception {
+    public Optional<Long> create(Model model) throws Exception {
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
         ResultSet idAuto = null;
+        Optional<Long> id = Optional.empty();
 
         try {
 
@@ -58,6 +60,7 @@ public class CompanyDAO implements ModelDAO {
 
             if (idAuto.next()) {
                 model.setId(idAuto.getLong(1));
+                id = Optional.of(model.getId());
             } else {
                 throw new DAOException("Probleme dans la récupération de l'id du tuple nouvellement inseré.");
             }
@@ -70,15 +73,15 @@ public class CompanyDAO implements ModelDAO {
             StatusPrinter.print(lc);
         }
 
-        return idAuto.getLong(1);
+        return id;
     }
 
     @Override
-    public Model findById(long id) throws DAOException {
+    public Optional<Company> findById(long id) throws DAOException {
         Connection connexion = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        Company company = new Company();
+        Company company = null;
 
         try {
             connexion = daoFactory.getConnection();
@@ -96,7 +99,7 @@ public class CompanyDAO implements ModelDAO {
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             StatusPrinter.print(lc);
         }
-        return company;
+        return Optional.ofNullable(company);
     }
 
     @Override

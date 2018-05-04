@@ -9,16 +9,20 @@ public class Company implements Model {
         return id;
     }
 
-    public void setId(long id) {
+    @Override
+    public Company setId(long id) {
         this.id = id;
+        return this;
     }
 
     public String getNom() {
         return nom;
     }
 
-    public void setNom(String nom) {
+    @Override
+    public Company setNom(String nom) {
         this.nom = nom;
+        return this;
     }
 
     @Override

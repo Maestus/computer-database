@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,10 +45,10 @@ public class ComputerDAOTest {
      */
     @Test
     public void getComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(1L);
-        assertEquals("c1", c1.getNom());
-        assertEquals(c1.getIntroduced().toString(), "1971-01-01");
-        assertEquals(c1.getDiscontinued(), null);
+        Optional<Computer> c1 = computerDao.findById(1L);
+        assertEquals("c1", c1.get().getNom());
+        assertEquals(c1.get().getIntroduced().toString(), "1971-01-01");
+        assertEquals(c1.get().getDiscontinued(), null);
     }
 
     /**
@@ -86,7 +87,7 @@ public class ComputerDAOTest {
         Computer computer = new Computer();
         computer.setNom("c6");
         computerDao.create(computer);
-        Computer c1 = (Computer) computerDao.findById(6L);
+        Computer c1 = computerDao.findComputerByName(0, 1, "c6").elems.get(0);
         assertEquals(c1.getId(), computer.getId());
         assertEquals(c1.getNom(), computer.getNom());
         assertEquals(c1.getIntroduced(), computer.getIntroduced());
@@ -99,16 +100,16 @@ public class ComputerDAOTest {
      */
     @Test
     public void updateNomComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(2L);
-        c1.setNom("updateComputerTest");
-        computerDao.update(c1);
+        Optional<Computer> c1 = computerDao.findById(2L);
+        c1.get().setNom("updateComputerTest");
+        computerDao.update(c1.get());
 
-        Computer c2 = (Computer) computerDao.findById(2L);
-        assertEquals(c2.getId(), c1.getId());
-        assertEquals("updateComputerTest", c2.getNom());
+        Optional<Computer> c2 = computerDao.findById(2L);
+        assertEquals(c2.get().getId(), c1.get().getId());
+        assertEquals("updateComputerTest", c2.get().getNom());
 
-        c2.setNom("c2");
-        computerDao.update(c2);
+        c2.get().setNom("c2");
+        computerDao.update(c2.get());
     }
 
     /**
@@ -117,15 +118,15 @@ public class ComputerDAOTest {
      */
     @Test
     public void updateIntroducedComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(2L);
-        c1.setIntroduced(LocalDate.parse("10/10/2018", frenchPattern));
-        computerDao.update(c1);
+        Optional<Computer> c1 = computerDao.findById(2L);
+        c1.get().setIntroduced(LocalDate.parse("10/10/2018", frenchPattern));
+        computerDao.update(c1.get());
 
-        Computer c2 = (Computer) computerDao.findById(2L);
-        assertEquals(c2.getId(), c1.getId());
-        assertEquals(c2.getNom(), c1.getNom());
-        assertEquals("2018-10-10", c2.getIntroduced().toString());
-        assertEquals(c2.getDiscontinued().toString(), c1.getDiscontinued().toString());
+        Optional<Computer> c2 = computerDao.findById(2L);
+        assertEquals(c2.get().getId(), c1.get().getId());
+        assertEquals(c2.get().getNom(), c1.get().getNom());
+        assertEquals("2018-10-10", c2.get().getIntroduced().toString());
+        assertEquals(c2.get().getDiscontinued().toString(), c1.get().getDiscontinued().toString());
     }
 
     /**
@@ -134,15 +135,15 @@ public class ComputerDAOTest {
      */
     @Test
     public void updateDiscontinuedComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(2L);
-        c1.setDiscontinued(LocalDate.parse("10/12/2018", frenchPattern));
-        computerDao.update(c1);
+        Optional<Computer> c1 = computerDao.findById(2L);
+        c1.get().setDiscontinued(LocalDate.parse("10/12/2018", frenchPattern));
+        computerDao.update(c1.get());
 
-        Computer c2 = (Computer) computerDao.findById(2L);
-        assertEquals(c2.getId(), c1.getId());
-        assertEquals(c2.getNom(), c1.getNom());
-        assertEquals(c2.getIntroduced().toString(), c1.getIntroduced().toString());
-        assertEquals("2018-12-10", c2.getDiscontinued().toString());
+        Optional<Computer> c2 = computerDao.findById(2L);
+        assertEquals(c2.get().getId(), c1.get().getId());
+        assertEquals(c2.get().getNom(), c1.get().getNom());
+        assertEquals(c2.get().getIntroduced().toString(), c1.get().getIntroduced().toString());
+        assertEquals("2018-12-10", c2.get().getDiscontinued().toString());
     }
 
     /**
@@ -151,14 +152,14 @@ public class ComputerDAOTest {
      */
     @Test
     public void updateNullIntroducedComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(2L);
-        c1.setIntroduced(null);
-        computerDao.update(c1);
+        Optional<Computer> c1 = computerDao.findById(2L);
+        c1.get().setIntroduced(null);
+        computerDao.update(c1.get());
 
-        Computer c2 = (Computer) computerDao.findById(2L);
-        assertEquals(c2.getId(), c1.getId());
-        assertEquals(c2.getNom(), c1.getNom());
-        assertEquals(null, c2.getIntroduced());
+        Optional<Computer> c2 = computerDao.findById(2L);
+        assertEquals(c2.get().getId(), c1.get().getId());
+        assertEquals(c2.get().getNom(), c1.get().getNom());
+        assertEquals(null, c2.get().getIntroduced());
     }
 
     /**
@@ -167,14 +168,14 @@ public class ComputerDAOTest {
      */
     @Test
     public void updateNullDiscontinuedComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(2L);
-        c1.setDiscontinued(null);
-        computerDao.update(c1);
+        Optional<Computer> c1 = computerDao.findById(2L);
+        c1.get().setDiscontinued(null);
+        computerDao.update(c1.get());
 
-        Computer c2 = (Computer) computerDao.findById(2L);
-        assertEquals(c2.getId(), c1.getId());
-        assertEquals(c2.getNom(), c1.getNom());
-        assertEquals(null, c1.getDiscontinued());
+        Optional<Computer> c2 = computerDao.findById(2L);
+        assertEquals(c2.get().getId(), c1.get().getId());
+        assertEquals(c2.get().getNom(), c1.get().getNom());
+        assertEquals(null, c1.get().getDiscontinued());
     }
 
     /**
@@ -183,13 +184,13 @@ public class ComputerDAOTest {
      */
     @Test
     public void updateNullNomComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(2L);
-        c1.setNom(null);
-        computerDao.update(c1);
+        Optional<Computer> c1 = computerDao.findById(2L);
+        c1.get().setNom(null);
+        computerDao.update(c1.get());
 
-        Computer c2 = (Computer) computerDao.findById(2L);
-        assertEquals(c2.getId(), c1.getId());
-        assertEquals(null, c2.getNom());
+        Optional<Computer> c2 = computerDao.findById(2L);
+        assertEquals(c2.get().getId(), c1.get().getId());
+        assertEquals(null, c2.get().getNom());
     }
 
     /**
@@ -198,13 +199,13 @@ public class ComputerDAOTest {
      */
     @Test
     public void updateIdChangedInexistantComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(2L);
-        c1.setId(10);
-        c1.setDiscontinued(LocalDate.parse("20/12/2018", frenchPattern));
-        computerDao.update(c1);
+        Optional<Computer> c1 = computerDao.findById(2L);
+        c1.get().setId(10);
+        c1.get().setDiscontinued(LocalDate.parse("20/12/2018", frenchPattern));
+        computerDao.update(c1.get());
 
-        Computer c2 = (Computer) computerDao.findById(10);
-        assertEquals(0, (long) c2.getId());
+        Optional<Computer> c2 = computerDao.findById(10);
+        assertEquals(false, c2.isPresent());
     }
 
     /**
@@ -213,17 +214,17 @@ public class ComputerDAOTest {
      */
     @Test
     public void updateIdChangedExistantComputerTest() throws Exception {
-        Computer c1 = (Computer) computerDao.findById(2L);
-        c1.setId(5);
-        c1.setIntroduced(LocalDate.parse("20/12/2018", frenchPattern));
-        computerDao.update(c1);
+        Optional<Computer> c1 = computerDao.findById(2L);
+        c1.get().setId(5);
+        c1.get().setIntroduced(LocalDate.parse("20/12/2018", frenchPattern));
+        computerDao.update(c1.get());
 
-        Computer c2 = (Computer) computerDao.findById(5);
-        assertEquals(c1.getId(), c2.getId());
-        assertEquals("2018-12-20", c2.getIntroduced().toString());
+        Optional<Computer> c2 = computerDao.findById(5);
+        assertEquals(c1.get().getId(), c2.get().getId());
+        assertEquals("2018-12-20", c2.get().getIntroduced().toString());
 
-        c2.setNom("c5");
-        computerDao.update(c2);
+        c2.get().setNom("c5");
+        computerDao.update(c2.get());
     }
 
     /**
@@ -246,7 +247,7 @@ public class ComputerDAOTest {
     @Test
     public void deleteComputerTest() throws Exception {
         computerDao.delete(1L);
-        Computer c1 = (Computer) computerDao.findById(1L);
-        assertEquals(0L, (long) c1.getId());
+        Optional<Computer> c1 = computerDao.findById(1L);
+        assertEquals(false, c1.isPresent());
     }
 }

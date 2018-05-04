@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,19 +51,15 @@ public class ComputerDAO implements ModelDAO {
     }
 
     @Override
-    public long create(Model model) throws Exception {
+    public Optional<Long> create(Model model) throws DAOException {
 
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet idAuto = null;
+        Optional<Long> id = Optional.empty();
+        Connection connexion = daoFactory.getConnection();
 
-        try {
+        try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_INSERT, true,
+             ((Computer) model).getNom(), ((Computer) model).getIntroduced(),
+             ((Computer) model).getDiscontinued(), ((Computer) model).getCompanyId());) {
 
-            connexion = daoFactory.getConnection();
-
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_INSERT, true,
-                    ((Computer) model).getNom(), ((Computer) model).getIntroduced(),
-                    ((Computer) model).getDiscontinued(), ((Computer) model).getCompanyId());
 
             int statut = preparedStatement.executeUpdate();
 
@@ -70,14 +67,15 @@ public class ComputerDAO implements ModelDAO {
                 throw new DAOException("Insertion non possible");
             }
 
-            idAuto = preparedStatement.getGeneratedKeys();
+            ResultSet idAuto = preparedStatement.getGeneratedKeys();
 
             if (idAuto.next()) {
                 model.setId(idAuto.getLong(1));
+                id = Optional.of(model.getId());
             } else {
                 throw new DAOException("Probleme dans la récupération de l'id du tuple nouvellement inseré.");
             }
-
+            idAuto.close();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.create.SQL");
             logger.debug("Probleme de connection lors de la création de l'element dans la table company.");
@@ -85,26 +83,21 @@ public class ComputerDAO implements ModelDAO {
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             StatusPrinter.print(lc);
         }
-        return idAuto.getLong(1);
 
+        return id;
     }
 
     @Override
-    public Model findById(long id) {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        Computer computer = new Computer();
+    public Optional<Computer> findById(long id) {
 
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_PAR_ID, false, id);
-            resultSet = preparedStatement.executeQuery();
+        Optional<Computer> computer = Optional.empty();
+        Connection connexion = daoFactory.getConnection();
+
+        try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_PAR_ID, false, id);
+             ResultSet resultSet = preparedStatement.executeQuery();) {
             if (resultSet.next()) {
-                computer = (Computer) mapper.map(resultSet);
+                computer = Optional.of((Computer) mapper.map(resultSet));
             }
-            resultSet.close();
-            preparedStatement.close();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.findById.SQL");
             logger.debug("Probleme de connection lors de la recherche de l'element dans la table company.");
@@ -113,7 +106,7 @@ public class ComputerDAO implements ModelDAO {
             StatusPrinter.print(lc);
         }
 
-        return computer;
+        return  computer;
     }
 
     /**
@@ -124,15 +117,13 @@ public class ComputerDAO implements ModelDAO {
      * @return l'ensemble de computers
      */
     public Page<Computer> findByCompanyId(int offset, int nbElem, long id) {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+
+        Connection connexion = daoFactory.getConnection();
         Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_BY_COMPANY, false, id);
-            resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_BY_COMPANY, false, id);
+                ResultSet resultSet = preparedStatement.executeQuery();) {
+
             int i = 0;
             if (nbElem == Page.NO_LIMIT) {
                 while (resultSet.next()) {
@@ -148,8 +139,6 @@ public class ComputerDAO implements ModelDAO {
                     }
                 }
             }
-            resultSet.close();
-            preparedStatement.close();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.findByCompanyId.SQL");
             logger.debug("Probleme de connection lors de la recherche des elements dans la table company.");
@@ -163,46 +152,47 @@ public class ComputerDAO implements ModelDAO {
 
     @Override
     public Page<Computer> findAll(int offset, int nbElem) {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+
+        Connection connexion = daoFactory.getConnection();
         Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-        try {
-            connexion = daoFactory.getConnection();
-            if (nbElem == Page.NO_LIMIT) {
-                preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL_NOLIMIT, false);
-            } else {
-                preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false, nbElem,
-                    offset);
-            }
-            resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                p.addElem((Computer) mapper.map(resultSet));
-            }
-            resultSet.close();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            Logger logger = LoggerFactory.getLogger("ComputerDAO.findAll.SQL");
-            logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table company.");
+        if (nbElem == Page.NO_LIMIT) {
+            try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL_NOLIMIT, false);
+                 ResultSet resultSet = preparedStatement.executeQuery();) {
+                while (resultSet.next()) {
+                    p.addElem((Computer) mapper.map(resultSet));
+                }
+            } catch (SQLException e) {
+                Logger logger = LoggerFactory.getLogger("ComputerDAO.findAll.SQL");
+                logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table company.");
 
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
+                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                StatusPrinter.print(lc);
+            }
+        } else {
+            try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false, nbElem, offset);
+                 ResultSet resultSet = preparedStatement.executeQuery();) {
+                while (resultSet.next()) {
+                    p.addElem((Computer) mapper.map(resultSet));
+                }
+            } catch (SQLException e) {
+                Logger logger = LoggerFactory.getLogger("ComputerDAO.findAll.SQL");
+                logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table company.");
+
+                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                StatusPrinter.print(lc);
+            }
         }
-
         return p;
     }
 
     @Override
     public void update(Model m) {
 
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
+        Connection connexion = daoFactory.getConnection();
         java.sql.Date dateIntroDB = null, dateDisDB = null;
 
         try {
-            connexion = daoFactory.getConnection();
-
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
             if (((Computer) m).getIntroduced() != null) {
@@ -214,14 +204,20 @@ public class ComputerDAO implements ModelDAO {
                 java.util.Date dateDis = formatter.parse(((Computer) m).getDiscontinued().toString());
                 dateDisDB = new java.sql.Date(dateDis.getTime());
             }
+        } catch (ParseException e) {
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.update.Parse");
+            logger.debug("Parse erreur");
 
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_UPDATE, false, m.getNom(),
-                    dateIntroDB, dateDisDB, ((Computer) m).getCompanyId(), m.getId());
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);
+        }
+
+        try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_UPDATE, false, m.getNom(),
+                dateIntroDB, dateDisDB, ((Computer) m).getCompanyId(), m.getId());) {
             preparedStatement.executeUpdate();
-            preparedStatement.close();
-        } catch (SQLException | ParseException e) {
+        } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.update.SQL");
-            logger.debug("Probleme de connection lors de la mise à jour de l'element dans la table company.");
+            logger.debug("Probleme de connection lors de la mise à jour de l'element dans la table computer.");
 
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             StatusPrinter.print(lc);
@@ -235,17 +231,14 @@ public class ComputerDAO implements ModelDAO {
      * @throws DAOException Envoyé si rien trouvé.
      */
     public void delete(long id) throws DAOException {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
 
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);
+        Connection connexion = daoFactory.getConnection();
+
+        try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);) {
             preparedStatement.executeUpdate();
-            preparedStatement.close();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.delete.SQL");
-            logger.debug("Probleme de connection lors de la suppression d'un element dans la table company.");
+            logger.debug("Probleme de connection lors de la suppression d'un element dans la table computer.");
 
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             StatusPrinter.print(lc);
@@ -257,30 +250,25 @@ public class ComputerDAO implements ModelDAO {
      * @param id Identifiant du computer
      * @return Une company
      */
-    public Company findCompanyLink(long id) {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        Company company = new Company();
+    public Optional<Company> findCompanyLink(long id) {
 
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_COMPANY_OF_COMPUTER, false, id);
-            resultSet = preparedStatement.executeQuery();
+        Connection connexion = daoFactory.getConnection();
+        Optional<Company> company = Optional.empty();
+
+        try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_COMPANY_OF_COMPUTER, false, id);
+             ResultSet resultSet = preparedStatement.executeQuery();) {
             if (resultSet.next()) {
-                company = (Company) mapperCompany.map(resultSet);
+                company = Optional.of((Company) mapperCompany.map(resultSet));
             }
-            resultSet.close();
-            preparedStatement.close();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.findCompanyLink.SQL");
-            logger.debug("Probleme de connection lors de la recherche de l'element dans la table company.");
+            logger.debug("Probleme de connection lors de la recherche de l'element dans la table computer.");
 
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             StatusPrinter.print(lc);
         }
 
-        return company;
+        return  company;
     }
 
     /**
@@ -288,24 +276,19 @@ public class ComputerDAO implements ModelDAO {
      * @return Un nombre de computer
      */
     public Long getCount() {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+
+        Connection connexion = daoFactory.getConnection();
         Long number = null;
 
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_COUNT, false);
-            resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_COUNT, false);
+             ResultSet resultSet = preparedStatement.executeQuery();) {
             while (resultSet.next()) {
                 number = resultSet.getLong("number");
             }
-            resultSet.close();
-            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
             Logger logger = LoggerFactory.getLogger("ComputerDAO.getCount.SQL");
-            logger.debug("Probleme de connection lors de la recherche de l'element dans la table company.");
+            logger.debug("Probleme de connection lors de la recherche de l'element dans la table computer.");
 
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             StatusPrinter.print(lc);
@@ -322,23 +305,19 @@ public class ComputerDAO implements ModelDAO {
      * @return Une page
      */
     public Page<Computer> findComputerByName(int offset, int nbElem, String parameter) {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
-        Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SEARCH_BY_NAME, false, "%" + parameter + "%");
-            resultSet = preparedStatement.executeQuery();
+        Connection connexion = daoFactory.getConnection();
+        Page<Computer> p = new Page<Computer>(offset, nbElem);
+        System.out.println(connexion);
+
+        try (PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SEARCH_BY_NAME, false, "%" + parameter + "%");
+             ResultSet resultSet = preparedStatement.executeQuery();) {
             while (resultSet.next()) {
                 p.addElem((Computer) mapper.map(resultSet));
             }
-            resultSet.close();
-            preparedStatement.close();
         } catch (SQLException e) {
-            Logger logger = LoggerFactory.getLogger("ComputerDAO.findAll.SQL");
-            logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table company.");
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.findComputerByName.SQL");
+            logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table computer.", e);
 
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             StatusPrinter.print(lc);

@@ -11,6 +11,7 @@ import main.java.com.excilys.cdb.utils.Page;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -77,8 +78,11 @@ public class ServletComputer extends HttpServlet {
                     ComputerDTO newObj = new ComputerDTO();
                     newObj.setComputer(comp);
 
-                    Company company = computerServ.getCompany(comp.getId());
-                    newObj.setCompany(company);
+                    Optional<Company> company;
+
+                    if ((company = computerServ.getCompany(comp.getId())).isPresent()) {
+                        newObj.setCompany(company.get());
+                    }
 
                     if (newObj.getCompany() == null) {
                         newObj.setHasCompany(false);

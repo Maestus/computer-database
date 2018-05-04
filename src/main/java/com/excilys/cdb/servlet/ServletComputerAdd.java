@@ -87,22 +87,16 @@ public class ServletComputerAdd extends HttpServlet {
             computer.setDiscontinued(td);
         }
 
-        if (ti != null && td != null) {
-            if (ti.isAfter(td)) {
-                request.setAttribute("companies", companyDTOs);
-                request.setAttribute("dateError", true);
-                RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/addComputer.jsp");
-                dispatcher.forward(request, response);
-            }
-        }
-
         computer.setCompanyId(Long.parseLong(request.getParameter("companyId")));
 
-        computerServ.addComputer(computer);
+        if (computerServ.addComputer(computer)) {
+            request.setAttribute("created", false);
+        } else {
+            request.setAttribute("dateError", true);
+        }
 
         ServletComputer.nbComputers = computerServ.getNumberComputer();
 
-        request.setAttribute("created", true);
         request.setAttribute("companies", companyDTOs);
 
         RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/addComputer.jsp");

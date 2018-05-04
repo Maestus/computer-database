@@ -11,8 +11,9 @@ public interface Model {
     /**
      * Definir l'identifiant d'un model.
      * @param id un Long
+     * @return L'objet modifié
      */
-    void setId(long id);
+    Model setId(long id);
 
     /**
      * Obtenir la valeur du champs nom d'un model.
@@ -23,7 +24,8 @@ public interface Model {
     /**
      * Definir le nom d'un model.
      * @param nom une chaine de caractere.
+     * @return L'objet modifié
      */
-    void setNom(String nom);
+    Model setNom(String nom);
 
 }

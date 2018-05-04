@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,8 +43,9 @@ public class CompanyDAOTest {
      */
     @Test
     public void getComputerTest() throws Exception {
-        Company c1 = (Company) companyDao.findById(1L);
-        assertEquals("ACER", c1.getNom());
+        Optional<Company> c1 = companyDao.findById(1L);
+        assertEquals(true, c1.isPresent());
+        assertEquals("ACER", c1.get().getNom());
     }
 
     /**
@@ -55,9 +57,9 @@ public class CompanyDAOTest {
     public void createComputerTest() throws Exception {
         Company computer = new Company();
         computer.setNom("Testing");
-        long i = companyDao.create(computer);
-        Company c1 = (Company) companyDao.findById(6L);
-        assertEquals(c1.getNom(), computer.getNom());
+        long i = companyDao.create(computer).get();
+        Optional<Company> c1 = companyDao.findById(6L);
+        assertEquals(c1.get().getNom(), computer.getNom());
         companyDao.delete(i);
     }
 
@@ -90,25 +92,26 @@ public class CompanyDAOTest {
      */
     @Test
     public void updateNomComputerTest() throws Exception {
-        Company c1 = (Company) companyDao.findById(2L);
-        c1.setNom("updateComputerTest");
-        companyDao.update(c1);
+        Optional<Company> c1 = companyDao.findById(2L);
+        assertEquals(true, c1.isPresent());
+        c1.get().setNom("updateComputerTest");
+        companyDao.update(c1.get());
 
-        c1 = (Company) companyDao.findById(2L);
-        Company c2 = (Company) companyDao.findById(2L);
-        assertEquals("updateComputerTest", c1.getNom());
+        c1 = companyDao.findById(2L);
+        Optional<Company> c2 = companyDao.findById(2L);
+        assertEquals("updateComputerTest", c1.get().getNom());
 
-        assertEquals(c1.getId(), c2.getId());
-        assertEquals(c1.getNom(), c2.getNom());
+        assertEquals(c1.get().getId(), c2.get().getId());
+        assertEquals(c1.get().getNom(), c2.get().getNom());
 
-        c1.setNom(null);
-        companyDao.update(c1);
-        c1 = (Company) companyDao.findById(2L);
-        assertEquals(null, c1.getNom());
+        c1.get().setNom(null);
+        companyDao.update(c1.get());
+        c1 = companyDao.findById(2L);
+        assertEquals(null, c1.get().getNom());
 
-        c1.setNom("HP");
-        companyDao.update(c1);
-        assertEquals(c1.getNom(), "HP");
+        c1.get().setNom("HP");
+        companyDao.update(c1.get());
+        assertEquals(c1.get().getNom(), "HP");
     }
 
     /**
@@ -118,7 +121,7 @@ public class CompanyDAOTest {
     @Test
     public void deleteComputerTest() throws Exception {
         companyDao.delete(1L);
-        Company c1 = (Company) companyDao.findById(1L);
-        assertEquals(0L, (long) c1.getId());
+        Optional<Company> c1 = companyDao.findById(1L);
+        assertEquals(false, c1.isPresent());
     }
 }
