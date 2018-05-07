@@ -33,7 +33,7 @@ public class ComputerDAO implements ModelDAO {
     private static final String SQL_INSERT = "INSERT INTO computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);";
     private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static final String SQL_DELETE = "DELETE FROM computer WHERE id = ?;";
-    private static final String SQL_SEARCH_BY_NAME = "SELECT id, name, introduced, discontinued FROM computer WHERE name LIKE ?;";
+    private static final String SQL_SEARCH_BY_NAME = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE name LIKE ?;";
 
     private Mapper mapper;
     private Mapper mapperCompany;
@@ -75,9 +75,6 @@ public class ComputerDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.create.SQL");
             logger.debug("Probleme de connection lors de la création de l'element dans la table company.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
 
         return id;
@@ -97,9 +94,6 @@ public class ComputerDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.findById.SQL");
             logger.debug("Probleme de connection lors de la recherche de l'element dans la table company.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
 
         return  computer;
@@ -138,9 +132,6 @@ public class ComputerDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.findByCompanyId.SQL");
             logger.debug("Probleme de connection lors de la recherche des elements dans la table company.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
 
         return p;
@@ -212,9 +203,6 @@ public class ComputerDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.update.SQL");
             logger.debug("Probleme de connection lors de la mise à jour de l'element dans la table computer.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
     }
 
@@ -232,9 +220,6 @@ public class ComputerDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.delete.SQL");
             logger.debug("Probleme de connection lors de la suppression d'un element dans la table computer.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
     }
 
@@ -256,9 +241,6 @@ public class ComputerDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.findCompanyLink.SQL");
             logger.debug("Probleme de connection lors de la recherche de l'element dans la table computer.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
 
         return  company;
@@ -282,9 +264,6 @@ public class ComputerDAO implements ModelDAO {
             e.printStackTrace();
             Logger logger = LoggerFactory.getLogger("ComputerDAO.getCount.SQL");
             logger.debug("Probleme de connection lors de la recherche de l'element dans la table computer.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
 
         return number;
@@ -298,7 +277,6 @@ public class ComputerDAO implements ModelDAO {
      * @return Une page
      */
     public Page<Computer> findComputerByName(int offset, int nbElem, String parameter) {
-
         Page<Computer> p = new Page<Computer>(offset, nbElem);
 
         try (Connection connexion = DAOFactory.getConnection();
@@ -310,10 +288,8 @@ public class ComputerDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.findComputerByName.SQL");
             logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table computer.", e);
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
+        System.out.println(p.nbElem);
 
         return p;
     }

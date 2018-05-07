@@ -58,7 +58,7 @@
                             <input type="checkbox" id="selectall" /> 
                             <span style="vertical-align: top;">
                                  -  <a href="#" id="deleteSelected" onclick="$.fn.deleteSelected();">
-                                        <i class="fa fa-trash-o fa-lg"></i>
+                                        <i class="glyphicon glyphicon-trash"></i>
                                     </a>
                             </span>
                         </th>

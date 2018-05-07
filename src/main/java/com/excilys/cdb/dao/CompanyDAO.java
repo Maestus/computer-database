@@ -63,9 +63,6 @@ public class CompanyDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.create.SQL");
             logger.debug("Erreur dans la connexion à la base de données.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
 
         return id;
@@ -86,9 +83,6 @@ public class CompanyDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.findById.SQL");
             logger.debug("Probleme de connection lors de la recherche de l'element demandé.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
         return Optional.ofNullable(company);
     }
@@ -115,9 +109,6 @@ public class CompanyDAO implements ModelDAO {
             } catch (SQLException e) {
                 Logger logger = LoggerFactory.getLogger("CompanyDAO.findAll.SQL");
                 logger.debug("Probleme de connection lors de l'obtention de tout les tuples de la table company.");
-
-                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                StatusPrinter.print(lc);
             }
         } else {
             try (Connection connexion = DAOFactory.getConnection();
@@ -136,9 +127,6 @@ public class CompanyDAO implements ModelDAO {
             } catch (SQLException e) {
                    Logger logger = LoggerFactory.getLogger("CompanyDAO.findAll.SQL");
                    logger.debug("Probleme de connection lors de l'obtention de tout les tuples de la table company.");
-
-                   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                   StatusPrinter.print(lc);
             }
         }
 
@@ -155,9 +143,6 @@ public class CompanyDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.update.SQL");
             logger.debug("Probleme de connection lors de la mise à jour de l'element dans la table company.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
     }
 
@@ -175,9 +160,6 @@ public class CompanyDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.update.SQL");
             logger.debug("Probleme de connection lors de la suppression de l'element dans la table company.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
     }
 }
