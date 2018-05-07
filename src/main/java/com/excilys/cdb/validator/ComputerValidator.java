@@ -1,6 +1,9 @@
 package main.java.com.excilys.cdb.validator;
 
 import main.java.com.excilys.cdb.dao.ComputerDAO;
+import main.java.com.excilys.cdb.exception.ValidatorDateException;
+import main.java.com.excilys.cdb.exception.ValidatorException;
+import main.java.com.excilys.cdb.exception.ValidatorIdException;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.model.Model;
 
@@ -33,8 +36,8 @@ public class ComputerValidator extends Validator {
      * @throws ValidatorIdException Pour les id deja existant
      */
     private void checkId(Computer comp) throws ValidatorIdException {
-        if (comp.getCompanyId() != null && computerDao.findById((long) comp.getCompanyId()).isPresent()) {
-            throw new ValidatorIdException("Computer deja existant");
+        if (comp.getCompanyId() != null && !computerDao.findById((long) comp.getCompanyId()).isPresent()) {
+            throw new ValidatorIdException("Computer inexistant");
         }
     }
 

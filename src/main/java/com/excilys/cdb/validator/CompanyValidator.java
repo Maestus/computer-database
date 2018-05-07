@@ -1,6 +1,8 @@
 package main.java.com.excilys.cdb.validator;
 
 import main.java.com.excilys.cdb.dao.CompanyDAO;
+import main.java.com.excilys.cdb.exception.ValidatorDateException;
+import main.java.com.excilys.cdb.exception.ValidatorException;
 import main.java.com.excilys.cdb.model.Model;
 
 public class CompanyValidator extends Validator {
