@@ -19,7 +19,7 @@ public class CompanyService extends ModelService {
      * @param dao Une Objet DAOFactory.
      */
     public void init(DAOFactory dao) {
-        this.companyDao = new CompanyDAO(dao);
+        this.companyDao = new CompanyDAO();
         this.validate = new CompanyValidator(companyDao);
     }
 

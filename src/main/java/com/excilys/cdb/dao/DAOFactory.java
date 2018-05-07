@@ -1,20 +1,23 @@
 package main.java.com.excilys.cdb.dao;
 
-import java.io.IOException;
-import java.io.InputStream;
+//import java.io.IOException;
+//import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
+//import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
+//import java.util.Properties;
+
+//import main.java.com.excilys.cdb.exception.DAOException;
+import main.java.com.excilys.cdb.hikari.HikariT;
 
 public class DAOFactory implements AutoCloseable {
 
-    private static final String FILE_PROPERTIES = "dao.properties";
-    private Properties props;
-    private String url;
-    static DAOFactory instance;
+    //private static final String FILE_PROPERTIES = "dao.properties";
+    //private Properties props;
+    //private String url;
+    static DAOFactory instance = new DAOFactory();
     private Connection connection;
-    private static DAOFactory d;
+    //private static DAOFactory d;
 
     /**
      * Création d'une DAO factory. (method privé)
@@ -25,12 +28,12 @@ public class DAOFactory implements AutoCloseable {
      * @param password
      *            Mot de passe pour la connection à la base de données.
      */
-    private DAOFactory(String url, String userName, String password) {
+    /*private DAOFactory(String url, String userName, String password) {
         this.url = url;
         this.props = new Properties();
         props.put("user", userName);
         props.put("password", password);
-    }
+    }*/
 
     /**
      * Constructeur par defaut.
@@ -43,8 +46,8 @@ public class DAOFactory implements AutoCloseable {
      * @return une DAO Factory.
      */
     public static DAOFactory getInstance() {
-        if (instance == null) {
-            Properties properties = new Properties();
+        //if (instance == null) {
+            /*Properties properties = new Properties();
             String url = null;
             String driver = null;
             String nomUtilisateur = null;
@@ -58,8 +61,10 @@ public class DAOFactory implements AutoCloseable {
             if (fichierProperties == null) {
                 throw new DAOException("Impossible de trouver le fichier " + FILE_PROPERTIES);
             }
-
-            try {
+             */
+            HikariT.init();
+            instance.connection = HikariT.getConnexion();
+           /* try {
                 properties.load(fichierProperties);
                 url = properties.getProperty("url");
                 driver = properties.getProperty("driver");
@@ -72,8 +77,8 @@ public class DAOFactory implements AutoCloseable {
                 throw new DAOException("Impossible de trouver le driver donné dans le fichier " + FILE_PROPERTIES);
             }
 
-            instance = new DAOFactory(url, nomUtilisateur, motDePasse);
-        }
+            instance = new DAOFactory(url, nomUtilisateur, motDePasse);*/
+        //}
         return instance;
     }
 
@@ -82,9 +87,9 @@ public class DAOFactory implements AutoCloseable {
      * @throws SQLException
      *             Methode suceptible de retourner une erreur.
      */
-    public void setConnection() throws SQLException {
+    /*public void setConnection() throws SQLException {
         this.connection = DriverManager.getConnection(url, props);
-    }
+    }*/
 
     /**
      * Retourne une connexion.
@@ -92,8 +97,9 @@ public class DAOFactory implements AutoCloseable {
      * @throws SQLException
      *             Erreur suceptible d'etre renvoyée.
      */
-    public Connection getConnection() {
-        return connection;
+    public static Connection getConnection() {
+        instance.connection = HikariT.getConnexion();
+        return instance.connection;
     }
 
     @Override

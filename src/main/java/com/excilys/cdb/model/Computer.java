@@ -70,14 +70,14 @@ public class Computer implements Model {
      * @param companyid identifiant de la company auquel est rattaché le computer.
      * @return L'objet modifié
      */
-    public Computer setCompanyId(long companyid) {
+    public Computer setCompanyId(Object companyid) {
         this.company_id = companyid;
         return this;
     }
 
     @Override
     public String toString() {
-        return "[nom = " + nom + ", introduced = " + introduced + ", discontinued = " + discontinued + ", company_id = "
+        return "[id = " + id + ", nom = " + nom + ", introduced = " + introduced + ", discontinued = " + discontinued + ", company_id = "
                 + company_id + "]";
     }
 

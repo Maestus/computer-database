@@ -7,14 +7,14 @@ import org.slf4j.LoggerFactory;
 
 import main.java.com.excilys.cdb.dao.CompanyDAO;
 import main.java.com.excilys.cdb.dao.ComputerDAO;
-import main.java.com.excilys.cdb.dao.DAOException;
 import main.java.com.excilys.cdb.dao.DAOFactory;
+import main.java.com.excilys.cdb.exception.DAOException;
+import main.java.com.excilys.cdb.exception.ValidatorException;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.utils.Page;
 import main.java.com.excilys.cdb.validator.ComputerValidator;
 import main.java.com.excilys.cdb.validator.Validator;
-import main.java.com.excilys.cdb.validator.ValidatorException;
 
 public class ComputerService extends ModelService {
 
@@ -27,8 +27,8 @@ public class ComputerService extends ModelService {
      * @param dao un objet DAOFactory.
      */
     public void init(DAOFactory dao) {
-        this.computerDao = new ComputerDAO(dao);
-        this.companyDao = new CompanyDAO(dao);
+        this.computerDao = new ComputerDAO();
+        this.companyDao = new CompanyDAO();
         this.validate = new ComputerValidator(computerDao);
     }
 
@@ -82,14 +82,17 @@ public class ComputerService extends ModelService {
     /**
      * Met à jour un computer en base de données.
      * @param c Un computer.
+     * @return True si la mise à jour à lieu
      */
-    public void updateComputer(Computer c) {
+    public boolean updateComputer(Computer c) {
         try {
             validate.checkBeforeUpdate(c);
             computerDao.update(c);
+            return true;
         } catch (ValidatorException | DAOException e) {
             Logger logger = LoggerFactory.getLogger("ComputerService.addComputer");
             logger.info(e.getMessage());
+            return false;
         }
     }
 
