@@ -89,7 +89,7 @@
 	                            <input type="checkbox" name="cb" class="cb" value="0">
 	                        </td>
 	                        <td>
-	                            <a href="ServletComputerEdit?id=<c:out value="${ titre.getComputer().getId() }" />" onclick=""><c:out value="${ titre.getComputer().getNom() }" /></a>
+	                            <a href="edit?id=<c:out value="${ titre.getComputer().getId() }" />" onclick=""><c:out value="${ titre.getComputer().getNom() }" /></a>
 	                        </td>
 	                        <td><c:out value="${ titre.getComputer().getIntroduced() }" /></td>
 	                        <td><c:out value="${ titre.getComputer().getDiscontinued() }" /></td>
