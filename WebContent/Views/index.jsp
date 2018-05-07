@@ -12,17 +12,20 @@
 <body>
 
 	<header class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <a class="pull-right navbar-brand" href="ServletComputer?direct=index"> Menu </a>
-            <a class="navbar-brand" href="ComputerList?page=1"> Application - Computer Database </a>
-        </div>     
-    </header>
-
+		<div class="container">
+			<a class="pull-right navbar-brand"
+				href="ServletComputer?direct=index"> Menu </a> <a
+				class="navbar-brand" href="ComputerList?page=1"> Application -
+				Computer Database </a>
+		</div>
+	</header>
+	
 	<section id="main">
 		<div class="container">
 			<h2 id="homeTitle">Menu</h2>
 			<div id="actions" class="form-horizontal">
-			     <a class="btn btn-primary" href="ComputerList?page=1">Liste des computers</a>
+				<a class="btn btn-primary" href="ComputerList?page=1">Liste des
+					computers</a>
 			</div>
 		</div>
 	</section>

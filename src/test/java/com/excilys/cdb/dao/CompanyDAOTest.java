@@ -2,7 +2,7 @@ package test.java.com.excilys.cdb.dao;
 
 import static org.junit.Assert.assertEquals;
 
-import java.sql.SQLException;
+//import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -26,12 +26,12 @@ public class CompanyDAOTest {
     @Before
     public void setUp() {
         dao = DAOFactory.getInstance();
-        try {
+        /*try {
             dao.setConnection();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        companyDao = new CompanyDAO(dao);
+        }*/
+        companyDao = new CompanyDAO();
         MockitoAnnotations.initMocks(this);
     }
 

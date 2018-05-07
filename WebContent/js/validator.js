@@ -1,20 +1,17 @@
+
 $(function() {
-  $("form[name='add']").validate({
+  $("form[name='computerForm']").validate({
     rules: {
-      computerName: "required"
-    },
-    introduced:{
-        required:false
-    },
-    discontinued:{
-        required:false,
+      computerName: "required",
+      introduced: "date",
+      discontinued: "date"
     },
     messages: {
       computerName: "Entrer le nom du computer",
-      discontinued: "Doit etre superieur à introduced"
+      discontinued: "Doit etre superieur a introduced"
     },
     submitHandler: function(form) {
       form.submit();
     }
   });
-});
+})

@@ -9,7 +9,7 @@ import main.java.com.excilys.cdb.service.ComputerService;
 import main.java.com.excilys.cdb.utils.Page;
 
 import java.io.IOException;
-import java.sql.SQLException;
+//import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -125,12 +125,12 @@ public class ServletComputer extends HttpServlet {
     public void init() throws ServletException {
         System.out.println("Servlet " + this.getServletName() + " has started");
         dao = DAOFactory.getInstance();
-        try {
-            dao.getConnection();
-            dao.setConnection();
+        /*try {
+            //dao.getConnection();
+            //dao.setConnection();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
 
         computerServ = new ComputerService();
         companyServ = new CompanyService();

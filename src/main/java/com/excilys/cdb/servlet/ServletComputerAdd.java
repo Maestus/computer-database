@@ -1,7 +1,7 @@
 package main.java.com.excilys.cdb.servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
+//import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -107,12 +107,12 @@ public class ServletComputerAdd extends HttpServlet {
     public void init() throws ServletException {
         System.out.println("Servlet " + this.getServletName() + " has started");
         dao = DAOFactory.getInstance();
-        try {
+        /*try {
             dao.getConnection();
             dao.setConnection();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
 
         computerServ = new ComputerService();
         companyServ = new CompanyService();
