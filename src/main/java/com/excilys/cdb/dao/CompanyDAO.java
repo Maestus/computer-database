@@ -3,13 +3,13 @@ package main.java.com.excilys.cdb.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
-import com.mysql.jdbc.PreparedStatement;
+import java.sql.PreparedStatement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
+import main.java.com.excilys.cdb.exception.DAOException;
 import main.java.com.excilys.cdb.mapper.CompanyMapper;
 import main.java.com.excilys.cdb.mapper.Mapper;
 import main.java.com.excilys.cdb.model.Company;
@@ -25,29 +25,24 @@ public class CompanyDAO implements ModelDAO {
     private static final String SQL_UPDATE = "UPDATE company SET name = ? WHERE id = ?;";
     private static final String SQL_DELETE = "DELETE FROM company WHERE id = ?;";
 
-    private DAOFactory daoFactory;
     private Mapper mapper;
 
     /**
      * Création d'une CompanyDAO à l'aide d'une DAO.
-     * @param daoFactory DAO qui permet de ce connecter à la base de donnée.
      */
-    public CompanyDAO(DAOFactory daoFactory) {
-        this.daoFactory = daoFactory;
+    public CompanyDAO() {
         this.mapper = new CompanyMapper();
     }
 
     @Override
-    public long create(Model model) throws Exception {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
+    public Optional<Long> create(Model model) throws Exception {
         ResultSet idAuto = null;
+        Optional<Long> id = Optional.empty();
 
-        try {
+        try (Connection connexion = DAOFactory.getConnection();
+             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_INSERT, true,
+                     ((Company) model).getNom());) {
 
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_INSERT, true,
-                    ((Company) model).getNom());
             int statut = preparedStatement.executeUpdate();
 
             if (statut == 0) {
@@ -58,6 +53,7 @@ public class CompanyDAO implements ModelDAO {
 
             if (idAuto.next()) {
                 model.setId(idAuto.getLong(1));
+                id = Optional.of(model.getId());
             } else {
                 throw new DAOException("Probleme dans la récupération de l'id du tuple nouvellement inseré.");
             }
@@ -65,72 +61,71 @@ public class CompanyDAO implements ModelDAO {
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.create.SQL");
             logger.debug("Erreur dans la connexion à la base de données.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
 
-        return idAuto.getLong(1);
+        return id;
     }
 
     @Override
-    public Model findById(long id) throws DAOException {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
+    public Optional<Company> findById(long id) throws DAOException {
         ResultSet resultSet = null;
-        Company company = new Company();
+        Company company = null;
 
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_PAR_ID, false, id);
+        try (Connection connexion = DAOFactory.getConnection();
+             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_PAR_ID, false, id);) {
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 company = (Company) mapper.map(resultSet);
             }
             resultSet.close();
-            preparedStatement.close();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.findById.SQL");
             logger.debug("Probleme de connection lors de la recherche de l'element demandé.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
-        return company;
+        return Optional.ofNullable(company);
     }
 
     @Override
     public Page<Company> findAll(int offset, int nbElem) throws DAOException {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Page<Company> p = new Page<Company>(offset, nbElem);
 
-        try {
-            connexion = daoFactory.getConnection();
-            if (nbElem == Page.NO_LIMIT) {
-                preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL_NOLIMIT, false);
-            } else {
-                preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false, nbElem, offset);
-            }
-            resultSet = preparedStatement.executeQuery();
-            if (nbElem != Page.NO_LIMIT) {
-                while (resultSet.next()) {
-                   p.addElem((Company) mapper.map(resultSet));
+        if (nbElem == Page.NO_LIMIT) {
+            try (Connection connexion = DAOFactory.getConnection();
+                 PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL_NOLIMIT, false);) {
+                resultSet = preparedStatement.executeQuery();
+                if (nbElem != Page.NO_LIMIT) {
+                    while (resultSet.next()) {
+                       p.addElem((Company) mapper.map(resultSet));
+                    }
+                } else {
+                    while (resultSet.next()) {
+                        p.addElem((Company) mapper.map(resultSet));
+                    }
                 }
-            } else {
-                while (resultSet.next()) {
-                    p.addElem((Company) mapper.map(resultSet));
-                }
+                resultSet.close();
+            } catch (SQLException e) {
+                Logger logger = LoggerFactory.getLogger("CompanyDAO.findAll.SQL");
+                logger.debug("Probleme de connection lors de l'obtention de tout les tuples de la table company.");
             }
-            resultSet.close();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            Logger logger = LoggerFactory.getLogger("CompanyDAO.findAll.SQL");
-            logger.debug("Probleme de connection lors de l'obtention de tout les tuples de la table company.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
+        } else {
+            try (Connection connexion = DAOFactory.getConnection();
+                 PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false, nbElem, offset);) {
+                   resultSet = preparedStatement.executeQuery();
+                   if (nbElem != Page.NO_LIMIT) {
+                       while (resultSet.next()) {
+                          p.addElem((Company) mapper.map(resultSet));
+                       }
+                   } else {
+                       while (resultSet.next()) {
+                           p.addElem((Company) mapper.map(resultSet));
+                       }
+                   }
+                   resultSet.close();
+            } catch (SQLException e) {
+                   Logger logger = LoggerFactory.getLogger("CompanyDAO.findAll.SQL");
+                   logger.debug("Probleme de connection lors de l'obtention de tout les tuples de la table company.");
+            }
         }
 
         return p;
@@ -139,21 +134,13 @@ public class CompanyDAO implements ModelDAO {
     @Override
     public void update(Model m) {
 
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_UPDATE, false, m.getNom(),
-                    m.getId());
+        try (Connection connexion = DAOFactory.getConnection();
+             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_UPDATE, false, m.getNom(),
+                        m.getId());) {
             preparedStatement.executeUpdate();
-            preparedStatement.close();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.update.SQL");
             logger.debug("Probleme de connection lors de la mise à jour de l'element dans la table company.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
     }
 
@@ -164,20 +151,13 @@ public class CompanyDAO implements ModelDAO {
      * @throws DAOException Envoyé si rien trouvé.
      */
     public void delete(long id) throws DAOException {
-        Connection connexion = null;
-        PreparedStatement preparedStatement = null;
 
-        try {
-            connexion = daoFactory.getConnection();
-            preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);
+        try (Connection connexion = DAOFactory.getConnection();
+             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);) {
             preparedStatement.executeUpdate();
-            preparedStatement.close();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.update.SQL");
             logger.debug("Probleme de connection lors de la suppression de l'element dans la table company.");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
     }
 }
