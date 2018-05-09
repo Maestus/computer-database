@@ -122,12 +122,43 @@ public class ComputerService extends ModelService {
     }
 
     /**
+     * Pour obtenir le nombre de computer dans la base données.
+     * @param parameter Une chaine de caractere.
+     * @return Un nombre de computer
+     */
+    public Long getNumberComputerByName(String parameter) {
+        return computerDao.getCountByName(parameter);
+    }
+
+    /**
      * Récuperation des computers qui comporte dans leur nom la chaine parameter.
      * @param parameter Une chaine de caractere.
+     * @param offset Determine à partir de quel element on stocke dans la liste.
+     * @param nbElem Nombre d'element à stocker.
      * @return Un Page.
      */
-    public Page<Computer> getComputerByName(String parameter) {
-        return computerDao.findComputerByName(0, Page.NO_LIMIT, parameter);
+    public Page<Computer> getComputerByName(String parameter, int offset, int nbElem) {
+        return computerDao.findComputerByName(offset, nbElem, parameter);
+    }
+
+    /**
+     * Récuperation des computers qui comporte dans leur nom la chaine parameter.
+     * @param parameter Une chaine de caractere.
+     * @param offset Determine à partir de quel element on stocke dans la liste.
+     * @param nbElem Nombre d'element à stocker.
+     * @return Un Page.
+     */
+    public Page<Computer> getComputerByCompanyName(String parameter, int offset, int nbElem) {
+        return computerDao.findComputerByCompany(offset, nbElem, parameter);
+    }
+
+    /**
+     * Pour obtenir le nombre de computer dans la base données.
+     * @param parameter Une chaine de caractere.
+     * @return Un nombre de computer
+     */
+    public long getNumberComputerByCompanyName(String parameter) {
+        return computerDao.getCountByCompanyName(parameter);
     }
 
 }

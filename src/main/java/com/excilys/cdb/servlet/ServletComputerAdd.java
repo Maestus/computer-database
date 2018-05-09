@@ -43,11 +43,10 @@ public class ServletComputerAdd extends HttpServlet {
     }
 
     @Override
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-
+            System.out.println(request.getAttribute("selection"));
             Page<Company> pCompany = companyServ.getListCompany(0, Page.NO_LIMIT);
             companyDTOs = new ArrayList<>();
 
@@ -68,7 +67,8 @@ public class ServletComputerAdd extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         Computer computer = new Computer();
 
@@ -107,12 +107,10 @@ public class ServletComputerAdd extends HttpServlet {
     public void init() throws ServletException {
         System.out.println("Servlet " + this.getServletName() + " has started");
         dao = DAOFactory.getInstance();
-        /*try {
-            dao.getConnection();
-            dao.setConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }*/
+        /*
+         * try { dao.getConnection(); dao.setConnection(); } catch (SQLException e) {
+         * e.printStackTrace(); }
+         */
 
         computerServ = new ComputerService();
         companyServ = new CompanyService();

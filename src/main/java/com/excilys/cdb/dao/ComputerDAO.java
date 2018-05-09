@@ -32,7 +32,10 @@ public class ComputerDAO implements ModelDAO {
     private static final String SQL_INSERT = "INSERT INTO computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);";
     private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
     private static final String SQL_DELETE = "DELETE FROM computer WHERE id = ?;";
-    private static final String SQL_SEARCH_BY_NAME = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE name LIKE ?;";
+    private static final String SQL_SEARCH_BY_NAME = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE name LIKE ? LIMIT ? OFFSET ?;";
+    private static final String SQL_SEARCH_BY_COMPANY_NAME = "SELECT computer.id, computer.name, introduced, discontinued, company_id FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company.name LIKE ? LIMIT ? OFFSET ?;";
+    private static final String SQL_COUNT_BY_NAME = "SELECT COUNT(*) as number FROM computer WHERE name LIKE ?;";
+    private static final String SQL_COUNT_BY_COMPANY_NAME = "SELECT COUNT(*) as number FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company.name LIKE ?;";
 
     private Mapper mapper;
     private Mapper mapperCompany;
@@ -151,9 +154,6 @@ public class ComputerDAO implements ModelDAO {
             } catch (SQLException e) {
                 Logger logger = LoggerFactory.getLogger("ComputerDAO.findAll.SQL");
                 logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table company.");
-
-                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                StatusPrinter.print(lc);
             }
         } else {
             try (Connection connexion = DAOFactory.getConnection();
@@ -190,9 +190,6 @@ public class ComputerDAO implements ModelDAO {
         } catch (ParseException e) {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.update.Parse");
             logger.debug("Parse erreur");
-
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
         }
 
         try (Connection connexion = DAOFactory.getConnection();
@@ -269,7 +266,55 @@ public class ComputerDAO implements ModelDAO {
     }
 
     /**
-     * Récuperation des computers qui comporte dans leur nom la chaine parameter.
+     * Obtenir le nombre de computer dans la base de données.
+     * @param parameter Une chaine de caractere
+     * @return Un nombre de computer
+     */
+    public Long getCountByName(String parameter) {
+
+        Long number = null;
+
+        try (Connection connexion = DAOFactory.getConnection();
+             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_COUNT_BY_NAME, false, "%" + parameter + "%");
+             ResultSet resultSet = preparedStatement.executeQuery();) {
+            while (resultSet.next()) {
+                number = resultSet.getLong("number");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.getCount.SQL");
+            logger.debug("Probleme de connection lors de la recherche de l'element dans la table computer.");
+        }
+
+        return number;
+    }
+
+    /**
+     * Obtenir le nombre de computer dans la base de données.
+     * @param parameter Une chaine de caractere
+     * @return Un nombre de computer
+     */
+    public Long getCountByCompanyName(String parameter) {
+
+        Long number = null;
+
+        try (Connection connexion = DAOFactory.getConnection();
+             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_COUNT_BY_COMPANY_NAME, false, "%" + parameter + "%");
+             ResultSet resultSet = preparedStatement.executeQuery();) {
+            while (resultSet.next()) {
+                number = resultSet.getLong("number");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.getCount.SQL");
+            logger.debug("Probleme de connection lors de la recherche de l'element dans la table computer.");
+        }
+
+        return number;
+    }
+
+    /**
+     * Récuperation des computers dont le nom est similaire à la chaine parameter.
      * @param offset Determine à partir de quel element en commence à stocker ce qui sera retourné
      * @param nbElem Nombre d'element à retourner
      * @param parameter Une chaine de caractere
@@ -279,7 +324,7 @@ public class ComputerDAO implements ModelDAO {
         Page<Computer> p = new Page<Computer>(offset, nbElem);
 
         try (Connection connexion = DAOFactory.getConnection();
-             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SEARCH_BY_NAME, false, "%" + parameter + "%");
+             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SEARCH_BY_NAME, false, "%" + parameter + "%", nbElem, offset);
              ResultSet resultSet = preparedStatement.executeQuery();) {
             while (resultSet.next()) {
                 p.addElem((Computer) mapper.map(resultSet));
@@ -288,7 +333,30 @@ public class ComputerDAO implements ModelDAO {
             Logger logger = LoggerFactory.getLogger("ComputerDAO.findComputerByName.SQL");
             logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table computer.", e);
         }
-        System.out.println(p.nbElem);
+
+        return p;
+    }
+
+    /**
+     * Récuperation des computers dont le nom de company est similaire à la chaine parameter.
+     * @param offset Determine à partir de quel element en commence à stocker ce qui sera retourné
+     * @param nbElem Nombre d'element à retourner
+     * @param parameter Une chaine de caractere
+     * @return Une page
+     */
+    public Page<Computer> findComputerByCompany(int offset, int nbElem, String parameter) {
+        Page<Computer> p = new Page<Computer>(offset, nbElem);
+
+        try (Connection connexion = DAOFactory.getConnection();
+             PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SEARCH_BY_COMPANY_NAME, false, "%" + parameter + "%", nbElem, offset);
+             ResultSet resultSet = preparedStatement.executeQuery();) {
+            while (resultSet.next()) {
+                p.addElem((Computer) mapper.map(resultSet));
+            }
+        } catch (SQLException e) {
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.findComputerByName.SQL");
+            logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table computer.", e);
+        }
 
         return p;
     }
