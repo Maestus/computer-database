@@ -61,7 +61,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
+		<form id="deleteForm" action="edit" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
@@ -96,7 +96,7 @@
 
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
-								class="cb" value="0"></td>
+								class="cb" value="${ titre.getComputer().getId() }"></td>
 							<td><a
 								href="edit?id=<c:out value="${ titre.getComputer().getId() }" />"
 								onclick=""><c:out value="${ titre.getComputer().getNom() }" /></a>

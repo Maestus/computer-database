@@ -183,7 +183,7 @@ public class ServletComputer extends HttpServlet {
             paging = Integer.parseInt(request.getParameter("b1"));
         } else if (request.getParameter("b2") != null) {
             paging = Integer.parseInt(request.getParameter("b2"));
-        } else {
+        } else if (request.getParameter("b3") != null) {
             paging = Integer.parseInt(request.getParameter("b3"));
         }
         offset = 0;

@@ -46,7 +46,6 @@ public class ServletComputerAdd extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            System.out.println(request.getAttribute("selection"));
             Page<Company> pCompany = companyServ.getListCompany(0, Page.NO_LIMIT);
             companyDTOs = new ArrayList<>();
 
