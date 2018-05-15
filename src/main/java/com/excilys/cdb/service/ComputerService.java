@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import main.java.com.excilys.cdb.dao.CompanyDAO;
 import main.java.com.excilys.cdb.dao.ComputerDAO;
-import main.java.com.excilys.cdb.dao.DAOFactory;
 import main.java.com.excilys.cdb.exception.DAOException;
 import main.java.com.excilys.cdb.exception.ValidatorException;
 import main.java.com.excilys.cdb.model.Company;
@@ -26,7 +25,7 @@ public class ComputerService extends ModelService {
      * Initialiastion du ComputerService.
      * @param dao un objet DAOFactory.
      */
-    public void init(DAOFactory dao) {
+    public void init() {
         this.computerDao = new ComputerDAO();
         this.companyDao = new CompanyDAO();
         this.validate = new ComputerValidator(computerDao);

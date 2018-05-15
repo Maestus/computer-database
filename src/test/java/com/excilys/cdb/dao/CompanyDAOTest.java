@@ -25,7 +25,7 @@ public class CompanyDAOTest {
      */
     @Before
     public void setUp() {
-        dao = DAOFactory.getInstance();
+        //dao = DAOFactory.getInstance();
         /*try {
             dao.setConnection();
         } catch (SQLException e) {

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.PreparedStatement;
 
 import main.java.com.excilys.cdb.exception.DAOException;
+import main.java.com.excilys.cdb.hikari.HikariT;
 import main.java.com.excilys.cdb.mapper.CompanyMapper;
 import main.java.com.excilys.cdb.mapper.ComputerMapper;
 import main.java.com.excilys.cdb.mapper.Mapper;
@@ -21,7 +22,7 @@ import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.model.Model;
 import main.java.com.excilys.cdb.utils.Page;
 
-public class ComputerDAO implements ModelDAO {
+public class ComputerDAO extends ModelDAO {
 
     private static final String SQL_SELECT_PAR_ID = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?;";
     private static final String SQL_SELECT_ALL = "SELECT id, name, introduced, discontinued, company_id FROM computer LIMIT ? OFFSET ?;";
@@ -44,6 +45,7 @@ public class ComputerDAO implements ModelDAO {
      * Création d'une ComputerDAO à l'aide d'une DAO.
      */
     public ComputerDAO() {
+    	super();
         this.mapper = new ComputerMapper();
         this.mapperCompany = new CompanyMapper();
     }
@@ -53,7 +55,7 @@ public class ComputerDAO implements ModelDAO {
 
         Optional<Long> id = Optional.empty();
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_INSERT, true,
              ((Computer) model).getNom(), ((Computer) model).getIntroduced(),
              ((Computer) model).getDiscontinued(), ((Computer) model).getCompanyId());) {
@@ -87,7 +89,7 @@ public class ComputerDAO implements ModelDAO {
 
         Optional<Computer> computer = Optional.empty();
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_PAR_ID, false, id);
              ResultSet resultSet = preparedStatement.executeQuery();) {
             if (resultSet.next()) {
@@ -112,7 +114,7 @@ public class ComputerDAO implements ModelDAO {
 
         Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_BY_COMPANY, false, id);
              ResultSet resultSet = preparedStatement.executeQuery();) {
 
@@ -145,7 +147,7 @@ public class ComputerDAO implements ModelDAO {
         Page<Computer> p = new Page<Computer>(offset, nbElem);
 
         if (nbElem == Page.NO_LIMIT) {
-            try (Connection connexion = DAOFactory.getConnection();
+            try (Connection connexion = HikariT.getConnexion();
                  PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL_NOLIMIT, false);
                  ResultSet resultSet = preparedStatement.executeQuery();) {
                 while (resultSet.next()) {
@@ -156,7 +158,7 @@ public class ComputerDAO implements ModelDAO {
                 logger.debug("Probleme de connection lors de la recherche de tout les elements dans la table company.");
             }
         } else {
-            try (Connection connexion = DAOFactory.getConnection();
+            try (Connection connexion = HikariT.getConnexion();
                  PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false, nbElem, offset);
                  ResultSet resultSet = preparedStatement.executeQuery();) {
                 while (resultSet.next()) {
@@ -192,7 +194,7 @@ public class ComputerDAO implements ModelDAO {
             logger.debug("Parse erreur");
         }
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_UPDATE, false, m.getNom(),
                 dateIntroDB, dateDisDB, ((Computer) m).getCompanyId(), m.getId());) {
             preparedStatement.executeUpdate();
@@ -210,7 +212,7 @@ public class ComputerDAO implements ModelDAO {
      */
     public void delete(long id) throws DAOException {
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -228,7 +230,7 @@ public class ComputerDAO implements ModelDAO {
 
         Optional<Company> company = Optional.empty();
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_COMPANY_OF_COMPUTER, false, id);
              ResultSet resultSet = preparedStatement.executeQuery();) {
             if (resultSet.next()) {
@@ -241,7 +243,7 @@ public class ComputerDAO implements ModelDAO {
 
         return  company;
     }
-
+    
     /**
      * Obtenir le nombre de computer dans la base de données.
      * @return Un nombre de computer
@@ -250,7 +252,7 @@ public class ComputerDAO implements ModelDAO {
 
         Long number = null;
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_COUNT, false);
              ResultSet resultSet = preparedStatement.executeQuery();) {
             while (resultSet.next()) {
@@ -274,7 +276,7 @@ public class ComputerDAO implements ModelDAO {
 
         Long number = null;
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_COUNT_BY_NAME, false, "%" + parameter + "%");
              ResultSet resultSet = preparedStatement.executeQuery();) {
             while (resultSet.next()) {
@@ -298,7 +300,7 @@ public class ComputerDAO implements ModelDAO {
 
         Long number = null;
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_COUNT_BY_COMPANY_NAME, false, "%" + parameter + "%");
              ResultSet resultSet = preparedStatement.executeQuery();) {
             while (resultSet.next()) {
@@ -323,7 +325,7 @@ public class ComputerDAO implements ModelDAO {
     public Page<Computer> findComputerByName(int offset, int nbElem, String parameter) {
         Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SEARCH_BY_NAME, false, "%" + parameter + "%", nbElem, offset);
              ResultSet resultSet = preparedStatement.executeQuery();) {
             while (resultSet.next()) {
@@ -347,7 +349,7 @@ public class ComputerDAO implements ModelDAO {
     public Page<Computer> findComputerByCompany(int offset, int nbElem, String parameter) {
         Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SEARCH_BY_COMPANY_NAME, false, "%" + parameter + "%", nbElem, offset);
              ResultSet resultSet = preparedStatement.executeQuery();) {
             while (resultSet.next()) {

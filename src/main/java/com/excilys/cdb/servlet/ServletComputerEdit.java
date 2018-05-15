@@ -14,22 +14,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import main.java.com.excilys.cdb.dao.DAOFactory;
 import main.java.com.excilys.cdb.dto.CompanyDTO;
 import main.java.com.excilys.cdb.dto.ComputerDTO;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
-import main.java.com.excilys.cdb.service.CompanyService;
-import main.java.com.excilys.cdb.service.ComputerService;
 import main.java.com.excilys.cdb.utils.Page;
 
 @WebServlet("/edit")
 public class ServletComputerEdit extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ServletContext sc;
-    private DAOFactory dao;
-    private ComputerService computerServ;
-    private CompanyService companyServ;
     ArrayList<CompanyDTO> companyDTOs;
     final DateTimeFormatter englishPattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -43,13 +37,7 @@ public class ServletComputerEdit extends HttpServlet {
     @Override
     public void init() throws ServletException {
         System.out.println("Servlet " + this.getServletName() + " has started");
-        dao = DAOFactory.getInstance();
-
-        computerServ = new ComputerService();
-        companyServ = new CompanyService();
-
-        computerServ.init(dao);
-        companyServ.init(dao);
+        
         sc = getServletContext();
     }
 
@@ -61,14 +49,14 @@ public class ServletComputerEdit extends HttpServlet {
             try {
                 Optional<Computer> optComp;
                 long id = Long.parseLong(request.getParameter("id"));
-                if ((optComp = computerServ.getComputerById(id)).isPresent()) {
+                if ((optComp = ServletComputer.computerServ.getComputerById(id)).isPresent()) {
                     ComputerDTO computer = new ComputerDTO();
                     computer.setComputer(optComp.get());
                     if (computer.getComputer().getCompanyId() != null) {
-                        computer.setCompany(companyServ.getCompany((long) computer.getComputer().getCompanyId()).get());
+                        computer.setCompany(ServletComputer.companyServ.getCompany((long) computer.getComputer().getCompanyId()).get());
                     }
 
-                    Page<Company> pCompany = companyServ.getListCompany(0, Page.NO_LIMIT);
+                    Page<Company> pCompany = ServletComputer.companyServ.getListCompany(0, Page.NO_LIMIT);
                     companyDTOs = new ArrayList<>();
 
                     for (Company comp : pCompany.elems) {
@@ -130,7 +118,7 @@ public class ServletComputerEdit extends HttpServlet {
 	
 	        System.out.println(computer);
 	
-	        if (computerServ.updateComputer(computer)) {
+	        if (ServletComputer.computerServ.updateComputer(computer)) {
 	            request.setAttribute("updated", true);
 	            response.sendRedirect("ComputerList?page=1");
 	        } else {
@@ -147,8 +135,9 @@ public class ServletComputerEdit extends HttpServlet {
 			for(String s : split) {
 				c = new Computer();
 				c.setId(Long.parseLong(s));
-				computerServ.removeComputer(c);
+				ServletComputer.computerServ.removeComputer(c);
 			}	
+	        ServletComputer.nbComputers = ServletComputer.computerServ.getNumberComputer();
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}

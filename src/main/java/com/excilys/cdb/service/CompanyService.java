@@ -3,24 +3,23 @@ package main.java.com.excilys.cdb.service;
 import java.util.Optional;
 
 import main.java.com.excilys.cdb.dao.CompanyDAO;
-import main.java.com.excilys.cdb.dao.DAOFactory;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.utils.Page;
-import main.java.com.excilys.cdb.validator.CompanyValidator;
-import main.java.com.excilys.cdb.validator.Validator;
+//import main.java.com.excilys.cdb.validator.CompanyValidator;
+//import main.java.com.excilys.cdb.validator.Validator;
 
 public class CompanyService extends ModelService {
 
     public CompanyDAO companyDao;
-    private Validator validate;
+    //private Validator validate;
 
     /**
      * Initialise un CompanyService à partir d'une DAO.
      * @param dao Une Objet DAOFactory.
      */
-    public void init(DAOFactory dao) {
+    public void init() {
         this.companyDao = new CompanyDAO();
-        this.validate = new CompanyValidator(companyDao);
+        //this.validate = new CompanyValidator(companyDao);
     }
 
     /**
@@ -40,6 +39,14 @@ public class CompanyService extends ModelService {
      */
     public Optional<Company> getCompany(long id) {
         return companyDao.findById(id);
+    }
+    
+    /**
+     * Obtenir une Company.
+     * @param id Identifiant de la company.
+     */
+    public void removeCompany(long id) {
+        companyDao.remove(id);
     }
 
 }

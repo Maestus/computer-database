@@ -7,14 +7,14 @@ import main.java.com.excilys.cdb.model.Model;
 
 public class CompanyValidator extends Validator {
 
-    private CompanyDAO companyDao;
+    //private CompanyDAO companyDao;
 
     /**
      * Constructeur.
      * @param companyDao Un accesseur à la table
      */
     public CompanyValidator(CompanyDAO companyDao) {
-        this.companyDao = companyDao;
+       //this.companyDao = companyDao;
     }
 
     @Override

@@ -2,21 +2,21 @@ package main.java.com.excilys.cdb.dao;
 
 //import java.io.IOException;
 //import java.io.InputStream;
-import java.sql.Connection;
+//import java.sql.Connection;
 //import java.sql.DriverManager;
-import java.sql.SQLException;
+//import java.sql.SQLException;
 //import java.util.Properties;
 
 //import main.java.com.excilys.cdb.exception.DAOException;
-import main.java.com.excilys.cdb.hikari.HikariT;
+//import main.java.com.excilys.cdb.hikari.HikariT;
 
-public class DAOFactory implements AutoCloseable {
+public class DAOFactory {
 
     //private static final String FILE_PROPERTIES = "dao.properties";
     //private Properties props;
     //private String url;
-    static DAOFactory instance = new DAOFactory();
-    private Connection connection;
+    //static DAOFactory instance = new DAOFactory();
+    //private Connection connection;
     //private static DAOFactory d;
 
     /**
@@ -38,49 +38,11 @@ public class DAOFactory implements AutoCloseable {
     /**
      * Constructeur par defaut.
      */
-    private DAOFactory() {
-    }
+    /*private DAOFactory() {
+    	HikariT.init();
+        connection = HikariT.getConnexion();
+    }*/
 
-    /**
-     * Construit la DAO en appelant le constructeur.
-     * @return une DAO Factory.
-     */
-    public static DAOFactory getInstance() {
-        //if (instance == null) {
-            /*Properties properties = new Properties();
-            String url = null;
-            String driver = null;
-            String nomUtilisateur = null;
-            String motDePasse = null;
-
-            d = new DAOFactory();
-            ClassLoader classLoader = d.getClass().getClassLoader();
-
-            InputStream fichierProperties = classLoader.getResourceAsStream(FILE_PROPERTIES);
-
-            if (fichierProperties == null) {
-                throw new DAOException("Impossible de trouver le fichier " + FILE_PROPERTIES);
-            }
-             */
-            HikariT.init();
-            instance.connection = HikariT.getConnexion();
-           /* try {
-                properties.load(fichierProperties);
-                url = properties.getProperty("url");
-                driver = properties.getProperty("driver");
-                nomUtilisateur = properties.getProperty("username");
-                motDePasse = properties.getProperty("password");
-                Class.forName(driver);
-            } catch (IOException e) {
-                throw new DAOException("Impossible de charger le fichier " + FILE_PROPERTIES, e);
-            } catch (ClassNotFoundException e) {
-                throw new DAOException("Impossible de trouver le driver donné dans le fichier " + FILE_PROPERTIES);
-            }
-
-            instance = new DAOFactory(url, nomUtilisateur, motDePasse);*/
-        //}
-        return instance;
-    }
 
     /**
      * Permet l'initialisation d'une connexion.
@@ -97,13 +59,8 @@ public class DAOFactory implements AutoCloseable {
      * @throws SQLException
      *             Erreur suceptible d'etre renvoyée.
      */
-    public static Connection getConnection() {
-        instance.connection = HikariT.getConnexion();
-        return instance.connection;
-    }
-
-    @Override
-    public void close() throws Exception {
-        connection.close();
-    }
+    /*public static Connection getConnection() {
+        //instance.connection = HikariT.getConnexion();
+        //return instance.connection;
+    }*/
 }

@@ -1,6 +1,5 @@
 package main.java.com.excilys.cdb.servlet;
 
-import main.java.com.excilys.cdb.dao.DAOFactory;
 import main.java.com.excilys.cdb.dto.ComputerDTO;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
@@ -9,7 +8,6 @@ import main.java.com.excilys.cdb.service.ComputerService;
 import main.java.com.excilys.cdb.utils.Page;
 
 import java.io.IOException;
-//import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -38,9 +36,8 @@ public class ServletComputer extends HttpServlet {
     static String searchedString;
     private int paging;
     private int offset;
-    private DAOFactory dao;
-    private ComputerService computerServ;
-    private CompanyService companyServ;
+    static ComputerService computerServ;
+    static CompanyService companyServ;
     private ServletContext sc;
     private boolean typeChanged;
     Page<Computer> pComputer;
@@ -164,12 +161,11 @@ public class ServletComputer extends HttpServlet {
     @Override
     public void init() throws ServletException {
         System.out.println("Servlet " + this.getServletName() + " has started");
-        dao = DAOFactory.getInstance();
         computerServ = new ComputerService();
         companyServ = new CompanyService();
 
-        computerServ.init(dao);
-        companyServ.init(dao);
+        computerServ.init();
+        companyServ.init();
         sc = getServletContext();
         nbComputers = computerServ.getNumberComputer();
         paging = Integer.parseInt(getServletContext().getInitParameter("paging"));

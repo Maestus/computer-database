@@ -2,11 +2,10 @@ package main.java.com.excilys.cdb.main;
 
 import java.util.Scanner;
 
-import main.java.com.excilys.cdb.controller.UIController;
-import main.java.com.excilys.cdb.dao.DAOFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import main.java.com.excilys.cdb.service.CompanyService;
-import main.java.com.excilys.cdb.service.ComputerService;
-import main.java.com.excilys.cdb.ui.Interface;
 
 public class Main {
 
@@ -16,18 +15,18 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        try (DAOFactory dao = DAOFactory.getInstance();) {
-            dao.setConnection();
-            ComputerService computerserv = new ComputerService();
-            computerserv.init(dao);
-            CompanyService companyserv = new CompanyService();
-            companyserv.init(dao);
-            Scanner sc = new Scanner(System.in);
-            Interface iu = new Interface(sc);
-            UIController controller = new UIController(iu, computerserv, companyserv, sc);
-            controller.launchUI();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        CompanyService companyserv = new CompanyService();
+        companyserv.init();
+        
+        System.out.print("Quel company voulez-vous supprimer ? : ");
+        
+           
+    	try (Scanner sc = new Scanner(System.in);) {
+    		int idCompany = Integer.parseInt(sc.nextLine());
+    		companyserv.removeCompany(idCompany);
+    	} catch (NumberFormatException e) {
+            Logger logger = LoggerFactory.getLogger("Main");
+            logger.debug("Probleme de conversion en entier.");
+    	}
     }
 }

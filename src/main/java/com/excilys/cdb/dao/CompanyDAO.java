@@ -11,13 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import main.java.com.excilys.cdb.exception.DAOException;
+import main.java.com.excilys.cdb.hikari.HikariT;
 import main.java.com.excilys.cdb.mapper.CompanyMapper;
 import main.java.com.excilys.cdb.mapper.Mapper;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Model;
 import main.java.com.excilys.cdb.utils.Page;
 
-public class CompanyDAO implements ModelDAO {
+public class CompanyDAO extends ModelDAO {
 
     private static final String SQL_SELECT_PAR_ID = "SELECT id, name FROM company WHERE id = ?;";
     private static final String SQL_SELECT_ALL = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
@@ -25,6 +26,7 @@ public class CompanyDAO implements ModelDAO {
     private static final String SQL_INSERT = "INSERT INTO company (name) values (?);";
     private static final String SQL_UPDATE = "UPDATE company SET name = ? WHERE id = ?;";
     private static final String SQL_DELETE = "DELETE FROM company WHERE id = ?;";
+    private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE company_id = ?;";
 
     private Mapper mapper;
 
@@ -32,6 +34,7 @@ public class CompanyDAO implements ModelDAO {
      * Création d'une CompanyDAO à l'aide d'une DAO.
      */
     public CompanyDAO() {
+    	super();
         this.mapper = new CompanyMapper();
     }
 
@@ -40,7 +43,7 @@ public class CompanyDAO implements ModelDAO {
         ResultSet idAuto = null;
         Optional<Long> id = Optional.empty();
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_INSERT, true,
                      ((Company) model).getNom());) {
 
@@ -72,7 +75,7 @@ public class CompanyDAO implements ModelDAO {
         ResultSet resultSet = null;
         Company company = null;
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_PAR_ID, false, id);) {
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -92,7 +95,7 @@ public class CompanyDAO implements ModelDAO {
         Page<Company> p = new Page<Company>(offset, nbElem);
 
         if (nbElem == Page.NO_LIMIT) {
-            try (Connection connexion = DAOFactory.getConnection();
+            try (Connection connexion = HikariT.getConnexion();
                  PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL_NOLIMIT, false);) {
                 resultSet = preparedStatement.executeQuery();
                 if (nbElem != Page.NO_LIMIT) {
@@ -110,7 +113,7 @@ public class CompanyDAO implements ModelDAO {
                 logger.debug("Probleme de connection lors de l'obtention de tout les tuples de la table company.");
             }
         } else {
-            try (Connection connexion = DAOFactory.getConnection();
+            try (Connection connexion = HikariT.getConnexion();
                  PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_SELECT_ALL, false, nbElem, offset);) {
                    resultSet = preparedStatement.executeQuery();
                    if (nbElem != Page.NO_LIMIT) {
@@ -135,7 +138,7 @@ public class CompanyDAO implements ModelDAO {
     @Override
     public void update(Model m) {
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_UPDATE, false, m.getNom(),
                         m.getId());) {
             preparedStatement.executeUpdate();
@@ -153,12 +156,34 @@ public class CompanyDAO implements ModelDAO {
      */
     public void delete(long id) throws DAOException {
 
-        try (Connection connexion = DAOFactory.getConnection();
+        try (Connection connexion = HikariT.getConnexion();
              PreparedStatement preparedStatement = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             Logger logger = LoggerFactory.getLogger("CompanyDAO.update.SQL");
             logger.debug("Probleme de connection lors de la suppression de l'element dans la table company.");
         }
+    }
+    
+    /**
+     * Obtenir la company qui à crée le computer.
+     * @param id Identifiant du computer
+     * @return Une company
+     */
+    public void remove(long id) {
+
+        try (Connection connexion = HikariT.getConnexion();
+             PreparedStatement preparedStatement_0 = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE_COMPUTER, false, id);
+        	 PreparedStatement preparedStatement_1 = ModelDAO.initialisationRequetePreparee(connexion, SQL_DELETE, false, id);) {
+        	connexion.setAutoCommit(false);
+        	preparedStatement_0.executeUpdate();
+            preparedStatement_1.executeUpdate();
+            connexion.commit();
+        } catch (SQLException e) {
+            Logger logger = LoggerFactory.getLogger("ComputerDAO.findCompanyLink.SQL");
+            logger.debug("Probleme de connection lors de la recherche de l'element dans la table computer.");
+            e.printStackTrace();
+        }
+
     }
 }

@@ -1,7 +1,6 @@
 package main.java.com.excilys.cdb.servlet;
 
 import java.io.IOException;
-//import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,12 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import main.java.com.excilys.cdb.dao.DAOFactory;
 import main.java.com.excilys.cdb.dto.CompanyDTO;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
-import main.java.com.excilys.cdb.service.CompanyService;
-import main.java.com.excilys.cdb.service.ComputerService;
 import main.java.com.excilys.cdb.utils.Page;
 
 /**
@@ -28,9 +24,6 @@ import main.java.com.excilys.cdb.utils.Page;
 @WebServlet("/ComputerAdd")
 public class ServletComputerAdd extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private DAOFactory dao;
-    private ComputerService computerServ;
-    private CompanyService companyServ;
     private ServletContext sc;
     final DateTimeFormatter englishPattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     ArrayList<CompanyDTO> companyDTOs;
@@ -46,7 +39,7 @@ public class ServletComputerAdd extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            Page<Company> pCompany = companyServ.getListCompany(0, Page.NO_LIMIT);
+            Page<Company> pCompany = ServletComputer.companyServ.getListCompany(0, Page.NO_LIMIT);
             companyDTOs = new ArrayList<>();
 
             for (Company comp : pCompany.elems) {
@@ -88,16 +81,16 @@ public class ServletComputerAdd extends HttpServlet {
 
         computer.setCompanyId(Long.parseLong(request.getParameter("companyId")));
 
-        if (computerServ.addComputer(computer)) {
-            request.setAttribute("created", false);
+        if (ServletComputer.computerServ.addComputer(computer)) {
+            request.setAttribute("created", true);
         } else {
             request.setAttribute("dateError", true);
         }
 
-        ServletComputer.nbComputers = computerServ.getNumberComputer();
+        ServletComputer.nbComputers = ServletComputer.computerServ.getNumberComputer();
 
         request.setAttribute("companies", companyDTOs);
-
+        
         RequestDispatcher dispatcher = sc.getRequestDispatcher("/Views/addComputer.jsp");
         dispatcher.forward(request, response);
     }
@@ -105,17 +98,7 @@ public class ServletComputerAdd extends HttpServlet {
     @Override
     public void init() throws ServletException {
         System.out.println("Servlet " + this.getServletName() + " has started");
-        dao = DAOFactory.getInstance();
-        /*
-         * try { dao.getConnection(); dao.setConnection(); } catch (SQLException e) {
-         * e.printStackTrace(); }
-         */
 
-        computerServ = new ComputerService();
-        companyServ = new CompanyService();
-
-        computerServ.init(dao);
-        companyServ.init(dao);
         sc = getServletContext();
     }
 }

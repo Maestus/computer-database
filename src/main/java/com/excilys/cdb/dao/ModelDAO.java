@@ -8,18 +8,28 @@ import java.util.Optional;
 import java.sql.PreparedStatement;
 
 import main.java.com.excilys.cdb.exception.DAOException;
+import main.java.com.excilys.cdb.hikari.HikariT;
 import main.java.com.excilys.cdb.model.Model;
 import main.java.com.excilys.cdb.utils.Page;
 
-public interface ModelDAO {
+public abstract class ModelDAO {
 
+    protected Connection connection;
+	
+	/**
+     * Constructeur par defaut.
+     */
+    public ModelDAO() {
+        connection = HikariT.getConnexion();
+    }
+	
     /**
      * Insertion d'un objet dans la base de donnée.
      * @param model Un objet représentant un tuple d'une table.
      * @throws Exception Exception du à une mauvaise connection à la base de données.
      * @return Retourne l'identifiant de l'objet crée.
      */
-    Optional<Long> create(Model model) throws Exception;
+    abstract Optional<Long> create(Model model) throws Exception;
 
     /**
      * Trouver un objet depuis l'identifiant donné en argument. Leve une exception
@@ -29,13 +39,13 @@ public interface ModelDAO {
      * @throws DAOException Exception du à une mauvaise connection à la base de données.
      * @return L'objet trouvé
      */
-    Optional<? extends Model> findById(long id) throws DAOException;
+    abstract Optional<? extends Model> findById(long id) throws DAOException;
 
     /**
      * Met à jour un objet de la base de données. param m est un model.
      * @param m un object à mettre à jour dans la base de données.
      */
-    void update(Model m);
+    abstract void update(Model m);
 
     /**
      * Trouve tout les elements d'une table.
@@ -44,7 +54,7 @@ public interface ModelDAO {
      * @throws DAOException Exception du à une mauvaise connection à la base de données.
      * @return Un ensemble d'element de la base données.
      */
-    Page<? extends Model> findAll(int offset, int nbElem) throws DAOException;
+    abstract Page<? extends Model> findAll(int offset, int nbElem) throws DAOException;
 
     /**
      * Construit la requete.

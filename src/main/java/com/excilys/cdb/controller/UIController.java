@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
+//import ch.qos.logback.classic.LoggerContext;
+//import ch.qos.logback.core.util.StatusPrinter;
 
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
@@ -74,8 +74,8 @@ public class UIController {
                 }
                 goodChoice = true;
             } catch (Exception e) {
-                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                StatusPrinter.print(lc);
+                /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                StatusPrinter.print(lc);*/
             }
         }
     }
@@ -103,8 +103,8 @@ public class UIController {
                 Logger logger = LoggerFactory.getLogger("uiController.displayRes.Type");
                 logger.debug("Mauvaise entrée.");
 
-                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                StatusPrinter.print(lc);
+                /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                StatusPrinter.print(lc);*/
             }
             launchUI();
         }
@@ -158,8 +158,8 @@ public class UIController {
             Logger logger = LoggerFactory.getLogger("uiController.displayList.Type");
             logger.debug("Mauvais type d'entrée, entrer un entier.");
 
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
+            /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);*/
         }
     }
 
@@ -192,8 +192,8 @@ public class UIController {
             Logger logger = LoggerFactory.getLogger("uiController.displayComputerListByCompanyId.Type");
             logger.debug("Mauvais type d'entrée, entrer un entier.");
 
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
+            /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);*/
         }
     }
 
@@ -230,8 +230,8 @@ public class UIController {
                 Logger logger = LoggerFactory.getLogger("uiController.setting.Type");
                 logger.debug("Mauvais type d'entrée, entrer un entier.");
 
-                LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                StatusPrinter.print(lc);
+                /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                StatusPrinter.print(lc);*/
             }
         }
     }
@@ -260,7 +260,7 @@ public class UIController {
                 try {
                     if ((Integer.parseInt(choix) - 1) < lcomputer.elems.size()) {
                         computer = computerserv
-                                .getComputerById(lcomputer.elems.get(Integer.parseInt(choix) - 1).getId());
+                                .getComputerById(lcomputer.elems.get(Integer.parseInt(choix) - 1).getId()).get();
                         System.out.println(computer);
                         ui.emplacementMenu = Place.MENU_COMPUTER_DETAIL;
                     }
@@ -268,8 +268,8 @@ public class UIController {
                     Logger logger = LoggerFactory.getLogger("uiController.displayComputerDetail.Type");
                     logger.debug("Mauvais type d'entrée, entrer un entier.");
 
-                    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                    StatusPrinter.print(lc);
+                    /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+                    StatusPrinter.print(lc);*/
                 }
             }
         }
@@ -294,8 +294,8 @@ public class UIController {
             Logger logger = LoggerFactory.getLogger("uiController.controlComputer.Type");
             logger.debug("Mauvais type d'entrée, entrer un entier.");
 
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);
+            /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            StatusPrinter.print(lc);*/
         }
     }
 
