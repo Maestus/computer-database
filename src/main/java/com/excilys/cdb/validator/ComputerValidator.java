@@ -36,7 +36,7 @@ public class ComputerValidator extends Validator {
      * @throws ValidatorIdException Pour les id deja existant
      */
     private void checkId(Computer comp) throws ValidatorIdException {
-        if (comp.getCompanyId() != null && !computerDao.findById((long) comp.getCompanyId()).isPresent()) {
+        if (comp.getCompanyId() != null && !computerDao.findById((long) comp.getId()).isPresent()) {
             throw new ValidatorIdException("Computer inexistant");
         }
     }
