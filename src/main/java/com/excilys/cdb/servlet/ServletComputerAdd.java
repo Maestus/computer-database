@@ -6,12 +6,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.support.HttpRequestHandlerServlet;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import main.java.com.excilys.cdb.dto.CompanyDTO;
 import main.java.com.excilys.cdb.model.Company;
@@ -22,6 +28,7 @@ import main.java.com.excilys.cdb.utils.Page;
  * Servlet implementation class ServletComputerSearch.
  */
 @WebServlet("/ComputerAdd")
+@Configuration
 public class ServletComputerAdd extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ServletContext sc;
@@ -96,9 +103,10 @@ public class ServletComputerAdd extends HttpServlet {
     }
 
     @Override
-    public void init() throws ServletException {
-        System.out.println("Servlet " + this.getServletName() + " has started");
-
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+    	SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
         sc = getServletContext();
+        System.out.println("Servlet " + this.getServletName() + " has started");
     }
 }

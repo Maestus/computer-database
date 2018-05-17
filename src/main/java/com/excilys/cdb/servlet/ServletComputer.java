@@ -12,17 +12,25 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+//import javax.servlet.annotation.WebServlet;
+//import javax.servlet.annotation.WebServlet;
+//import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 /**
  * Servlet implementation class Servlet.
  */
-@WebServlet("/")
+@WebServlet("/ComputerList")
+@Configuration
 public class ServletComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
     static long nbComputers = 0;
@@ -48,6 +56,23 @@ public class ServletComputer extends HttpServlet {
      */
     public ServletComputer() {
         super();
+    }
+    
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+    	super.init(config);
+    	SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    	System.out.println("Servlet " + this.getServletName() + " has started");
+        computerServ = new ComputerService();
+        companyServ = new CompanyService();
+
+        computerServ.init();
+        companyServ.init();
+        sc = getServletContext();
+        nbComputers = computerServ.getNumberComputer();
+        paging = Integer.parseInt(getServletContext().getInitParameter("paging"));
+        offset = Integer.parseInt(getServletContext().getInitParameter("offset"));
     }
 
     @Override
@@ -156,20 +181,6 @@ public class ServletComputer extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void init() throws ServletException {
-        System.out.println("Servlet " + this.getServletName() + " has started");
-        computerServ = new ComputerService();
-        companyServ = new CompanyService();
-
-        computerServ.init();
-        companyServ.init();
-        sc = getServletContext();
-        nbComputers = computerServ.getNumberComputer();
-        paging = Integer.parseInt(getServletContext().getInitParameter("paging"));
-        offset = Integer.parseInt(getServletContext().getInitParameter("offset"));
     }
 
     @Override

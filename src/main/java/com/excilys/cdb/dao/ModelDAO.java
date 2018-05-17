@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.sql.PreparedStatement;
 
 import main.java.com.excilys.cdb.exception.DAOException;
-import main.java.com.excilys.cdb.hikari.HikariT;
 import main.java.com.excilys.cdb.model.Model;
+import main.java.com.excilys.cdb.persistance.Datasource;
 import main.java.com.excilys.cdb.utils.Page;
 
 public abstract class ModelDAO {
@@ -20,7 +20,7 @@ public abstract class ModelDAO {
      * Constructeur par defaut.
      */
     public ModelDAO() {
-        connection = HikariT.getConnexion();
+        connection = Datasource.getConnexion();
     }
 	
     /**
