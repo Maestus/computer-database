@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-                          http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	   http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 	<bean id="dataSource"
 		class="org.springframework.jndi.JndiObjectFactoryBean">
@@ -14,12 +21,64 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<!-- <bean id="computerdao" class="ComputerDAO">
-		<property name="jdbcTemplate" ref="jdbcTemplate"></property>
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+	   <tx:attributes>
+			<tx:method name="delete"/>
+			<!-- all methods other are read-only -->
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut id="companyDao"
+			expression="execution(* main.java.com.excilys.cdb.dao.CompanyDAO.*(..))" />
+		<aop:advisor advice-ref="txAdvice"
+			pointcut-ref="companyDao" />
+	</aop:config>
+
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+		<property name="rollbackOnCommitFailure" value="true" />
 	</bean>
 
-	<bean id="companydao" class="CompanyDAO">
-		<property name="jdbcTemplate" ref="jdbcTemplate"></property>
-	</bean>  -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/Views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="mapperComputer"
+		class="main.java.com.excilys.cdb.mapper.ComputerMapper" />
+
+	<bean id="mapperCompany"
+		class="main.java.com.excilys.cdb.mapper.CompanyMapper" />
+
+	<bean id="companydao"
+		class="main.java.com.excilys.cdb.dao.CompanyDAO" autowire="byName" />
+
+	<bean id="computerdao"
+		class="main.java.com.excilys.cdb.dao.ComputerDAO" autowire="byName" />
+
+	<bean id="computervalidator"
+		class="main.java.com.excilys.cdb.validator.ComputerValidator"
+		autowire="constructor" />
+
+	<bean id="companyvalidator"
+		class="main.java.com.excilys.cdb.validator.CompanyValidator"
+		autowire="constructor" />
+
+	<bean id="computerservice"
+		class="main.java.com.excilys.cdb.service.ComputerService"
+		autowire="constructor" />
+
+	<bean id="companyservice"
+		class="main.java.com.excilys.cdb.service.CompanyService"
+		autowire="constructor" />
+
+	<bean id="main" class="main.java.com.excilys.cdb.main.Main"
+		autowire="byName" />
 
 </beans>

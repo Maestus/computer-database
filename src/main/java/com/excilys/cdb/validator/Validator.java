@@ -11,13 +11,13 @@ public abstract class Validator {
      * @param m L'objet à tester
      * @throws ValidatorException Retourne une exception si l'objet n'est pas valide
      */
-    public abstract void checkBeforeUpdate(Model m) throws ValidatorException;
+    public abstract boolean checkBeforeUpdate(Model m) throws ValidatorException;
 
     /**
      * Verifie que tout les champs d'un objet sont comformes pour une creation.
      * @param m L'objet à tester
      * @throws ValidatorDateException Retourne une exception si l'objet n'est pas valide
      */
-    public abstract void checkBeforeCreation(Model m) throws ValidatorDateException;
+    public abstract boolean checkBeforeCreation(Model m) throws ValidatorDateException;
 
 }

@@ -5,48 +5,67 @@ import java.util.Optional;
 import main.java.com.excilys.cdb.dao.CompanyDAO;
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.utils.Page;
-//import main.java.com.excilys.cdb.validator.CompanyValidator;
-//import main.java.com.excilys.cdb.validator.Validator;
 
-public class CompanyService extends ModelService {
+public class CompanyService {
 
-    public CompanyDAO companyDao;
-    //private Validator validate;
+	public CompanyDAO companydao;
 
-    /**
-     * Initialise un CompanyService à partir d'une DAO.
-     * @param dao Une Objet DAOFactory.
-     */
-    public void init() {
-        this.companyDao = new CompanyDAO();
-        //this.validate = new CompanyValidator(companyDao);
-    }
+	public CompanyService(CompanyDAO companydao) {
+		this.companydao = companydao;
+	}
 
-    /**
-     * Obtenir la liste des companies.
-     * @param offset Determine à partir de quel element on commence à stocker.
-     * @param nbElem Nombre d'element à stocker.
-     * @return Une Page.
-     */
-    public Page<Company> getListCompany(int offset, int nbElem) {
-        return companyDao.findAll(offset, nbElem);
-    }
+	public void setComputerDAO(CompanyDAO companydao) {
+		this.companydao = companydao;
+	}
 
-    /**
-     * Obtenir une Company.
-     * @param id Identifiant de la company.
-     * @return Un objet Company.
-     */
-    public Optional<Company> getCompany(long id) {
-        return companyDao.findById(id);
-    }
-    
-    /**
-     * Obtenir une Company.
-     * @param id Identifiant de la company.
-     */
-    public void removeCompany(long id) {
-        companyDao.remove(id);
-    }
+	/**
+	 * Obtenir la liste des companies.
+	 * 
+	 * @param offset
+	 *            Determine à partir de quel element on commence à stocker.
+	 * @param nbElem
+	 *            Nombre d'element à stocker.
+	 * @return Une Page.
+	 */
+	public Page<Company> getList(int offset, int nbElem) {
+		return companydao.findAll(offset, nbElem);
+	}
+
+	/**
+	 * Obtenir une Company.
+	 * 
+	 * @param id
+	 *            Identifiant de la company.
+	 * @return Un objet Company.
+	 */
+	public Optional<Company> get(long id) {
+		return companydao.findById(id);
+	}
+
+	/**
+	 * Obtenir une Company.
+	 * 
+	 * @param id
+	 *            Identifiant de la company.
+	 */
+	public void remove(long id) {
+		companydao.delete(id);
+	}
+
+	/**
+	 * Pour obtenir le nombre de computer dans la base données.
+	 * 
+	 * @param parameter
+	 *            Une chaine de caractere.
+	 * @return Un nombre de computer
+	 */
+	public long getNumberComputerByCompanyName(String parameter) {
+		Optional<Long> res = companydao.getCountByCompanyName(parameter);
+		if (res.isPresent()) {
+			return res.get();
+		}
+
+		return 0L;
+	}
 
 }

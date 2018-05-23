@@ -9,25 +9,27 @@ import main.java.com.excilys.cdb.model.Model;
 
 public class ComputerValidator extends Validator {
 
-    ComputerDAO computerDao;
+    public ComputerDAO computerdao;
 
-    /**
-     * Constructeur.
-     * @param computerDao Un accesseur à la table
-     */
-    public ComputerValidator(ComputerDAO computerDao) {
-        this.computerDao = computerDao;
+    public ComputerValidator(ComputerDAO computerdao) {
+    	this.computerdao = computerdao;
     }
-
+    
+    public void setComputerDAO(ComputerDAO computerdao) {
+ 		this.computerdao = computerdao;
+ 	}
+    
     @Override
-    public void checkBeforeUpdate(Model c) throws ValidatorException {
+    public boolean checkBeforeUpdate(Model c) throws ValidatorException {
         checkDates((Computer) c);
         checkId((Computer) c);
+        return true;
     }
 
     @Override
-    public void checkBeforeCreation(Model c) throws ValidatorDateException {
+    public boolean checkBeforeCreation(Model c) throws ValidatorDateException {
         checkDates((Computer) c);
+        return true;
     }
 
     /**
@@ -36,7 +38,7 @@ public class ComputerValidator extends Validator {
      * @throws ValidatorIdException Pour les id deja existant
      */
     private void checkId(Computer comp) throws ValidatorIdException {
-        if (comp.getCompanyId() != null && !computerDao.findById((long) comp.getId()).isPresent()) {
+        if (comp.getCompanyId() != null && !computerdao.findById((long) comp.getId()).isPresent()) {
             throw new ValidatorIdException("Computer inexistant");
         }
     }

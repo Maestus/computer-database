@@ -7,21 +7,22 @@ import main.java.com.excilys.cdb.model.Model;
 
 public class CompanyValidator extends Validator {
 
-    //private CompanyDAO companyDao;
+    public CompanyDAO companydao;
 
-    /**
-     * Constructeur.
-     * @param companyDao Un accesseur à la table
-     */
-    public CompanyValidator(CompanyDAO companyDao) {
-       //this.companyDao = companyDao;
-    }
+    public void setCompanyDAO(CompanyDAO companydao) {
+		this.companydao = companydao;
+	}
+    
+	@Override
+	public boolean checkBeforeUpdate(Model m) throws ValidatorException {
+		return true;
+	}
 
-    @Override
-    public void checkBeforeUpdate(Model m) throws ValidatorException {
-    }
+	@Override
+	public boolean checkBeforeCreation(Model m) throws ValidatorDateException {		
+		if (m == null)
+			return false;
+		return true;
+	}
 
-    @Override
-    public void checkBeforeCreation(Model m) throws ValidatorDateException {
-    }
 }

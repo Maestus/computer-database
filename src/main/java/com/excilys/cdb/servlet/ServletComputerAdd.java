@@ -14,9 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.support.HttpRequestHandlerServlet;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import main.java.com.excilys.cdb.dto.CompanyDTO;
@@ -28,25 +25,18 @@ import main.java.com.excilys.cdb.utils.Page;
  * Servlet implementation class ServletComputerSearch.
  */
 @WebServlet("/ComputerAdd")
-@Configuration
 public class ServletComputerAdd extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ServletContext sc;
     final DateTimeFormatter englishPattern = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     ArrayList<CompanyDTO> companyDTOs;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ServletComputerAdd() {
-        super();
-    }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            Page<Company> pCompany = ServletComputer.companyServ.getListCompany(0, Page.NO_LIMIT);
+            Page<Company> pCompany = ServletComputer.companyServ.getList(0, Page.NO_LIMIT);
             companyDTOs = new ArrayList<>();
 
             for (Company comp : pCompany.elems) {
@@ -106,7 +96,8 @@ public class ServletComputerAdd extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     	SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-        sc = getServletContext();
+    	
+    	sc = getServletContext();
         System.out.println("Servlet " + this.getServletName() + " has started");
     }
 }

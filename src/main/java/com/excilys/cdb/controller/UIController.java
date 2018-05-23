@@ -125,11 +125,11 @@ public class UIController {
      * Obtenir la liste des companies.
      */
     public void setPageCompany() {
-        lcompany = companyserv.getListCompany(offset, pageSize);
+        lcompany = companyserv.getList(offset, pageSize);
         if (lcompany.elems.size() == 0) {
             offset -= pageSize;
         }
-        lcompany = companyserv.getListCompany(offset, pageSize);
+        lcompany = companyserv.getList(offset, pageSize);
     }
 
     /**
@@ -285,7 +285,7 @@ public class UIController {
                     computer = ui.editOrCreateComputer(computer);
                     computerserv.updateComputer(computer);
                 } else if (Integer.parseInt(choix) == 2) {
-                    computerserv.removeComputer(computer);
+                    computerserv.remove(computer);
                     ui.emplacementMenu = Place.MENU_COMPUTER;
                     displayList();
                 }
