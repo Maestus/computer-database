@@ -11,6 +11,12 @@
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
 	<bean id="dataSource"
 		class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="java:comp/env/jdbc/myDs" />
@@ -22,8 +28,8 @@
 	</bean>
 
 	<tx:advice id="txAdvice" transaction-manager="txManager">
-	   <tx:attributes>
-			<tx:method name="delete"/>
+		<tx:attributes>
+			<tx:method name="delete" />
 			<!-- all methods other are read-only -->
 			<tx:method name="*" read-only="true" />
 		</tx:attributes>
@@ -40,14 +46,6 @@
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 		<property name="rollbackOnCommitFailure" value="true" />
-	</bean>
-
-	<bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/Views/" />
-		<property name="suffix" value=".jsp" />
 	</bean>
 
 	<bean id="mapperComputer"
@@ -80,5 +78,12 @@
 
 	<bean id="main" class="main.java.com.excilys.cdb.main.Main"
 		autowire="byName" />
+
+	<!-- mvc -->
+
+	<!-- <bean id="dashboardController" class="main.java.com.excilys.cdb.controller.DashboardController" 
+		/> <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"> 
+		<property name="mappings"> <props> <prop key="/dashboard">dashboardController</prop> 
+		</props> </property> </bean> -->
 
 </beans>

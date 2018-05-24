@@ -7,30 +7,14 @@
 	<welcome-file-list>
 		<welcome-file>Views/index.jsp</welcome-file>
 	</welcome-file-list>
-	<context-param>
-		<param-name>paging</param-name>
-		<param-value>10</param-value>
-	</context-param>
-	<context-param>
-		<param-name>offset</param-name>
-		<param-value>0</param-value>
-	</context-param>
-	
 	<servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
-            <param-name>contextClass</param-name>
-            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-        </init-param>
-        <init-param>
 	        <param-name>contextConfigLocation</param-name>
 	        <param-value>/WEB-INF/spring/spring-servlet.xml</param-value>
         </init-param>
-        <init-param>
-	        <param-name>throwExceptionIfNoHandlerFound</param-name>
-	        <param-value>true</param-value>
-        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 		
 	<servlet-mapping>
@@ -38,43 +22,6 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 	
-	<!--
-	
-	<servlet>
-        <servlet-name>ServletComputer</servlet-name>
-        <servlet-class>main.java.com.excilys.cdb.servlet.ServletComputer</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet> 
-	
-	 <servlet-mapping>
-        <servlet-name>ServletComputer</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping> 
-    
-    <servlet> 
-       <display-name>ServletComputer</display-name>
-       <servlet-name>servletComputer</servlet-name>
-       <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class> 
-   </servlet>
- 
-   <servlet-mapping> 
-       <servlet-name>servletComputer</servlet-name> 
-       <url-pattern>/</url-pattern> 
-   </servlet-mapping>
-   
-    <servlet>
-        <servlet-name>spring</servlet-name>
-        <servlet-class>
-            org.springframework.web.servlet.DispatcherServlet
-        </servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>spring</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping> -->
-   
-   
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/spring/spring-servlet.xml</param-value>
@@ -101,6 +48,15 @@
 		<url-pattern>*.tld</url-pattern>
 	</servlet-mapping>
     
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.ttf</url-pattern>
+    </servlet-mapping>
+	
+	<servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.woff</url-pattern>
+    </servlet-mapping>
 	
 	<jsp-config>
 		<taglib>
@@ -109,9 +65,16 @@
 		</taglib>
 	</jsp-config>
 	
-	<session-config>
-        <session-timeout>
-            30
-        </session-timeout>
-    </session-config>
+	<error-page>
+	    <error-code>403</error-code>
+	    <location>/WEB-INF/views/403.jsp</location>
+	</error-page>
+	<error-page>
+	    <error-code>404</error-code>
+	    <location>/WEB-INF/views/404.jsp</location>
+	</error-page>
+	<error-page>
+	    <error-code>500</error-code>
+	    <location>/WEB-INF/views/500.jsp</location>
+	</error-page>
 </web-app>

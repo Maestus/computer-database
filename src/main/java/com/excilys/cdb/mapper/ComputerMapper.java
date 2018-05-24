@@ -5,8 +5,6 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-//import org.springframework.jdbc.core.RowMapper;
-
 import main.java.com.excilys.cdb.model.Computer;
 
 public class ComputerMapper extends Mapper implements RowMapper<Computer> {
@@ -19,7 +17,7 @@ public class ComputerMapper extends Mapper implements RowMapper<Computer> {
 						: resultSet.getTimestamp("introduced").toLocalDateTime().toLocalDate())
 				.setDiscontinued(resultSet.getTimestamp("discontinued") == null ? null
 						: resultSet.getTimestamp("discontinued").toLocalDateTime().toLocalDate())
-				.setCompanyId(resultSet.getObject("company_id"));
+				.setCompanyId(resultSet.getLong("company_id"));
 		return computer;
 	}
 
@@ -28,12 +26,17 @@ public class ComputerMapper extends Mapper implements RowMapper<Computer> {
 		Computer computer = new Computer();
 		computer.setId(rs.getInt("id"));
 		computer.setNom(rs.getString("name"));
+		
 		if (rs.getTimestamp("discontinued") != null) {
 			computer.setDiscontinued(rs.getTimestamp("discontinued").toLocalDateTime().toLocalDate());
 		}
 
 		if (rs.getTimestamp("introduced") != null) {
 			computer.setIntroduced(rs.getTimestamp("introduced").toLocalDateTime().toLocalDate());
+		}
+		
+		if ((Long) rs.getLong("company_id") != null) {
+			computer.setCompanyId(rs.getLong("company_id"));
 		}
 		return computer;
 	}

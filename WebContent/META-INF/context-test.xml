@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/SpringJdbcTemplateWebEx">
+
+    <Resource name="jdbc/myDs" auth="Container"
+              factory="com.zaxxer.hikari.HikariJNDIFactory"
+              dataSourceClassName="com.mysql.jdbc.jdbc2.optional.MysqlDataSource"
+              dataSource.url="jdbc:mysql://localhost:3306/computer-database-db-test?useSSL=false"
+              type="javax.sql.DataSource"
+              minimumIdle="5" 
+              maximumPoolSize="10"
+              connectionTimeout="300000"
+              database="computer-database-db"
+              server="localhost"
+              dataSource.user="admincdb"
+              dataSource.password="qwerty1234"
+              dataSource.cachePrepStmts="true"
+              dataSource.prepStmtCacheSize="250"
+              dataSource.prepStmtCacheSqlLimit="2048"
+              closeMethod="close"
+    />
+    
+</Context>

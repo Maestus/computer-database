@@ -135,7 +135,6 @@ public class ComputerService {
 	 * @return Un nombre de computer
 	 */
 	public Long getNumberComputer() {
-		System.out.println(computervalidator + " " + computerdao);
 		Optional<Long> res = computerdao.getCount();
 		if (res.isPresent()) {
 			return res.get();
