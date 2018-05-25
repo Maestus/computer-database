@@ -32,31 +32,6 @@
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
-    
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.css</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.js</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>*.tld</url-pattern>
-	</servlet-mapping>
-    
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.ttf</url-pattern>
-    </servlet-mapping>
-	
-	<servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.woff</url-pattern>
-    </servlet-mapping>
 	
 	<jsp-config>
 		<taglib>

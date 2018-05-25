@@ -5,11 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="css/main.css" rel="stylesheet" media="screen">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet"
+	media="screen">
+<link href="resources/css/font-awesome.css" rel="stylesheet"
+	media="screen">
+<link href="resources/css/main.css" rel="stylesheet" media="screen">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="mylib" uri="Paginator"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 </head>
 <body>
 
@@ -22,9 +25,25 @@
 
 	<section id="main">
 		<div class="container">
+		
+        <div class="dropdown pull-right">
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                <spring:message code="app.lang.title" />
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="?locale=en"> <spring:message
+                        code="app.lang.english" />
+                </a> 
+                <a class="dropdown-item" href="?locale=fr"> <spring:message
+                        code="app.lang.french" />
+                </a>
+            </div>
+        </div>
 			<h1 id="homeTitle">
 				<c:out value="${numberOfElement}" />
-				Entries
+				<spring:message code="app.dashboard.computerEntries" />
 			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
@@ -32,15 +51,18 @@
 						class="form-inline">
 						<input type="search" id="searchbox" name="search" minlength="2"
 							class="form-control" placeholder="Search name" required /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
+							type="submit" id="searchsubmit"
+							value=<spring:message code="app.dashboard.button.filter"/>
 							class="btn btn-primary" />
 						<div class="btn-group btn-group-toggle" data-toggle="buttons">
 							<label class="btn btn-secondary active"> <input
 								type="radio" name="searchBy" value="forComputer" id="option1"
-								autocomplete="off" checked> Computer
+								autocomplete="off" checked> <spring:message
+									code="app.dashboard.searchBy.computer" />
 							</label> <label class="btn btn-secondary"> <input type="radio"
 								name="searchBy" value="forCompany" id="option2"
-								autocomplete="off"> Company
+								autocomplete="off"> <spring:message
+									code="app.dashboard.searchBy.company" />
 							</label>
 						</div>
 					</form>
@@ -48,13 +70,15 @@
 
 				<div class="pull-right">
 					<c:if test="${searchProcess}">
-						<a class="btn btn-secondary"
-							href="dashboard?page=1">Complete List</a>
+						<a class="btn btn-secondary" href="dashboard?page=1">Complete
+							List</a>
 					</c:if>
 
-					<a class="btn btn-success" id="addComputer" href="add">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="add"><spring:message
+							code="app.dashboard.button.addComputer" /></a> <a
+						class="btn btn-default" id="editComputer" href="#"
+						onclick="$.fn.toggleEditMode();"><spring:message
+							code="app.dashboard.button.edit" /></a>
 				</div>
 			</div>
 		</div>
@@ -77,12 +101,15 @@
 									class="glyphicon glyphicon-trash"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
+						<th><spring:message code="app.dashboard.table.computerName" /></th>
+						<th><spring:message
+								code="app.dashboard.table.computerIntroduced" /></th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
+						<th><spring:message
+								code="app.dashboard.table.computerDiscontinued" /></th>
 						<!-- Table header for Company -->
-						<th>Company</th>
+						<th><spring:message
+								code="app.dashboard.table.computerCompany" /></th>
 
 					</tr>
 				</thead>
@@ -115,7 +142,8 @@
 		<div class="container text-center">
 
 			<c:if test="${searchProcess}">
-				<c:url var="searchUri" value="search?search=${search}&searchBy=${searchBy}&page=##" />
+				<c:url var="searchUri"
+					value="search?search=${search}&searchBy=${searchBy}&page=##" />
 			</c:if>
 			<c:if test="${!searchProcess}">
 				<c:url var="searchUri" value="${'dashboard?page=##' }" />
@@ -133,9 +161,9 @@
 		</form>
 	</footer>
 
-	<script src="js/jquery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/dashboard.js"></script>
+	<script src="resources/js/jquery.min.js"></script>
+	<script src="resources/js/bootstrap.min.js"></script>
+	<script src="resources/js/dashboard.js"></script>
 
 </body>
 </html>

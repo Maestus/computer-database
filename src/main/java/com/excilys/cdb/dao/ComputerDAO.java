@@ -81,7 +81,7 @@ public class ComputerDAO extends ModelDAO {
 	public Optional<Computer> findById(long id) {
 
 		try {
-			return Optional.of(jdbcTemplate.queryForObject(SQL_SELECT_PAR_ID, new Long[] { id }, new ComputerMapper()));
+			return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_SELECT_PAR_ID, new Long[] { id }, new ComputerMapper()));
 		} catch (DataAccessException dae) {
 			LOGGER.debug("[findById] Probleme lors de la recherche de l'element.", dae);
 		}

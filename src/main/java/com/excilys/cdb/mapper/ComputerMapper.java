@@ -35,7 +35,7 @@ public class ComputerMapper extends Mapper implements RowMapper<Computer> {
 			computer.setIntroduced(rs.getTimestamp("introduced").toLocalDateTime().toLocalDate());
 		}
 		
-		if ((Long) rs.getLong("company_id") != null) {
+		if ((Long) rs.getLong("company_id") != null && (Long) rs.getLong("company_id") != 0L) {
 			computer.setCompanyId(rs.getLong("company_id"));
 		}
 		return computer;

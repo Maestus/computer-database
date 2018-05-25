@@ -28,30 +28,32 @@ public class EditComputerController {
 	@RequestMapping(value = "/edit")
 	public String edit(@RequestParam(value = "id") Long id, ModelMap model) {
 		Optional<Computer> optComp;
-
-		ComputerDTO computer = new ComputerDTO();
-		optComp = DashboardController.computerService.getComputerById(id);
-		if(optComp.isPresent()) {
-			computer.setComputer(optComp.get());
-			if (computer.getComputer().getCompanyId() != null) {
-				computer.setCompany(
-						DashboardController.companyService.get((long) computer.getComputer().getCompanyId()).get());
+		
+		if(id != null) {
+			ComputerDTO computer = new ComputerDTO();
+			optComp = DashboardController.computerService.getComputerById(id);
+			if(optComp.isPresent()) {
+				computer.setComputer(optComp.get());
+				if (optComp.get().getCompanyId() != null) {
+					computer.setCompany(
+							DashboardController.companyService.get((long) computer.getComputer().getCompanyId()).get());
+				}
+		
+				Page<Company> pCompany = DashboardController.companyService.getList(0, Page.NO_LIMIT);
+				companyDTOs = new ArrayList<>();
+		
+				for (Company comp : pCompany.elems) {
+					CompanyDTO newObj = new CompanyDTO();
+					newObj.setCompany(comp);
+		
+					companyDTOs.add(newObj);
+				}
+		
+				model.addAttribute("companies", companyDTOs);
+				model.addAttribute("computer", computer);
+		
+				return "editComputer";
 			}
-	
-			Page<Company> pCompany = DashboardController.companyService.getList(0, Page.NO_LIMIT);
-			companyDTOs = new ArrayList<>();
-	
-			for (Company comp : pCompany.elems) {
-				CompanyDTO newObj = new CompanyDTO();
-				newObj.setCompany(comp);
-	
-				companyDTOs.add(newObj);
-			}
-	
-			model.addAttribute("companies", companyDTOs);
-			model.addAttribute("computer", computer);
-	
-			return "editComputer";
 		}
 		
 		return "404";
