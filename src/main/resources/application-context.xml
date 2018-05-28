@@ -57,6 +57,8 @@
 	<bean id="mapperCompany"
 		class="main.java.com.excilys.cdb.mapper.CompanyMapper" />
 
+	<bean id="formValidator"
+		class="main.java.com.excilys.cdb.formValidator.ComputerFormValidator" />
 	<bean id="companydao"
 		class="main.java.com.excilys.cdb.dao.CompanyDAO" autowire="byName" />
 
@@ -82,7 +84,11 @@
 	<bean id="main" class="main.java.com.excilys.cdb.main.Main"
 		autowire="byName" />
 
-	<!-- mvc -->
+	<bean id="editComputerController"
+		class="main.java.com.excilys.cdb.controller.EditComputerController">
+		<property name="formValidator" ref="formValidator" />
+	</bean>
+
 
 	<!-- <bean id="dashboardController" class="main.java.com.excilys.cdb.controller.DashboardController" 
 		/> <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"> 

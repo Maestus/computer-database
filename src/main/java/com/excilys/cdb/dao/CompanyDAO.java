@@ -60,7 +60,7 @@ public class CompanyDAO extends ModelDAO {
 
 		if (companyvalidator.checkBeforeCreation(model)) {
 
-			parameters.put("name", ((Company) model).getNom());
+			parameters.put("name", ((Company) model).getName());
 
 			try {
 				res = Optional.ofNullable((Long) jdbcInsert.executeAndReturnKey(parameters));
@@ -110,7 +110,7 @@ public class CompanyDAO extends ModelDAO {
 	public void update(Model m) {
 
 		try {
-			jdbcTemplate.update(SQL_UPDATE, m.getNom(), m.getId());
+			jdbcTemplate.update(SQL_UPDATE, ((Company)m).getName(), ((Company)m).getId());
 		} catch (DataAccessException dae) {
 			LOGGER.debug("[update] Probleme lors de la mise à jour de l'element.", dae);
 		}

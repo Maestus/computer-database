@@ -2,32 +2,28 @@ package main.java.com.excilys.cdb.model;
 
 public class Company implements Model {
 
-    private long id;
-    private String nom;
+    private Long id;
+    private String name;
 
     public Long getId() {
         return id;
     }
 
-    @Override
-    public Company setId(long id) {
+    public void setId(Long id) {
         this.id = id;
-        return this;
     }
 
-    public String getNom() {
-        return nom;
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public Company setNom(String nom) {
-        this.nom = nom;
-        return this;
+    public void setName(String nom) {
+        this.name = nom;
     }
 
     @Override
     public String toString() {
-        return nom;
+        return name;
     }
 
     @Override
@@ -35,7 +31,7 @@ public class Company implements Model {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
@@ -54,11 +50,11 @@ public class Company implements Model {
         if (id != other.id) {
             return false;
         }
-        if (nom == null) {
-            if (other.nom != null) {
+        if (name == null) {
+            if (other.name != null) {
                 return false;
             }
-        } else if (!nom.equals(other.nom)) {
+        } else if (!name.equals(other.name)) {
             return false;
         }
         return true;

@@ -25,22 +25,12 @@
 
 	<section id="main">
 		<div class="container">
-		
-        <div class="dropdown pull-right">
-            <button class="btn btn-secondary dropdown-toggle" type="button"
-                id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                <spring:message code="app.lang.title" />
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="?locale=en"> <spring:message
-                        code="app.lang.english" />
-                </a> 
-                <a class="dropdown-item" href="?locale=fr"> <spring:message
-                        code="app.lang.french" />
-                </a>
-            </div>
-        </div>
+
+			<a class="pull-right btn btn-default" href="?locale=en"> <spring:message
+					code="app.lang.english" />
+			</a> <a class="pull-right btn btn-default" href="?locale=fr"> <spring:message
+					code="app.lang.french" />
+			</a>
 			<h1 id="homeTitle">
 				<c:out value="${numberOfElement}" />
 				<spring:message code="app.dashboard.computerEntries" />
@@ -49,7 +39,7 @@
 				<div class="pull-left">
 					<form id="searchForm" action="search?page=1" method="GET"
 						class="form-inline">
-						<input type="search" id="searchbox" name="search" minlength="2"
+						<input type="search" id="searchbox" name="search"
 							class="form-control" placeholder="Search name" required /> <input
 							type="submit" id="searchsubmit"
 							value=<spring:message code="app.dashboard.button.filter"/>
@@ -83,7 +73,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="edit" method="POST">
+		<form id="deleteForm" action="delete" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
@@ -124,12 +114,12 @@
 								class="cb" value="${ titre.getComputer().getId() }"></td>
 							<td><a
 								href="edit?id=<c:out value="${ titre.getComputer().getId() }" />"
-								onclick=""><c:out value="${ titre.getComputer().getNom() }" /></a>
+								onclick=""><c:out value="${ titre.getComputer().getName() }" /></a>
 							</td>
 							<td><c:out value="${ titre.getComputer().getIntroduced() }" /></td>
 							<td><c:out
 									value="${ titre.getComputer().getDiscontinued() }" /></td>
-							<td><c:out value="${ titre.getCompany().getNom() }" /></td>
+							<td><c:out value="${ titre.getCompany().getName() }" /></td>
 						</tr>
 
 					</c:forEach>

@@ -71,7 +71,7 @@
 										varStatus="status">
 										<option
 											value="<c:out value="${ company.getCompany().getId() }" />"><c:out
-												value="${ company.getCompany().getNom() }" /></option>
+												value="${ company.getCompany().getName() }" /></option>
 									</c:forEach>
 								</select>
 							</div>

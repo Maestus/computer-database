@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.RedirectView;
 
 import main.java.com.excilys.cdb.dto.ComputerDTO;
 import main.java.com.excilys.cdb.model.Company;
@@ -23,7 +24,7 @@ import main.java.com.excilys.cdb.utils.Page;
 @Controller
 public class DashboardController {
 
-	public ApplicationContext context;
+	public static ApplicationContext context;
 
 	private Page<Computer> pComputer;
 	ArrayList<ComputerDTO> computerDTOs;
@@ -44,6 +45,20 @@ public class DashboardController {
 		nbComputers = computerService.getNumberComputer();
 	}
 
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public RedirectView changePagging(@RequestParam(value = "selection", required = false) String selection,
+			ModelMap model) {
+		try {
+			String[] split = selection.split(",");
+			DashboardController.computerService.removeList(split);
+			DashboardController.nbComputers = DashboardController.computerService.getNumberComputer();
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		
+		return new RedirectView("/dashboard");
+	}
+	
 	@RequestMapping(value = "/dashboard", method = RequestMethod.POST)
 	public String changePagging(@RequestParam(value = "b1", required = false) String b1,
 			@RequestParam(value = "b2", required = false) String b2,

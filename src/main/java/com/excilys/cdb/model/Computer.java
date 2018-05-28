@@ -3,60 +3,56 @@ package main.java.com.excilys.cdb.model;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
-import javax.validation.constraints.NotNull;
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class Computer implements Model {
 
-	private long id;
+	private Long id;
 	
-	@NotNull(message = "Entrez un nom de pc.")
-	private String nom;
+	private String name;
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate introduced;
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate discontinued;
-	private Object company_id;
+	
+	private Long companyId;
 
 	public Long getId() {
 		return id;
 	}
 
-	@Override
-	public Computer setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
-		return this;
 	}
 
-	public String getNom() {
-		return nom;
+	public String getName() {
+		return name;
 	}
 
-	@Override
-	public Computer setNom(String nom) {
-		this.nom = nom;
-		return this;
+	public void setName(String nom) {
+		this.name = nom;
 	}
 
 	public LocalDate getIntroduced() {
 		return introduced;
 	}
 
-	public Computer setIntroduced(LocalDate introduced) throws DateTimeException {
+	public void setIntroduced(LocalDate introduced) throws DateTimeException {
 		this.introduced = introduced;
-		return this;
 	}
 
 	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
 
-	public Computer setDiscontinued(LocalDate discontinued) throws DateTimeException {
+	public void setDiscontinued(LocalDate discontinued) throws DateTimeException {
 		this.discontinued = discontinued;
-		return this;
 	}
 
-	public Object getCompanyId() {
-		return company_id;
+	public Long getCompanyId() {
+		return companyId;
 	}
 
 	/**
@@ -66,26 +62,25 @@ public class Computer implements Model {
 	 *            identifiant de la company auquel est rattaché le computer.
 	 * @return L'objet modifié
 	 */
-	public Computer setCompanyId(Object companyid) {
-		this.company_id = companyid;
-		return this;
+	public void setCompanyId(Long companyid) {
+		this.companyId = companyid;
 	}
 
 	@Override
 	public String toString() {
-		return "[id = " + id + ", nom = " + nom + ", introduced = " + introduced + ", discontinued = " + discontinued
-				+ ", company_id = " + company_id + "]";
+		return "[id = " + id + ", nom = " + name + ", introduced = " + introduced + ", discontinued = " + discontinued
+				+ ", company_id = " + companyId + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) ((long) company_id ^ ((long) company_id >>> 32));
+		result = prime * result + (int) ((long) companyId ^ ((long) companyId >>> 32));
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
 		result = prime * result + (int) (id ^ (id >>> 32));
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
-		result = prime * result + ((nom == null) ? 0 : nom.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -101,7 +96,7 @@ public class Computer implements Model {
 			return false;
 		}
 		Computer other = (Computer) obj;
-		if (company_id != other.company_id) {
+		if (companyId != other.companyId) {
 			return false;
 		}
 		if (discontinued == null) {
@@ -121,11 +116,11 @@ public class Computer implements Model {
 		} else if (!introduced.equals(other.introduced)) {
 			return false;
 		}
-		if (nom == null) {
-			if (other.nom != null) {
+		if (name == null) {
+			if (other.name != null) {
 				return false;
 			}
-		} else if (!nom.equals(other.nom)) {
+		} else if (!name.equals(other.name)) {
 			return false;
 		}
 		return true;

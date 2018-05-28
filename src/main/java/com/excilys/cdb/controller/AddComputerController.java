@@ -48,7 +48,7 @@ public class AddComputerController {
 
 		Computer computer = new Computer();
 
-		computer.setNom(computerName);
+		computer.setName(computerName);
 
 		LocalDate ti = null, td = null;
 

@@ -56,7 +56,7 @@ public class ComputerDAO extends ModelDAO {
 				.usingGeneratedKeyColumns("id");
 		Map<String, Object> parameters = new HashMap<String, Object>();
 
-		parameters.put("name", ((Computer) model).getNom());
+		parameters.put("name", ((Computer) model).getName());
 		
 		if (((Computer) model).getIntroduced() != null) {
 			parameters.put("introduced", Timestamp.valueOf(((Computer) model).getIntroduced().atStartOfDay()));
@@ -152,7 +152,7 @@ public class ComputerDAO extends ModelDAO {
 		}
 
 		try {
-			jdbcTemplate.update(SQL_UPDATE, m.getNom(), dateIntroDB, dateDisDB, ((Computer) m).getCompanyId(), m.getId());
+			jdbcTemplate.update(SQL_UPDATE, ((Computer)m).getName(), dateIntroDB, dateDisDB, ((Computer) m).getCompanyId(), ((Computer)m).getId());
 		} catch (DataAccessException dae) {
 			LOGGER.debug("[update] Probleme lors de la mise à jour de l'element.", dae);
 		}
