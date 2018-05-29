@@ -31,8 +31,8 @@ public class ComputerDAO extends ModelDAO {
 	private static final String SQL_SELECT_PAR_ID = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?;";
 	private static final String SQL_SELECT_ALL = "SELECT id, name, introduced, discontinued, company_id FROM computer LIMIT ? OFFSET ?;";
 	private static final String SQL_COUNT = "SELECT COUNT(*) as number FROM computer;";
-	private static final String SQL_SELECT_ALL_NOLIMIT = "SELECT id, name, introduced, discontinued FROM computer;";
-	private static final String SQL_SELECT_BY_COMPANY = "SELECT computer.id as id, company.name as company_name, computer.name as name, introduced, discontinued FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company_id = ?;";
+	private static final String SQL_SELECT_ALL_NOLIMIT = "SELECT id, name, introduced, discontinued, company_id FROM computer;";
+	private static final String SQL_SELECT_BY_COMPANY = "SELECT computer.id as id, company.name as company_name, computer.name as name, introduced, discontinued, company_id FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company_id = ?;";
 	private static final String SQL_SELECT_COMPANY_OF_COMPUTER = "SELECT company.id as id, company.name as name FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE computer.id = ?;";
 	private static final String SQL_UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
 	private static final String SQL_DELETE = "DELETE FROM computer WHERE id = ?;";

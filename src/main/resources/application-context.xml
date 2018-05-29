@@ -20,10 +20,7 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:comp/env/jdbc/myDs" />
-	</bean>
+	<import resource="classpath:datasource-config.xml" />
 
 	<bean id="jdbcTemplate"
 		class="org.springframework.jdbc.core.JdbcTemplate">
@@ -33,6 +30,8 @@
 	<tx:advice id="txAdvice" transaction-manager="txManager">
 		<tx:attributes>
 			<tx:method name="delete" />
+			<tx:method name="create" />
+			<tx:method name="update" />
 			<!-- all methods other are read-only -->
 			<tx:method name="*" read-only="true" />
 		</tx:attributes>
@@ -59,6 +58,7 @@
 
 	<bean id="formValidator"
 		class="main.java.com.excilys.cdb.formValidator.ComputerFormValidator" />
+
 	<bean id="companydao"
 		class="main.java.com.excilys.cdb.dao.CompanyDAO" autowire="byName" />
 

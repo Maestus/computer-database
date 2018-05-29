@@ -42,9 +42,9 @@ public class AddComputerController {
 
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public String dashboard(@RequestParam(value = "computerName") String computerName,
-			@RequestParam(value = "introduced") String introduced,
-			@RequestParam(value = "discontinued") String discontinued,
-			@RequestParam(value = "companyId") String companyId, ModelMap model) {
+			String introduced,
+			String discontinued,
+			String companyId, ModelMap model) {
 
 		Computer computer = new Computer();
 

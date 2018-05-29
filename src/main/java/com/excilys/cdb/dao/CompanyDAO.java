@@ -27,8 +27,8 @@ public class CompanyDAO extends ModelDAO {
 	private static final String SQL_SELECT_PAR_ID = "SELECT id, name FROM company WHERE id = ?;";
 	private static final String SQL_SELECT_ALL = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
 	private static final String SQL_SELECT_ALL_NOLIMIT = "SELECT id, name FROM company;";
-	private static final String SQL_UPDATE = "UPDATE company SET name = ? WHERE id = ?;";
 	private static final String SQL_DELETE = "DELETE FROM company WHERE id = ?;";
+	private static final String SQL_UPDATE = "UPDATE company SET name = ? WHERE id = ?;";
 	private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE company_id = ?;";
 	private static final String SQL_COUNT_BY_COMPANY_NAME = "SELECT COUNT(*) as number FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company.name LIKE ?;";
 	private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
@@ -45,7 +45,7 @@ public class CompanyDAO extends ModelDAO {
 		this.txManager = txManager;
 	}
 
-	public void setValidator(CompanyValidator companyvalidator) {
+	public void setCompanyValidator(CompanyValidator companyvalidator) {
 		this.companyvalidator = companyvalidator;
 	}
 
@@ -58,7 +58,7 @@ public class CompanyDAO extends ModelDAO {
 				.usingGeneratedKeyColumns("id");
 		Map<String, Object> parameters = new HashMap<String, Object>();
 
-		if (companyvalidator.checkBeforeCreation(model)) {
+		if (((Company) model).getName() != null) {
 
 			parameters.put("name", ((Company) model).getName());
 
@@ -110,7 +110,7 @@ public class CompanyDAO extends ModelDAO {
 	public void update(Model m) {
 
 		try {
-			jdbcTemplate.update(SQL_UPDATE, ((Company)m).getName(), ((Company)m).getId());
+			jdbcTemplate.update(SQL_UPDATE, ((Company) m).getName(), ((Company) m).getId());
 		} catch (DataAccessException dae) {
 			LOGGER.debug("[update] Probleme lors de la mise à jour de l'element.", dae);
 		}

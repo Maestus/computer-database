@@ -42,7 +42,7 @@ public class ComputerServiceTest {
         }*/
 
         computer = new Computer();
-        computer.setNom("test");
+        //computer.setNom("test");
 
         //assertEquals(cServ.checkDate(computer), true);
         //assertEquals(cServ.addComputer(computer), 1L);

@@ -10,7 +10,6 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +22,7 @@ import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.utils.Page;
 
-@WebServlet("/edit")
+//@WebServlet("/edit")
 public class ServletComputerEdit extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ServletContext sc;
@@ -97,7 +96,7 @@ public class ServletComputerEdit extends HttpServlet {
 			Computer computer = new Computer();
 
 			computer.setId(Long.parseLong(request.getParameter("id")));
-			computer.setNom(request.getParameter("computerName"));
+			computer.setName(request.getParameter("computerName"));
 
 			LocalDate ti = null, td = null;
 

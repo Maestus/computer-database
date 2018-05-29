@@ -61,7 +61,7 @@ public class ServletComputerAdd extends HttpServlet {
 
         Computer computer = new Computer();
 
-        computer.setNom(request.getParameter("computerName"));
+        computer.setName(request.getParameter("computerName"));
 
         LocalDate ti = null, td = null;
 
