@@ -22,7 +22,7 @@
 
 	<import resource="classpath:datasource-config.xml" />
 
-	<bean id="jdbcTemplate"
+<!-- 	<bean id="jdbcTemplate"
 		class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
@@ -32,10 +32,9 @@
 			<tx:method name="delete" />
 			<tx:method name="create" />
 			<tx:method name="update" />
-			<!-- all methods other are read-only -->
 			<tx:method name="*" read-only="true" />
 		</tx:attributes>
-	</tx:advice>
+	</tx:advice> 
 
 	<aop:config>
 		<aop:pointcut id="companyDao"
@@ -48,7 +47,7 @@
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 		<property name="rollbackOnCommitFailure" value="true" />
-	</bean>
+	</bean> -->
 
 	<bean id="hibernateUtil"
 		class="main.java.com.excilys.cdb.persistance.HibernateUtil"

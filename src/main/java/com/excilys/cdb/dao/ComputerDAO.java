@@ -280,7 +280,7 @@ public class ComputerDAO extends ModelDAO {
 		try {
 			session = HibernateUtil.getSession();
 			queryFactory = new HibernateQueryFactory(session);
-			p.elems = queryFactory.selectFrom(qcomputer).where(qcompany.name.like("%" + parameter + "%")).offset(offset)
+			p.elems = queryFactory.selectFrom(qcomputer).leftJoin(qcompany).on(qcomputer.companyId.eq(qcompany.id)).where(qcompany.name.like("%" + parameter + "%")).offset(offset)
 					.limit(nbElem).fetch();
 			session.close();
 		} catch (Exception dae) {

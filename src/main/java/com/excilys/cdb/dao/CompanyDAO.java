@@ -130,7 +130,7 @@ public class CompanyDAO extends ModelDAO {
 			session = HibernateUtil.getSession();
 			queryFactory = new HibernateQueryFactory(session);
 			res = Optional.ofNullable(
-					queryFactory.selectFrom(qcompany).where(qcompany.name.like("%" + parameter + "%")).fetchCount());
+					queryFactory.selectFrom(qcomputer).leftJoin(qcompany).on(qcomputer.companyId.eq(qcompany.id)).where(qcompany.name.like("%" + parameter + "%")).fetchCount());
 			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[getCountByCompanyName] Probleme lors du décompte du nombre d'element.", dae);
