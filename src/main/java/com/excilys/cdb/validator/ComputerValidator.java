@@ -7,6 +7,7 @@ import main.java.com.excilys.cdb.exception.ValidatorIdException;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.model.Model;
 
+
 public class ComputerValidator extends Validator {
 
     public ComputerDAO computerdao;

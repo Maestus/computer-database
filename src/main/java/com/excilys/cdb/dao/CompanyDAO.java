@@ -1,52 +1,40 @@
 package main.java.com.excilys.cdb.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.TransactionException;
+
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 
 import main.java.com.excilys.cdb.exception.DAOException;
-import main.java.com.excilys.cdb.mapper.CompanyMapper;
 import main.java.com.excilys.cdb.model.Company;
+import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.model.Model;
+import main.java.com.excilys.cdb.model.QCompany;
+import main.java.com.excilys.cdb.model.QComputer;
+import main.java.com.excilys.cdb.persistance.HibernateUtil;
 import main.java.com.excilys.cdb.utils.Page;
 import main.java.com.excilys.cdb.validator.CompanyValidator;
 
 public class CompanyDAO extends ModelDAO {
 
-	private static final String SQL_SELECT_PAR_ID = "SELECT id, name FROM company WHERE id = ?;";
-	private static final String SQL_SELECT_ALL = "SELECT id, name FROM company LIMIT ? OFFSET ?;";
-	private static final String SQL_SELECT_ALL_NOLIMIT = "SELECT id, name FROM company;";
-	private static final String SQL_DELETE = "DELETE FROM company WHERE id = ?;";
-	private static final String SQL_UPDATE = "UPDATE company SET name = ? WHERE id = ?;";
-	private static final String SQL_DELETE_COMPUTER = "DELETE FROM computer WHERE company_id = ?;";
-	private static final String SQL_COUNT_BY_COMPANY_NAME = "SELECT COUNT(*) as number FROM computer LEFT OUTER JOIN company ON computer.company_id = company.id WHERE company.name LIKE ?;";
 	private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
 
-	public JdbcTemplate jdbcTemplate;
-	public DataSourceTransactionManager txManager;
 	public CompanyValidator companyvalidator;
-
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	public void setDataSourceTransactionManager(DataSourceTransactionManager txManager) {
-		this.txManager = txManager;
-	}
+	public HibernateQueryFactory queryFactory;
+	QCompany qcompany = QCompany.company;
+	QComputer qcomputer = QComputer.computer;
+	Session session;
 
 	public void setCompanyValidator(CompanyValidator companyvalidator) {
 		this.companyvalidator = companyvalidator;
+	}
+
+	public void setQueryFactory(Session session) {
+		this.queryFactory = new HibernateQueryFactory(session);
 	}
 
 	@Override
@@ -54,21 +42,15 @@ public class CompanyDAO extends ModelDAO {
 
 		Optional<Long> res = Optional.empty();
 
-		SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("company")
-				.usingGeneratedKeyColumns("id");
-		Map<String, Object> parameters = new HashMap<String, Object>();
-
-		if (((Company) model).getName() != null) {
-
-			parameters.put("name", ((Company) model).getName());
-
-			try {
-				res = Optional.ofNullable((Long) jdbcInsert.executeAndReturnKey(parameters));
-			} catch (Exception e) {
-				LOGGER.debug("[create] Probleme lors de la création de l'element.", e);
-			}
-		} else {
-			LOGGER.info("[create] Impossible d'inserer un element vide.");
+		try {
+			session = HibernateUtil.getSession();
+			session.beginTransaction();
+			session.save(model);
+			session.getTransaction().commit();
+			session.close();
+			res = Optional.ofNullable(((Company) model).getId());
+		} catch (Exception e) {
+			LOGGER.debug("[create] Probleme lors de la création de l'element.", e);
 		}
 
 		return res;
@@ -79,9 +61,11 @@ public class CompanyDAO extends ModelDAO {
 		Optional<Company> company = Optional.empty();
 
 		try {
-			company = Optional
-					.of(jdbcTemplate.queryForObject(SQL_SELECT_PAR_ID, new Long[] { id }, new CompanyMapper()));
-		} catch (DataAccessException dae) {
+			session = HibernateUtil.getSession();
+			queryFactory = new HibernateQueryFactory(session);
+			company = Optional.ofNullable(queryFactory.selectFrom(qcompany).where(qcompany.id.eq(id)).fetchOne());
+			session.close();
+		} catch (Exception dae) {
 			LOGGER.debug("[findById] Probleme lors de la recherche de l'element.", dae);
 		}
 
@@ -95,11 +79,17 @@ public class CompanyDAO extends ModelDAO {
 
 		try {
 			if (nbElem == Page.NO_LIMIT) {
-				p.elems = jdbcTemplate.query(SQL_SELECT_ALL_NOLIMIT, new CompanyMapper());
+				session = HibernateUtil.getSession();
+				queryFactory = new HibernateQueryFactory(session);
+				p.elems = queryFactory.selectFrom(qcompany).fetch();
+				session.close();
 			} else {
-				p.elems = jdbcTemplate.query(SQL_SELECT_ALL, new Object[] { nbElem, offset }, new CompanyMapper());
+				session = HibernateUtil.getSession();
+				queryFactory = new HibernateQueryFactory(session);
+				p.elems = queryFactory.selectFrom(qcompany).offset(offset).limit(nbElem).fetch();
+				session.close();
 			}
-		} catch (DataAccessException dae) {
+		} catch (Exception dae) {
 			LOGGER.debug("[findAll] Probleme lors de la recherche des elements.", dae);
 		}
 
@@ -110,8 +100,17 @@ public class CompanyDAO extends ModelDAO {
 	public void update(Model m) {
 
 		try {
-			jdbcTemplate.update(SQL_UPDATE, ((Company) m).getName(), ((Company) m).getId());
-		} catch (DataAccessException dae) {
+			session = HibernateUtil.getSession();
+			Transaction tx = session.beginTransaction();
+			queryFactory = new HibernateQueryFactory(session);
+
+			queryFactory.update(qcompany).where(qcompany.id.eq(((Computer) m).getId()))
+					.set(qcompany.name, ((Computer) m).getName()).execute();
+
+			session.flush();
+			tx.commit();
+			session.close();
+		} catch (Exception dae) {
 			LOGGER.debug("[update] Probleme lors de la mise à jour de l'element.", dae);
 		}
 	}
@@ -128,15 +127,12 @@ public class CompanyDAO extends ModelDAO {
 		Optional<Long> res = Optional.empty();
 
 		try {
-			res = Optional.ofNullable(jdbcTemplate.queryForObject(SQL_COUNT_BY_COMPANY_NAME,
-					new String[] { "%" + parameter + "%" }, new RowMapper<Long>() {
-						@Override
-						public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
-							return rs.getLong("number");
-						}
-					}));
-
-		} catch (DataAccessException dae) {
+			session = HibernateUtil.getSession();
+			queryFactory = new HibernateQueryFactory(session);
+			res = Optional.ofNullable(
+					queryFactory.selectFrom(qcompany).where(qcompany.name.like("%" + parameter + "%")).fetchCount());
+			session.close();
+		} catch (Exception dae) {
 			LOGGER.debug("[getCountByCompanyName] Probleme lors du décompte du nombre d'element.", dae);
 		}
 
@@ -155,11 +151,20 @@ public class CompanyDAO extends ModelDAO {
 
 		try {
 
-			jdbcTemplate.update(SQL_DELETE_COMPUTER, id);
+			session = HibernateUtil.getSession();
+			Transaction tx = session.beginTransaction();
+			queryFactory = new HibernateQueryFactory(session);
 
-			jdbcTemplate.update(SQL_DELETE, id);
+			queryFactory.delete(qcomputer).where(qcomputer.companyId.eq(id)).execute();
+			session.flush();
 
-		} catch (DataAccessException | TransactionException e) {
+			queryFactory.delete(qcompany).where(qcompany.id.eq(id)).execute();
+			session.flush();
+			
+			tx.commit();
+			session.close();
+			
+		} catch (Exception e) {
 			LOGGER.debug("[getCountByCompanyName] Probleme lors du décompte du nombre d'element.", e);
 		}
 	}

@@ -3,20 +3,38 @@ package main.java.com.excilys.cdb.model;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class Computer implements Model {
+import main.java.com.excilys.cdb.utils.LocalDateConverter;
 
+@Entity(name = "computer")
+public class Computer implements Model {
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column
 	private String name;
 	
+	@Column
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Convert(converter = LocalDateConverter.class)
 	private LocalDate introduced;
 	
+	@Column
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Convert(converter = LocalDateConverter.class)
 	private LocalDate discontinued;
 	
+	@Column(name = "company_id")
 	private Long companyId;
 
 	public Long getId() {

@@ -56,7 +56,7 @@ public class DashboardController {
 			e.printStackTrace();
 		}
 		
-		return new RedirectView("/dashboard");
+		return new RedirectView("dashboard");
 	}
 	
 	@RequestMapping(value = "/dashboard", method = RequestMethod.POST)
