@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="hibernateUtil"
+		class="main.java.com.excilys.cdb.dao.HibernateUtil"
+		factory-method="getSession" />
+
+	<bean id="mapperComputer"
+		class="main.java.com.excilys.cdb.mapper.ComputerMapper" />
+
+	<bean id="mapperCompany"
+		class="main.java.com.excilys.cdb.mapper.CompanyMapper" />
+
+	<bean id="formValidator"
+		class="main.java.com.excilys.cdb.formValidator.ComputerFormValidator" />
+
+	<bean id="companydao"
+		class="main.java.com.excilys.cdb.dao.CompanyDAO" autowire="byName">
+		<property name="queryFactory" ref="hibernateUtil" />
+	</bean>
+
+	<bean id="computerdao"
+		class="main.java.com.excilys.cdb.dao.ComputerDAO" autowire="byName">
+		<!-- <property name="queryFactory" ref="hibernateUtil" /> -->
+	</bean>
+
+	<bean id="userdao" class="main.java.com.excilys.cdb.dao.UserDAO"
+		autowire="byName">
+	</bean>
+
+	<bean id="computervalidator"
+		class="main.java.com.excilys.cdb.validator.ComputerValidator"
+		autowire="constructor" />
+
+	<bean id="companyvalidator"
+		class="main.java.com.excilys.cdb.validator.CompanyValidator"
+		autowire="constructor" />
+
+	<bean id="uservalidator"
+		class="main.java.com.excilys.cdb.validator.UserValidator"
+		autowire="constructor" />
+
+	<bean id="computerservice"
+		class="main.java.com.excilys.cdb.service.ComputerService"
+		autowire="constructor" />
+
+	<bean id="companyservice"
+		class="main.java.com.excilys.cdb.service.CompanyService"
+		autowire="constructor" />
+
+	<bean id="userservice"
+		class="main.java.com.excilys.cdb.service.UserService"
+		autowire="constructor" />
+
+	<bean id="editComputerController"
+		class="main.java.com.excilys.cdb.controller.EditComputerController">
+		<property name="formValidator" ref="formValidator" />
+	</bean>
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/locale/messages" />
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="defaultLocale" value="en" />
+		<property name="cookieName" value="myAppLocaleCookie" />
+		<property name="cookieMaxAge" value="3600" />
+	</bean>
+
+	<mvc:interceptors>
+		<bean
+			class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="locale" />
+		</bean>
+	</mvc:interceptors>
+
+	<security:authentication-manager>
+		<security:authentication-provider
+			user-service-ref="userservice">
+			<!-- <security:password-encoder ref="passwordEncoder" /> -->
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<!-- <bean id="passwordEncoder" class="org.springframework.security.crypto.password.PasswordEncoder"> 
+		<constructor-arg value="11" /> </bean> -->
+
+</beans>

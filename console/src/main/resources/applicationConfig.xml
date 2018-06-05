@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="main" class="main.java.com.excilys.cdb.ui.Main"
+		autowire="byName" />
+
+	<bean id="computerservice"
+		class="main.java.com.excilys.cdb.service.ComputerService"
+		autowire="constructor" />
+
+	<bean id="companyservice"
+		class="main.java.com.excilys.cdb.service.CompanyService"
+		autowire="constructor" />
+
+	<bean id="companydao"
+		class="main.java.com.excilys.cdb.dao.CompanyDAO" autowire="byName">
+		<!-- <property name="queryFactory" ref="hibernateUtil" /> -->
+	</bean>
+
+	<bean id="computerdao"
+		class="main.java.com.excilys.cdb.dao.ComputerDAO" autowire="byName">
+		<!-- <property name="queryFactory" ref="hibernateUtil" /> -->
+	</bean>
+
+	<bean id="computervalidator"
+		class="main.java.com.excilys.cdb.validator.ComputerValidator"
+		autowire="constructor" />
+
+	<bean id="companyvalidator"
+		class="main.java.com.excilys.cdb.validator.CompanyValidator"
+		autowire="constructor" />
+</beans>
