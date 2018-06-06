@@ -41,6 +41,7 @@ public class ComputerService {
 	 * @return Une Page.
 	 */
 	public Page<Computer> getListComputer(int offset, int nbElem) {
+		System.out.println("ok " + computerdao);
 		return computerdao.findAll(offset, nbElem);
 	}
 

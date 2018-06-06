@@ -26,6 +26,11 @@
 	<section id="main">
 		<div class="container">
 
+<form class="form-inline" action="${logoutUrl}" method="post">
+      <input type="submit" value="Log out" />
+      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+
 			<a class="pull-right btn btn-default" href="?locale=en"> <spring:message
 					code="app.lang.english" />
 			</a> <a class="pull-right btn btn-default" href="?locale=fr"> <spring:message

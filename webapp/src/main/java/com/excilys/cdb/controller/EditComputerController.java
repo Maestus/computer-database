@@ -11,10 +11,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -49,7 +49,7 @@ public class EditComputerController {
 		return new Computer();
 	}
 
-	@RequestMapping(value = "/edit")
+	@GetMapping("/edit")
 	public String edit(@RequestParam(value = "id") Long id, ModelMap model) {
 		Optional<Computer> optComp;
 
@@ -78,7 +78,7 @@ public class EditComputerController {
 		return "404";
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
+	@PostMapping("/edit")
 	public String editRequest(@ModelAttribute("computer") @Validated Computer computer, BindingResult bindingResult,
 			ModelMap model) {
 

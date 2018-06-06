@@ -7,8 +7,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.RedirectView;
@@ -45,7 +45,7 @@ public class DashboardController {
 		nbComputers = computerService.getNumberComputer();
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@PostMapping("/delete")
 	public RedirectView changePagging(@RequestParam(value = "selection", required = false) String selection,
 			ModelMap model) {
 		try {
@@ -59,7 +59,7 @@ public class DashboardController {
 		return new RedirectView("dashboard");
 	}
 	
-	@RequestMapping(value = "/dashboard", method = RequestMethod.POST)
+	@PostMapping("/dashboard")
 	public String changePagging(@RequestParam(value = "b1", required = false) String b1,
 			@RequestParam(value = "b2", required = false) String b2,
 			@RequestParam(value = "b3", required = false) String b3,
@@ -72,7 +72,7 @@ public class DashboardController {
 		return dashboard(null, model);
 	}
 
-	@RequestMapping(value = "/dashboard", method = RequestMethod.GET)
+	@GetMapping("/dashboard")
 	public String dashboard(@RequestParam(value = "page", required = false) Integer page, ModelMap model) {
 
 		if (page != null) {

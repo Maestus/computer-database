@@ -5,21 +5,18 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import ch.qos.logback.classic.LoggerContext;
-//import ch.qos.logback.core.util.StatusPrinter;
 
 import main.java.com.excilys.cdb.model.Company;
 import main.java.com.excilys.cdb.model.Computer;
 import main.java.com.excilys.cdb.service.CompanyService;
 import main.java.com.excilys.cdb.service.ComputerService;
-import main.java.com.excilys.cdb.ui.Interface;
-import main.java.com.excilys.cdb.ui.Place;
 import main.java.com.excilys.cdb.utils.Page;
 
 public class UIController {
     Scanner sc;
     private String choix;
 
+    static Logger LOGGER = LoggerFactory.getLogger(UIController.class);
     CompanyService companyservice;
     ComputerService computerservice;
     Interface ui;
@@ -47,7 +44,7 @@ public class UIController {
         this.sc = sc;
         this.ui = ui;
 		this.companyservice = companyservice;
-		this.companyservice = companyservice;
+		this.computerservice = computerservice;
     }
 
 
@@ -75,8 +72,7 @@ public class UIController {
                 }
                 goodChoice = true;
             } catch (Exception e) {
-                /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                StatusPrinter.print(lc);*/
+                LOGGER.debug("Mauvaise entrée", e);
             }
         }
     }
@@ -87,11 +83,13 @@ public class UIController {
     public void displayRes() {
         if (!quit) {
             try {
+            	System.out.println(ui.emplacementMenu + " " + ui.menu.get(ui.emplacementMenu.toString()).size() + " " +Integer.parseInt(choix));
                 if (ui.emplacementMenu == Place.MENU_SETTING) {
                     setting();
                 } else if (ui.emplacementMenu == Place.MENU_PRINCIPAL) {
                     if (ui.menu.get(ui.emplacementMenu.toString()).size() >= Integer.parseInt(choix) && Integer.parseInt(choix) > 0) {
-                        displayList();
+                        System.out.println("OK la");
+                    	displayList();
                     }
                 } else if (ui.emplacementMenu == Place.MENU_COMPANY) {
                     displayComputerListByCompanyId();
@@ -101,11 +99,7 @@ public class UIController {
                     controlComputer();
                 }
             } catch (Exception e) {
-                Logger logger = LoggerFactory.getLogger("uiController.displayRes.Type");
-                logger.debug("Mauvaise entrée.");
-
-                /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                StatusPrinter.print(lc);*/
+                LOGGER.debug("Mauvaise entrée " + ui.emplacementMenu);
             }
             launchUI();
         }
@@ -115,6 +109,7 @@ public class UIController {
      * Obtenir la liste des computers.
      */
     public void setPageComputer() {
+    	System.out.println("bon : " + companyservice);
         lcomputer = computerservice.getListComputer(offset, pageSize);
         if (lcomputer.elems.size() == 0) {
             offset -= pageSize;
@@ -146,8 +141,9 @@ public class UIController {
                     ui.displayCompanyList(lcompany);
                 } else if (ui.menu.get(ui.emplacementMenu.toString()).get(Integer.parseInt(choix) - 1).get(2)
                         .equals(ComputerService.class.getSimpleName())) {
-                    offset = 0;
+                	offset = 0;
                     setPageComputer();
+                    System.out.println("blablou");
                     ui.displayComputerList(lcomputer);
                 } else if (ui.menu.get(ui.emplacementMenu.toString()).get(Integer.parseInt(choix) - 1).get(2)
                         .equals("Setting")) {
@@ -156,11 +152,7 @@ public class UIController {
                 }
             }
         } catch (NumberFormatException e) {
-            Logger logger = LoggerFactory.getLogger("uiController.displayList.Type");
-            logger.debug("Mauvais type d'entrée, entrer un entier.");
-
-            /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);*/
+            LOGGER.debug("Mauvais type d'entrée, entrer un entier.");
         }
     }
 
@@ -190,11 +182,7 @@ public class UIController {
                 }
             }
         } catch (NumberFormatException e) {
-            Logger logger = LoggerFactory.getLogger("uiController.displayComputerListByCompanyId.Type");
-            logger.debug("Mauvais type d'entrée, entrer un entier.");
-
-            /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);*/
+            LOGGER.debug("Mauvais type d'entrée, entrer un entier.");
         }
     }
 
@@ -228,11 +216,7 @@ public class UIController {
                 goodValue = true;
 
             } catch (NumberFormatException e) {
-                Logger logger = LoggerFactory.getLogger("uiController.setting.Type");
-                logger.debug("Mauvais type d'entrée, entrer un entier.");
-
-                /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                StatusPrinter.print(lc);*/
+                LOGGER.debug("Mauvais type d'entrée, entrer un entier.");
             }
         }
     }
@@ -266,11 +250,7 @@ public class UIController {
                         ui.emplacementMenu = Place.MENU_COMPUTER_DETAIL;
                     }
                 } catch (NumberFormatException e) {
-                    Logger logger = LoggerFactory.getLogger("uiController.displayComputerDetail.Type");
-                    logger.debug("Mauvais type d'entrée, entrer un entier.");
-
-                    /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-                    StatusPrinter.print(lc);*/
+                    LOGGER.debug("Mauvais type d'entrée, entrer un entier.");
                 }
             }
         }
@@ -292,11 +272,7 @@ public class UIController {
                 }
             }
         } catch (NumberFormatException e) {
-            Logger logger = LoggerFactory.getLogger("uiController.controlComputer.Type");
-            logger.debug("Mauvais type d'entrée, entrer un entier.");
-
-            /*LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-            StatusPrinter.print(lc);*/
+            LOGGER.debug("Mauvais type d'entrée, entrer un entier.");
         }
     }
 

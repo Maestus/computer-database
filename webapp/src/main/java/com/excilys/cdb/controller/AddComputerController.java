@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -40,7 +40,7 @@ public class AddComputerController {
 		return "addComputer";
 	}
 
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	@PostMapping("/add")
 	public String dashboard(@RequestParam(value = "computerName") String computerName,
 			String introduced,
 			String discontinued,

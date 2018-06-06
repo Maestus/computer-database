@@ -5,8 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -28,7 +27,7 @@ public class SearchController {
 	static long nbComputers = 0;
 	boolean isComputerResearch = false;
 	
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	@GetMapping("/search")
 	public String dashboard(@RequestParam(value = "search") String search,
 			@RequestParam(value = "searchBy") String searchBy,
 			@RequestParam(value = "page", required = false) Integer page, ModelMap model) {

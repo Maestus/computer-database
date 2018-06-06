@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -20,6 +24,7 @@ public class Interface {
 
     static final int UI_SIZE = 100;
     static final String UI_MESSAGE_HEADER = "LISTS OF COMPANIES & COMPUTERS";
+    static Logger LOGGER = LoggerFactory.getLogger(Interface.class);
 
     public Map<String, List<List<String>>> menu;
     public Place emplacementMenu;
@@ -40,7 +45,7 @@ public class Interface {
         try {
             menu = mapper.readValue(classLoader.getResourceAsStream("main/java/com/excilys/cdb/ui/menu.json"), typeRef);
         } catch (IOException e) {
-            e.printStackTrace();
+        	LOGGER.debug("Fichier non trouvé");
         }
     }
 
@@ -97,7 +102,7 @@ public class Interface {
             String newNom = sc.nextLine();
             if (newNom.equals("")) {
                 if (computer.getName() == null) {
-                    System.err.println("Pour la création un nom est necessaire");
+                	LOGGER.info("Pour la création un nom est necessaire");
                 } else {
                     computer.setName(computer.getName());
                     getNomDone = true;
@@ -122,7 +127,7 @@ public class Interface {
                 }
                 getIntroDone = true;
             } catch (DateTimeParseException e) {
-                System.err.println("Mauvais format, entrez une date de la forme dd/mm/yyyy");
+            	LOGGER.info("Mauvais format, entrez une date de la forme dd/mm/yyyy");
             }
         }
 
@@ -144,7 +149,7 @@ public class Interface {
                     }
                 }
             } catch (DateTimeParseException e) {
-                System.err.println("Mauvais format, entrez une date de la forme dd/mm/yyyy");
+            	LOGGER.info("Mauvais format, entrez une date de la forme dd/mm/yyyy");
             }
         }
 
@@ -157,7 +162,7 @@ public class Interface {
                 }
                 getCompanyId = true;
             } catch (IllegalArgumentException e) {
-                System.err.println("Mauvais format, entrez une date de la forme yyyy-mm-dd hh:mm:ss");
+                LOGGER.info("Mauvais format, entrez une date de la forme yyyy-mm-dd hh:mm:ss");
             }
         }
         return computer;

@@ -11,11 +11,6 @@ public class UserService implements UserDetailsService {
 	public UserDAO userdao;
 	public UserValidator uservalidator;
 
-	public UserService(UserDAO userdao, UserValidator uservalidator) {
-		this.userdao = userdao;
-		this.uservalidator = uservalidator;
-	}
-
 	public void setUserDAO(UserDAO userdao) {
 		this.userdao = userdao;
 	}
