@@ -9,7 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -55,20 +58,19 @@ public class DashboardController {
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
-		
+
 		return new RedirectView("dashboard");
 	}
-	
+
 	@PostMapping("/dashboard")
 	public String changePagging(@RequestParam(value = "b1", required = false) String b1,
 			@RequestParam(value = "b2", required = false) String b2,
-			@RequestParam(value = "b3", required = false) String b3,
-			ModelMap model) {
+			@RequestParam(value = "b3", required = false) String b3, ModelMap model) {
 
-		if(b1 != null || b2 != null || b3 != null) {
+		if (b1 != null || b2 != null || b3 != null) {
 			changePagging(b1, b2, b3);
 		}
-		
+
 		return dashboard(null, model);
 	}
 
@@ -133,4 +135,5 @@ public class DashboardController {
 
 		offset = 0;
 	}
+
 }
