@@ -51,7 +51,7 @@ public class UserDAO extends ModelDAO {
 	}
 
 	@Override
-	Page<? extends Model> findAll(int offset, int nbElem) throws DAOException {
+	Page<? extends Model> findAll(long offset, long nbElem) throws DAOException {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -12,7 +12,10 @@ import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import main.java.com.excilys.cdb.model.LocalDateConverter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 @Entity(name = "computer")
 public class Computer implements Model {
@@ -26,11 +29,15 @@ public class Computer implements Model {
 
 	@Column
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)  
+	@JsonSerialize(using = LocalDateSerializer.class)  
 	@Convert(converter = LocalDateConverter.class)
 	private LocalDate introduced;
 
 	@Column
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)  
+	@JsonSerialize(using = LocalDateSerializer.class)  
 	@Convert(converter = LocalDateConverter.class)
 	private LocalDate discontinued;
 

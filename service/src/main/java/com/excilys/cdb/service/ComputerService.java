@@ -34,13 +34,13 @@ public class ComputerService {
 	/**
 	 * Retourne un ensemble d'element de computers.
 	 * 
-	 * @param offset
+	 * @param cURRENT_INIT_ElEM
 	 *            Determine à partir de quel element on stocke dans la liste.
-	 * @param nbElem
+	 * @param nB_ElEM
 	 *            Nombre d'element à stocker.
 	 * @return Une Page.
 	 */
-	public Page<Computer> getListComputer(int offset, int nbElem) {
+	public Page<Computer> getList(long offset, long nbElem) {
 		System.out.println("ok " + computerdao);
 		return computerdao.findAll(offset, nbElem);
 	}
@@ -67,7 +67,7 @@ public class ComputerService {
 	 *            Identifiant du computer.
 	 * @return Un computer.
 	 */
-	public Optional<Computer> getComputerById(Long id) {
+	public Optional<Computer> get(Long id) {
 		return computerdao.findById(id);
 	}
 
@@ -78,7 +78,7 @@ public class ComputerService {
 	 *            Computer à ajouter.
 	 * @return True si ajout ok
 	 */
-	public boolean addComputer(Computer c) {
+	public boolean add(Computer c) {
 		try {
 			computervalidator.checkBeforeCreation(c);
 			computerdao.create(c).get();
@@ -97,7 +97,7 @@ public class ComputerService {
 	 *            Un computer.
 	 * @return True si la mise à jour à lieu
 	 */
-	public boolean updateComputer(Computer c) {
+	public boolean update(Computer c) {
 		try {
 			computervalidator.checkBeforeUpdate(c);
 			computerdao.update(c);
@@ -115,8 +115,8 @@ public class ComputerService {
 	 * @param computer
 	 *            Un Computer.
 	 */
-	public void remove(Computer computer) {
-		computerdao.delete(new Object[] { computer.getId() });
+	public void remove(Long id) {
+		computerdao.delete(new Object[] { String.valueOf(id) });
 	}
 
 	/**

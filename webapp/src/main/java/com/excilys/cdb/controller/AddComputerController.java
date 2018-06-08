@@ -66,7 +66,7 @@ public class AddComputerController {
 		computer.setCompanyId(Long.parseLong(companyId));
 
 		System.out.println(computer);
-		if (DashboardController.computerService.addComputer(computer)) {
+		if (DashboardController.computerService.add(computer)) {
 			model.addAttribute("created", true);
 		} else {
 			model.addAttribute("dateError", true);

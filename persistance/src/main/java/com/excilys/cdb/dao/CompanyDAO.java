@@ -24,7 +24,6 @@ public class CompanyDAO extends ModelDAO {
 	public HibernateQueryFactory queryFactory;
 	QCompany qcompany = QCompany.company;
 	QComputer qcomputer = QComputer.computer;
-	Session session;
 
 	public void setQueryFactory(Session session) {
 		this.queryFactory = new HibernateQueryFactory(session);
@@ -35,12 +34,10 @@ public class CompanyDAO extends ModelDAO {
 
 		Optional<Long> res = Optional.empty();
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			session.beginTransaction();
 			session.save(model);
 			session.getTransaction().commit();
-			session.close();
 			res = Optional.ofNullable(((Company) model).getId());
 		} catch (Exception e) {
 			LOGGER.debug("[create] Probleme lors de la création de l'element.", e);
@@ -53,11 +50,9 @@ public class CompanyDAO extends ModelDAO {
 	public Optional<Company> findById(long id) throws DAOException {
 		Optional<Company> company = Optional.empty();
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			queryFactory = new HibernateQueryFactory(session);
 			company = Optional.ofNullable(queryFactory.selectFrom(qcompany).where(qcompany.id.eq(id)).fetchOne());
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[findById] Probleme lors de la recherche de l'element.", dae);
 		}
@@ -66,21 +61,19 @@ public class CompanyDAO extends ModelDAO {
 	}
 
 	@Override
-	public Page<Company> findAll(int offset, int nbElem) throws DAOException {
+	public Page<Company> findAll(long offset, long nbElem) throws DAOException {
 
 		Page<Company> p = new Page<Company>(offset, nbElem);
 
-		try {
+		try (Session session = HibernateUtil.getSession();) {
 			if (nbElem == Page.NO_LIMIT) {
-				session = HibernateUtil.getSession();
 				queryFactory = new HibernateQueryFactory(session);
 				p.elems = queryFactory.selectFrom(qcompany).fetch();
-				session.close();
+				p.nbElem = p.elems.size();
 			} else {
-				session = HibernateUtil.getSession();
 				queryFactory = new HibernateQueryFactory(session);
 				p.elems = queryFactory.selectFrom(qcompany).offset(offset).limit(nbElem).fetch();
-				session.close();
+				p.nbElem = p.elems.size();
 			}
 		} catch (Exception dae) {
 			LOGGER.debug("[findAll] Probleme lors de la recherche des elements.", dae);
@@ -92,8 +85,7 @@ public class CompanyDAO extends ModelDAO {
 	@Override
 	public void update(Model m) {
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			Transaction tx = session.beginTransaction();
 			queryFactory = new HibernateQueryFactory(session);
 
@@ -102,7 +94,6 @@ public class CompanyDAO extends ModelDAO {
 
 			session.flush();
 			tx.commit();
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[update] Probleme lors de la mise à jour de l'element.", dae);
 		}
@@ -119,12 +110,10 @@ public class CompanyDAO extends ModelDAO {
 
 		Optional<Long> res = Optional.empty();
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			queryFactory = new HibernateQueryFactory(session);
 			res = Optional.ofNullable(
 					queryFactory.selectFrom(qcomputer).leftJoin(qcompany).on(qcomputer.companyId.eq(qcompany.id)).where(qcompany.name.like("%" + parameter + "%")).fetchCount());
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[getCountByCompanyName] Probleme lors du décompte du nombre d'element.", dae);
 		}
@@ -142,9 +131,8 @@ public class CompanyDAO extends ModelDAO {
 	 */
 	public void delete(long id) throws DAOException {
 
-		try {
+		try (Session session = HibernateUtil.getSession();) {
 
-			session = HibernateUtil.getSession();
 			Transaction tx = session.beginTransaction();
 			queryFactory = new HibernateQueryFactory(session);
 
@@ -155,7 +143,6 @@ public class CompanyDAO extends ModelDAO {
 			session.flush();
 			
 			tx.commit();
-			session.close();
 			
 		} catch (Exception e) {
 			LOGGER.debug("[getCountByCompanyName] Probleme lors du décompte du nombre d'element.", e);

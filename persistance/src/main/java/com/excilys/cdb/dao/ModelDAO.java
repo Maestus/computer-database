@@ -56,7 +56,7 @@ public abstract class ModelDAO {
 	 *             Exception du à une mauvaise connection à la base de données.
 	 * @return Un ensemble d'element de la base données.
 	 */
-	abstract Page<? extends Model> findAll(int offset, int nbElem) throws DAOException;
+	abstract Page<? extends Model> findAll(long offset, long nbElem) throws DAOException;
 
 	/**
 	 * Construit la requete.

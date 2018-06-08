@@ -5,19 +5,19 @@ import java.util.List;
 
 public class Page<T> {
 
-    public int offset = 0;
-    public int nbElem;
+    public long offset = 0;
+    public long nbElem;
     public List<T> elems;
     public static final int NO_LIMIT = -1;
 
     /**
      * Constructeur de Page.
-     * @param offset nombre d'element à ignorer.
-     * @param nbElem nombre d'element à stocker dans la liste.
+     * @param cURRENT_INIT_ElEM nombre d'element à ignorer.
+     * @param nB_ElEM nombre d'element à stocker dans la liste.
      */
-    public Page(int offset, int nbElem) {
-        this.offset = offset;
-        this.nbElem = nbElem;
+    public Page(long CURRENT_INIT_ElEM, long nB_ElEM) {
+        this.offset = CURRENT_INIT_ElEM;
+        this.nbElem = nB_ElEM;
         this.elems = new ArrayList<>();
     }
 
@@ -47,7 +47,7 @@ public class Page<T> {
         return elems.get(index);
     }
 
-    public int getOffset() {
+    public long getOffset() {
         return offset;
     }
 

@@ -46,8 +46,7 @@ public class UIController {
 		this.companyservice = companyservice;
 		this.computerservice = computerservice;
     }
-
-
+    
     /**
      * Démarre l'interaction utilisateur.
      */
@@ -110,11 +109,11 @@ public class UIController {
      */
     public void setPageComputer() {
     	System.out.println("bon : " + companyservice);
-        lcomputer = computerservice.getListComputer(offset, pageSize);
+        lcomputer = computerservice.getList(offset, pageSize);
         if (lcomputer.elems.size() == 0) {
             offset -= pageSize;
         }
-        lcomputer = computerservice.getListComputer(offset, pageSize);
+        lcomputer = computerservice.getList(offset, pageSize);
     }
 
     /**
@@ -229,7 +228,7 @@ public class UIController {
             if (choix.equals("c")) {
                 computer = new Computer();
                 ui.editOrCreateComputer(computer);
-                computerservice.addComputer(computer);
+                computerservice.add(computer);
             } else if (choix.equals("s")) {
                 offset += pageSize;
                 setPageComputer();
@@ -245,7 +244,7 @@ public class UIController {
                 try {
                     if ((Integer.parseInt(choix) - 1) < lcomputer.elems.size()) {
                         computer = computerservice
-                                .getComputerById(lcomputer.elems.get(Integer.parseInt(choix) - 1).getId()).get();
+                                .get(lcomputer.elems.get(Integer.parseInt(choix) - 1).getId()).get();
                         System.out.println(computer);
                         ui.emplacementMenu = Place.MENU_COMPUTER_DETAIL;
                     }
@@ -264,9 +263,9 @@ public class UIController {
             if (!checkIfGoBack()) {
                 if (Integer.parseInt(choix) == 1) {
                     computer = ui.editOrCreateComputer(computer);
-                    computerservice.updateComputer(computer);
+                    computerservice.update(computer);
                 } else if (Integer.parseInt(choix) == 2) {
-                    computerservice.remove(computer);
+                    computerservice.remove(computer.getId());
                     ui.emplacementMenu = Place.MENU_COMPUTER;
                     displayList();
                 }

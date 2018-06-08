@@ -27,7 +27,7 @@ public class CompanyService {
 	 *            Nombre d'element à stocker.
 	 * @return Une Page.
 	 */
-	public Page<Company> getList(int offset, int nbElem) {
+	public Page<Company> getList(long offset, long nbElem) {
 		return companydao.findAll(offset, nbElem);
 	}
 

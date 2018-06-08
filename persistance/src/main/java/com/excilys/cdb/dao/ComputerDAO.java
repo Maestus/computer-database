@@ -23,19 +23,16 @@ public class ComputerDAO extends ModelDAO {
 	public HibernateQueryFactory queryFactory;
 	QComputer qcomputer = QComputer.computer;
 	QCompany qcompany = QCompany.company;
-	Session session;
 
 	@Override
 	public Optional<Long> create(Model model) throws DAOException {
 
 		Optional<Long> res = Optional.empty();
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			session.beginTransaction();
 			session.save(model);
 			session.getTransaction().commit();
-			session.close();
 			res = Optional.ofNullable(((Computer) model).getId());
 		} catch (Exception e) {
 			LOGGER.debug("[create] Probleme lors de la création de l'element.", e);
@@ -49,11 +46,8 @@ public class ComputerDAO extends ModelDAO {
 
 		Optional<Computer> computer = Optional.empty();
 
-		try {
-			session = HibernateUtil.getSession();
-			queryFactory = new HibernateQueryFactory(session);
+		try (Session session = HibernateUtil.getSession();) {
 			computer = Optional.ofNullable(queryFactory.selectFrom(qcomputer).where(qcomputer.id.eq(id)).fetchOne());
-			session.close();
 		} catch (Exception e) {
 			LOGGER.debug("[findById] Probleme lors de la recherche de l'element.", e);
 		}
@@ -77,12 +71,10 @@ public class ComputerDAO extends ModelDAO {
 	public Page<Computer> findByCompanyId(int offset, int nbElem, long id) {
 
 		Page<Computer> p = new Page<Computer>(offset, nbElem);
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			queryFactory = new HibernateQueryFactory(session);
 			p.elems = queryFactory.selectFrom(qcomputer).leftJoin(qcompany).where(qcomputer.companyId.eq(id))
 					.offset(offset).limit(nbElem).fetch();
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[findByCompanyId] Probleme lors de la recherche de l'element.", dae);
 		}
@@ -90,21 +82,19 @@ public class ComputerDAO extends ModelDAO {
 	}
 
 	@Override
-	public Page<Computer> findAll(int offset, int nbElem) {
+	public Page<Computer> findAll(long offset, long nbElem) {
 
 		Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-		try {
+		try (Session session = HibernateUtil.getSession();) {
 			if (nbElem == Page.NO_LIMIT) {
-				session = HibernateUtil.getSession();
 				queryFactory = new HibernateQueryFactory(session);
 				p.elems = queryFactory.selectFrom(qcomputer).fetch();
-				session.close();
+				p.nbElem = p.elems.size();
 			} else {
-				session = HibernateUtil.getSession();
 				queryFactory = new HibernateQueryFactory(session);
 				p.elems = queryFactory.selectFrom(qcomputer).offset(offset).limit(nbElem).fetch();
-				session.close();
+				p.nbElem = p.elems.size();
 			}
 		} catch (Exception dae) {
 			LOGGER.debug("[findAll] Probleme lors de la recherche des elements.", dae);
@@ -115,8 +105,7 @@ public class ComputerDAO extends ModelDAO {
 	@Override
 	public void update(Model m) {
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			Transaction tx = session.beginTransaction();
 			queryFactory = new HibernateQueryFactory(session);
 
@@ -128,7 +117,6 @@ public class ComputerDAO extends ModelDAO {
 
 			session.flush();
 			tx.commit();
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[update] Probleme lors de la mise à jour de l'element.", dae);
 		}
@@ -144,8 +132,7 @@ public class ComputerDAO extends ModelDAO {
 	 */
 	public void delete(Object[] elems) throws DAOException {
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			Transaction tx = session.beginTransaction();
 			queryFactory = new HibernateQueryFactory(session);
 
@@ -155,7 +142,6 @@ public class ComputerDAO extends ModelDAO {
 			}
 
 			tx.commit();
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[delete] Probleme lors de la suppression de l'element.", dae);
 		}
@@ -172,12 +158,10 @@ public class ComputerDAO extends ModelDAO {
 
 		Optional<Company> company = Optional.empty();
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			queryFactory = new HibernateQueryFactory(session);
 			company = Optional.ofNullable(queryFactory.selectFrom(qcompany).leftJoin(qcomputer)
 					.on(qcompany.id.eq(qcomputer.companyId)).where(qcomputer.id.eq(id)).fetchOne());
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[findCompanyLink] Probleme lors de la recherche de l'element.", dae);
 		}
@@ -194,11 +178,9 @@ public class ComputerDAO extends ModelDAO {
 
 		Optional<Long> res = Optional.empty();
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			queryFactory = new HibernateQueryFactory(session);
 			res = Optional.ofNullable(queryFactory.selectFrom(qcomputer).fetchCount());
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[getCount] Probleme lors du décompte du nombre d'element.", dae);
 		}
@@ -217,12 +199,10 @@ public class ComputerDAO extends ModelDAO {
 
 		Optional<Long> res = Optional.empty();
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			queryFactory = new HibernateQueryFactory(session);
 			res = Optional.ofNullable(
 					queryFactory.selectFrom(qcomputer).where(qcomputer.name.like("%" + parameter + "%")).fetchCount());
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[getCountByName] Probleme lors du décompte du nombre d'element.", dae);
 		}
@@ -246,12 +226,10 @@ public class ComputerDAO extends ModelDAO {
 
 		Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			queryFactory = new HibernateQueryFactory(session);
 			p.elems = queryFactory.selectFrom(qcomputer).where(qcomputer.name.like("%" + parameter + "%"))
 					.offset(offset).limit(nbElem).fetch();
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[findComputerByName] Probleme lors de la recherche des computers.", dae);
 		}
@@ -276,12 +254,10 @@ public class ComputerDAO extends ModelDAO {
 
 		Page<Computer> p = new Page<Computer>(offset, nbElem);
 
-		try {
-			session = HibernateUtil.getSession();
+		try (Session session = HibernateUtil.getSession();) {
 			queryFactory = new HibernateQueryFactory(session);
 			p.elems = queryFactory.selectFrom(qcomputer).leftJoin(qcompany).on(qcomputer.companyId.eq(qcompany.id)).where(qcompany.name.like("%" + parameter + "%")).offset(offset)
 					.limit(nbElem).fetch();
-			session.close();
 		} catch (Exception dae) {
 			LOGGER.debug("[findComputerByCompany] Probleme lors de la recherche des computers.", dae);
 		}

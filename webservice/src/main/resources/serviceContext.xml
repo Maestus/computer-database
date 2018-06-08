@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<bean id="mapperComputer"
+		class="main.java.com.excilys.cdb.mapper.ComputerMapper" />
+
+	<bean id="computerdao"
+		class="main.java.com.excilys.cdb.dao.ComputerDAO" autowire="byName" />
+
+	<bean id="computervalidator"
+		class="main.java.com.excilys.cdb.validator.ComputerValidator"
+		autowire="constructor" />
+
+	<bean id="computerservice"
+		class="main.java.com.excilys.cdb.service.ComputerService"
+		autowire="constructor" />
+
+	<bean id="companydao"
+		class="main.java.com.excilys.cdb.dao.CompanyDAO" autowire="byName" />
+
+	<bean id="companyvalidator"
+		class="main.java.com.excilys.cdb.validator.CompanyValidator"
+		autowire="constructor" />
+
+	<bean id="companyservice"
+		class="main.java.com.excilys.cdb.service.CompanyService"
+		autowire="constructor" />
+
+</beans>

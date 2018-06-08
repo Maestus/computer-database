@@ -54,7 +54,7 @@ public class EditComputerController {
 		Optional<Computer> optComp;
 
 		if (id != null) {
-			optComp = DashboardController.computerService.getComputerById(id);
+			optComp = DashboardController.computerService.get(id);
 			if (optComp.isPresent()) {
 
 				System.out.println(optComp.get());
@@ -91,7 +91,7 @@ public class EditComputerController {
 		} else {
 			logger.info("\nReturning custSaveSuccess.jsp page\n");
 
-			if (DashboardController.computerService.updateComputer(computer)) {
+			if (DashboardController.computerService.update(computer)) {
 				model.addAttribute("updated", true);
 			}
 
